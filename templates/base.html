@@ -6,11 +6,20 @@
   </head>
   <body>
     <header>
+<<<<<<< HEAD
       <h1>Django Simple Login</h1>
       {% if user.is_authenticated %} Hi {{ user.username }}!
       <a href="{% url 'logout' %}">logout</a>
       {% else %}
       <a href="{% url 'login' %}">login</a>
+=======
+      <h1>Authentication</h1>
+      {% if user.is_authenticated %} Hi {{ user.username }}!
+      <a href="{% url 'logout' %}">logout</a>
+      {% else %}
+      <a href="{% url 'login' %}">login</a><br />
+      <a href="{% url 'signup' %}">Sign up</a>
+>>>>>>> 8ef0257d2ad29b0b7d97beaf13e6a50cd46e3ddb
       {% endif %}
     </header>
     <hr />
