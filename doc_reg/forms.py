@@ -1,5 +1,5 @@
 from django import forms
-from ARCIT.models import Doctor
+from .models import Doctor
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 

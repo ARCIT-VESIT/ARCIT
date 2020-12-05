@@ -1,5 +1,7 @@
 from django import forms
-from ARCIT.models import  Patients
+from .models import  Patients
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 
 class RegForm(forms.ModelForm):
@@ -18,3 +20,9 @@ class RegForm(forms.ModelForm):
     class Meta:
         model =  Patients
         fields = ('first_name', 'last_name', 'email', 'phone_number','dob','gender','weight','address','adharcardno','blood_group', )
+
+class PatUserForm(UserCreationForm):
+
+    class Meta:
+        model = User
+        fields = ('username', 'password1', 'password2', )

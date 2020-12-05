@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'ARCIT',
     'otpAuth',
     'doc_reg',
+    'PatientHistory',
     'patregistration',
     'django.contrib.admin',
     'django.contrib.auth',

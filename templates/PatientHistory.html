@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Patient History{% endblock %}
 
 {% block content %}
 <div class= 'container'>
@@ -8,8 +8,9 @@
         <form method="post">
             {% csrf_token %}
             {{form.as_p}}
-            {{form2.as_p}}
+            
             <button type="submit">submit</button>>
         </form>>    
+        
 </div>>        
 {% endblock %}

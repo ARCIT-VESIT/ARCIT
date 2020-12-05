@@ -1,7 +1,8 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
+from django.views.generic import TemplateView
+from ARCIT.forms import SignUpForm
 
-from ARCIT.core.forms import SignUpForm
 
 def signup(request):
     if request.method == 'POST':
