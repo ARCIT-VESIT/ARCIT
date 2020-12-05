@@ -1,13 +1,10 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
-from ARCIT.core.forms import MyModelForm, SignUpForm
-from ARCIT.models import MyModel,UserTypeModel
-
 from django.views.generic.edit import CreateView
 from django.shortcuts import redirect
 
-from ARCIT.forms import SignUpForm, UserTypeForm
-
+from ARCIT.forms import MyModelForm, SignUpForm,UserTypeForm
+from ARCIT.models import MyModel,UserTypeModel
 
 def signup(request):
     if request.method == 'POST':
