@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'ARCIT',
     'otpAuth',
     'doc_reg',
+    'Hospital',
     'patregistration',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -41,6 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_tables2',
+    'django_filters',
+    'bootstrap3'
 ]
 
 MIDDLEWARE = [
@@ -123,3 +127,4 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 LOGIN_REDIRECT_URL = 'home'
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"

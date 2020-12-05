@@ -56,3 +56,10 @@ class DiagnosticDepartment(models.Model):
     referred_by = models.CharField(max_length=100)
     handled_by = models.CharField(max_length=100)
     patient_name = models.CharField(max_length=100)
+
+class UserTypeModel(models.Model):
+  usertype = models.CharField(max_length=6, 
+            choices=(
+                        ('1','Patient'),
+                        ('2', 'Doctor'),
+                    ), default='1')

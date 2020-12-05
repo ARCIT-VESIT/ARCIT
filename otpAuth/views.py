@@ -23,8 +23,7 @@ class OtpAuthView(TemplateView):
         phoneNumber = '+91' + request.POST['Phone_number']
         client = Client(account_sid, auth_token)
         msg = "Authentication otp is: " + str(otp)
-        message = client.messages.create(to=phoneNumber, from_=my_twilio, body=msg)
-        
+        client.messages.create(to=phoneNumber, from_=my_twilio, body=msg)
         return render(request, "enterOtp.html", { 'phno': request.POST['Phone_number'], 'storedOtp' : otp })
 
 class VerifyOtpView(TemplateView):
