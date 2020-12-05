@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'ARCIT',
     'otpAuth',
     'doc_reg',
+    'Hospital',
     'patregistration',
     'DiagnosticDepartment',
     'django.contrib.admin',
@@ -42,6 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_tables2',
+    'django_filters',
+    'bootstrap3'
 ]
 
 MIDDLEWARE = [
@@ -128,3 +132,4 @@ LOGIN_REDIRECT_URL = 'home'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+DJANGO_TABLES2_TEMPLATE = "django_tables2/bootstrap.html"

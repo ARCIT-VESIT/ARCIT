@@ -1,0 +1,11 @@
+<html>
+<body>
+    <header>
+        <form action="" method="post">
+            {% csrf_token %}
+            {{ form123.as_p }}
+            <input type="submit" value="Proceed" />
+        </form>
+    </header>
+</body>
+</html>

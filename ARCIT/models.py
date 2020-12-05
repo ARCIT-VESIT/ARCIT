@@ -64,31 +64,9 @@ class DiagnosticDepartment(models.Model):
     def __str__(self):
          return self.patient_name
 
-    # def delete(self, *args, **kwargs):
-    #     self.pdf.delete()
-    #     super().delete(*args, **kwargs)
-
-#  class UserType(models.Model):
-#      user = models.OneToOneField(User, on_delete=models.CASCADE)
-#      UserType=models.models.CharField(max_length=50)
-
-# USER_CHOICES = (
-#          ('PATIENTS' , 'Patient'),
-#          ('HOSPITALS', 'Hospitals'),
-#          ('DIAGNOSTICDEPARTMENT' , 'DiagnosticDepartment'),
-#          ('DOCTOR','Doctor'),
-#      )
-
-# class MyModel(models.Model):
-#       user = models.CharField(max_length=1, choices= USER_CHOICES , default='PATIENTS')
-
-USER_CHOICES = (
-    ('PATIENTS','PATIENTS'),
-    ('HOSPITALS', 'HOSPITALS'),
-    ('DIAGNOSTIC DEPARTMENTS','DIAGNOSTICDEPARTMENT'),
-    ('DOCTORS','DOCTORS'),
-)
-
-class MyModel(models.Model):
-  color = models.CharField(max_length=20, choices=USER_CHOICES, default='PATIENTS')
-    
+class UserTypeModel(models.Model):
+  usertype = models.CharField(max_length=6, 
+            choices=(
+                        ('1','Patient'),
+                        ('2', 'Doctor'),
+                    ), default='1')
