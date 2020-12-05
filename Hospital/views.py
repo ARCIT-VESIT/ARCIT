@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from ARCIT.models import Doctor
+from doc_reg.models import Doctor
 from .filters import DoctorFilter
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
@@ -12,7 +12,7 @@ class DoctorTable(tables.Table):
 
     class Meta:
         model = Doctor 
-        exclude = ['id', 'doctor_registeration_no','email','phone_number','experience','affiliation','address','adharcardno']
+        exclude = ['id', 'user','doctor_registeration_no','email','phone_number','experience','affiliation','address','adharcardno']
         # attrs = {"thead": "thead-dark"}
 
 class FilteredDoctorListView(SingleTableMixin, FilterView):

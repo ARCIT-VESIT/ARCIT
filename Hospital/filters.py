@@ -1,5 +1,5 @@
 import django_filters
-from ARCIT.models import Doctor
+from doc_reg.models import Doctor
 
 class DoctorFilter(django_filters.FilterSet):
     class Meta:
