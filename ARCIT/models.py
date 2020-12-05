@@ -1,4 +1,7 @@
+from django.core.files import File
 from django.db import models
+
+from django.contrib.auth.models import User
 
 class Patients(models.Model):
     first_name = models.CharField(max_length=100)
@@ -56,3 +59,36 @@ class DiagnosticDepartment(models.Model):
     referred_by = models.CharField(max_length=100)
     handled_by = models.CharField(max_length=100)
     patient_name = models.CharField(max_length=100)
+    report = models.FileField(upload_to='DiagnosticDepartment/report/',default='DiagnosticDepartment/report/xyz.txt')
+    
+    def __str__(self):
+         return self.patient_name
+
+    # def delete(self, *args, **kwargs):
+    #     self.pdf.delete()
+    #     super().delete(*args, **kwargs)
+
+#  class UserType(models.Model):
+#      user = models.OneToOneField(User, on_delete=models.CASCADE)
+#      UserType=models.models.CharField(max_length=50)
+
+# USER_CHOICES = (
+#          ('PATIENTS' , 'Patient'),
+#          ('HOSPITALS', 'Hospitals'),
+#          ('DIAGNOSTICDEPARTMENT' , 'DiagnosticDepartment'),
+#          ('DOCTOR','Doctor'),
+#      )
+
+# class MyModel(models.Model):
+#       user = models.CharField(max_length=1, choices= USER_CHOICES , default='PATIENTS')
+
+USER_CHOICES = (
+    ('PATIENTS','PATIENTS'),
+    ('HOSPITALS', 'HOSPITALS'),
+    ('DIAGNOSTIC DEPARTMENTS','DIAGNOSTICDEPARTMENT'),
+    ('DOCTORS','DOCTORS'),
+)
+
+class MyModel(models.Model):
+  color = models.CharField(max_length=20, choices=USER_CHOICES, default='PATIENTS')
+    

@@ -1,7 +1,8 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
+from ARCIT.core.forms import MyModelForm, SignUpForm
+from ARCIT.models import MyModel
 
-from ARCIT.core.forms import SignUpForm
 
 def signup(request):
     if request.method == 'POST':
@@ -16,3 +17,11 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
+
+class CreateMyModelView(CreateView):
+    model = MyModel
+    form_class = MyModelForm
+    template_name = 'template.html'
+
+
