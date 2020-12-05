@@ -3,8 +3,8 @@ from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.views.generic.edit import CreateView
 from django.shortcuts import redirect
-from ARCIT.forms import MyModelForm, SignUpForm,UserTypeForm
-from ARCIT.models import MyModel,UserTypeModel
+from ARCIT.forms import  SignUpForm,UserTypeForm
+from ARCIT.models import UserTypeModel
 
 def signup(request):
     if request.method == 'POST':
@@ -19,13 +19,6 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
-
-
-class CreateMyModelView(CreateView):
-    model = MyModel
-    form_class = MyModelForm
-    template_name = 'template.html'
-
 
 class UserTypeView(CreateView):
     model = UserTypeModel
