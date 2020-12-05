@@ -1,8 +1,10 @@
 from django.contrib.auth import login, authenticate
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from ARCIT.forms import SignUpForm
-
+from django.views.generic.edit import CreateView
+from django.shortcuts import redirect
+from ARCIT.forms import MyModelForm, SignUpForm,UserTypeForm
+from ARCIT.models import MyModel,UserTypeModel
 
 def signup(request):
     if request.method == 'POST':
@@ -17,3 +19,26 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
+
+class CreateMyModelView(CreateView):
+    model = MyModel
+    form_class = MyModelForm
+    template_name = 'template.html'
+
+
+class UserTypeView(CreateView):
+    model = UserTypeModel
+    form_class = UserTypeForm
+    template_name = 'home1.html'
+
+    def get(self, request):
+        return render(request, self.template_name, {'form123': self.form_class})
+
+    def post(self, request):
+        if request.POST['usertype'] == '1':
+            return redirect('patreg')
+        elif request.POST['usertype'] == '2':
+            return redirect('docreg')
+        else:
+            return render(request, self.template_name)

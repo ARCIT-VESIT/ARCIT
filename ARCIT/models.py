@@ -1,3 +1,4 @@
+from django.core.files import File
 from django.db import models
 
 class Hospital(models.Model):
@@ -18,3 +19,14 @@ class DiagnosticDepartment(models.Model):
     referred_by = models.CharField(max_length=100)
     handled_by = models.CharField(max_length=100)
     patient_name = models.CharField(max_length=100)
+    report = models.FileField(upload_to='DiagnosticDepartment/report/',default='DiagnosticDepartment/report/xyz.txt')
+    
+    def __str__(self):
+         return self.patient_name
+
+class UserTypeModel(models.Model):
+  usertype = models.CharField(max_length=6, 
+            choices=(
+                        ('1','Patient'),
+                        ('2', 'Doctor'),
+                    ), default='1')
