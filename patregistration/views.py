@@ -1,10 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from patregistration.forms import RegForm, PatUserForm
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 from .models import Patients
 from django.contrib.auth import login, authenticate
+
+User = get_user_model()
 
 class docregister(TemplateView):
     template_name='patreg.html'
@@ -19,24 +21,21 @@ class docregister(TemplateView):
         if request.method == 'POST':
             form = PatUserForm(request.POST)
             form2 = RegForm(request.POST)
-            if form.is_valid() and form2.is_valid():
-                # user=form.save()
 
+            if form.is_valid() and form2.is_valid():
+                
                 user = User.objects.create_user(
                     form.data['username'], 
                     form2.data['email'], 
                     form.data['password1'], 
                     first_name=form2.data['first_name'],
                     last_name=form2.data['last_name'],
+                    is_patient = True
                 )
 
                 patform=form2.save(commit=False) 
                 patform.user=user
                 patform.save()
-                # username=form.cleaned_data('username')
-                # password=form.cleaned_data('password1')
-                
-                
 
                 user = authenticate(username=form2.data['username'], password=form2.data['password1'])
                 login(request, user)

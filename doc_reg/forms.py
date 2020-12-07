@@ -1,7 +1,7 @@
 from django import forms
 from .models import Doctor
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 
 class DoctorForm(forms.ModelForm):
     first_name = forms.CharField(max_length=100,required=True, help_text='It is required')
@@ -28,5 +28,5 @@ class DoctorForm(forms.ModelForm):
 class DoctorUserForm(UserCreationForm):
 
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ('username', 'password1', 'password2', )

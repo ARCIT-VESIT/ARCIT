@@ -33,5 +33,9 @@ class UserTypeView(CreateView):
             return redirect('patreg')
         elif request.POST['usertype'] == '2':
             return redirect('docreg')
+        elif request.POST['usertype'] == '3':
+            return redirect('HospitalRegisteration')
+        elif request.POST['usertype'] == '4':
+            return redirect('ddsignup')
         else:
             return render(request, self.template_name)

@@ -6,7 +6,6 @@ from django.shortcuts import render, redirect
 
 from django.views.generic import TemplateView
 from PatientHistory.forms import PatientHistori
-#from django.contrib.auth.models import User
 
 class PatientHistore(TemplateView):
     template_name='PatientHistory.html'

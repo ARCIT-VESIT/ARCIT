@@ -7,7 +7,7 @@ from django_tables2.views import SingleTableMixin
 from django.contrib.auth import login, authenticate
 from .models import Hospital
 from Hospital.forms import HospitalForm, HospitalUserForm
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
 import django_tables2 as tables
@@ -41,13 +41,15 @@ class HospitalView(TemplateView):
             form =  HospitalUserForm(request.POST)
             form2 = HospitalForm(request.POST)
             if form.is_valid() and form2.is_valid():              
-               # user = form.save()
+
+                User = get_user_model()
+               
                 user = User.objects.create_user(
                     form.data['username'], 
                     form2.data['email'], 
                     form.data['password1'], 
                     first_name=form2.data['name'],
-                    
+                    is_hospital = True,
                 )
 
                 HospitalRegisterationForm=form2.save(commit=False)
