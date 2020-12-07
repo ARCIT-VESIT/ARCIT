@@ -1,9 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from doc_reg.models import Doctor
 from .filters import DoctorFilter
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
+from django.contrib.auth import login, authenticate
+from .models import Hospital
+from Hospital.forms import HospitalForm, HospitalUserForm
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 import django_tables2 as tables
 
@@ -23,31 +28,36 @@ class FilteredDoctorListView(SingleTableMixin, FilterView):
     filterset_class = DoctorFilter
 
 
-# class IndexView(TemplateView):
-#     template_name = "Hospital/index.html"
-
-#     def get(self, request):
-#         print('ran')
-#         queryset = Doctor.objects.all()
-
-#         # qs = queryset.all()
-#         table = DoctorTable(queryset)
-        
-#         docFilter = DoctorFilter(request.GET, queryset = queryset)
-#         queryset = docFilter.qs
-
-#         args = {'doctors': table, 'filter' : docFilter }
-#         return render(request, self.template_name, args)
-
-# def resp(request):
-#     print('ran')
-#     queryset = Doctor.objects.all()
-
-#     # qs = queryset.all()
-#     table = DoctorTable(queryset)
+class HospitalView(TemplateView):
+    template_name='HospitalRegisteration.html'
     
-#     docFilter = DoctorFilter(request.GET, queryset = queryset)
-#     queryset = docFilter.qs
+    def get(self,request):
+        form = HospitalForm()
+        form2 = HospitalUserForm()
+        return render(request,self.template_name,{'form':form, 'form2': form2})
+     
+    def post(self,request):
+        if request.method == 'POST':
+            form =  HospitalUserForm(request.POST)
+            form2 = HospitalForm(request.POST)
+            if form.is_valid() and form2.is_valid():              
+               # user = form.save()
+                user = User.objects.create_user(
+                    form.data['username'], 
+                    form2.data['email'], 
+                    form.data['password1'], 
+                    first_name=form2.data['name'],
+                    
+                )
 
-#     args = {'doctors': table, 'filter' : docFilter }
-#     return render(request, "Hospital/index.html", args)
+                HospitalRegisterationForm=form2.save(commit=False)
+                HospitalRegisterationForm.user=user
+                HospitalRegisterationForm.save()
+
+                user = authenticate(username=form2.data['username'], password=form2.data['password1'])
+                login(request, user)
+                return redirect('home')
+            else:
+                form = HospitalUserForm()
+                form2 = HospitalForm()
+            return render(request,self.template_name, {'form': form,'form2':form2})
