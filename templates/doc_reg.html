@@ -1,14 +1,15 @@
-{%extends 'base.html' %}
-{% block title %} login {% endblock %}
-
-{%block content %}
-<div class='container'>
-    <h2>Home</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{form.as_p}}
-            {{form2.as_p}}
-            <button type="submit"> submit </button>
-        </form>
-</div>
-{%endblock%}
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+<body>
+    <div class='container'>
+            <form method="post">
+                {% csrf_token %}
+                {{form.as_p}}
+                {{form2.as_p}}
+                <button type="submit"> submit </button>
+            </form>
+    </div>
+<body>
+</html>

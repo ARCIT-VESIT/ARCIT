@@ -1,16 +1,36 @@
-{% extends 'base.html' %}
-
-{% block title %}Patient History{% endblock %}
-
+{% extends 'Doctor/index1.html' %}
 {% block content %}
-<div class= 'container'>
-    <h2>Home</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{form.as_p}}
-            {{form2.as_p}}
-            <button type="submit">submit</button>>
-        </form>>    
-        
-</div>>        
+    <div style="height:calc(100vh - 105px)">
+        <div class="card p-2 border-0" style="height:100%">
+            <div>
+                <span class="float-left"><h3>Add New Diagnosis</h3></span>
+                <a href="{% url 'viewpatienthistory' %}" class="float-right mt-2">
+                    <span class="text-secondary" >
+                        <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-eye" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
+                            <path fill-rule="evenodd" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+                        </svg>
+                        <span class="pt-1">View patient  history</span>
+                    </span>
+                </a>
+            </div>
+            <hr class="mt-1 mb-2">
+            <div class="pt-3">
+                <form method="post">
+                    {% csrf_token %}
+                    {{form.as_p}}
+                    {{form2.as_p}}
+                    <button class="btn btn-primary" type="submit">submit</button>
+                </form>        
+            </div>
+        </div>    
+    </div>
 {% endblock %}
+
+{% comment %} <html>
+    <head>
+        <title>Patient diagnosis</title>
+    </head>
+<body>
+</body>
+</html> {% endcomment %}

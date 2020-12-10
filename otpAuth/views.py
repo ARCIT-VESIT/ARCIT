@@ -1,10 +1,11 @@
 import random
 from twilio.rest import Client
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 
 from otpAuth.forms import OtpAuthForm
+from Patient.models import Patients
 
 account_sid = "ACf704c92aadad13c090e0de80beceb735"
 auth_token = "8b08254be48aa7721058af8a9a486f9e"
@@ -24,6 +25,11 @@ class OtpAuthView(TemplateView):
         client = Client(account_sid, auth_token)
         msg = "Authentication otp is: " + str(otp)
         client.messages.create(to=phoneNumber, from_=my_twilio, body=msg)
+
+        # user = Patients.objects.get(phone_number=request.POST['Phone_number'])
+
+        # userName = user.user
+
         return render(request, "enterOtp.html", { 'phno': request.POST['Phone_number'], 'storedOtp' : otp })
 
 class VerifyOtpView(TemplateView):
@@ -36,14 +42,20 @@ class VerifyOtpView(TemplateView):
         otp = request.POST['OTP']
         storedOtp = request.POST['storedOTP']
         status = False
+        phoneNumber = request.POST['Phone_number']  
+
         if otp == storedOtp:
             status = True
 
         args = { 
-            'phno': request.POST['Phone_number'], 
+            'phno': phoneNumber, 
             'otp': otp, 
             'status': status,
             'dirty_status': True
         }
 
-        return render(request, self.template_name, args)
+        if status == True:
+            request.session['phoneNumber'] = phoneNumber
+            return redirect("PatientHistory")
+        else:
+            return render(request, self.template_name, args)

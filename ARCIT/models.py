@@ -11,8 +11,7 @@ class User(AbstractUser):
 class UserTypeModel(models.Model):
   usertype = models.CharField(max_length=6, 
             choices=(
-                        (1,'Patient'),
                         (2, 'Doctor'),
                         (3, 'Hospital'),
                         (4, 'Diagnostic Department'),
-                    ), default='1')
+                    ), default='2')
