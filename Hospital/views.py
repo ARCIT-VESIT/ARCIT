@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
-from doc_reg.models import Doctor
+from Doctor.models import Doctor
 from .filters import DoctorFilter
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin

@@ -1,9 +1,10 @@
+{% extends 'doctor/index1.html' %}
 {% block content %}
 <form method="post">
     {% csrf_token %}
     {% comment %} <input type="hidden" name="OTP" value="{{otp}}" /> {% endcomment %}
     Enter phone number: <input type="number" name="Phone_number" value="{{phno}}" required />
-    <button type="submit">Generate OTP</button>
+    <button type="submit" class="btn btn-primary">Generate OTP</button>
 </form>
 {% block div %} {% endblock %}
 {% endblock %} 

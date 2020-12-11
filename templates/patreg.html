@@ -1,15 +1,23 @@
-{% extends 'base.html' %}
-
-{% block title %}Login{% endblock %}
-
+{% extends 'doctor/index1.html' %}
 {% block content %}
-<div class= 'container'>
-    <h2>Home</h2>
-        <form method="post">
-            {% csrf_token %}
-            {{form.as_p}}
-            {{form2.as_p}}
-            <button type="submit">submit</button>
-        </form>
-</div>
+
+<form method="post">
+ <table border="1">
+    {% csrf_token %}
+    {{form.as_p}}
+    {{form2.as_p}}
+    <button class="btn btn-primary" type="submit">submit</button>
+  </table>
+</form>
+
 {% endblock %}
+
+{% comment %} <html>
+<head>
+    <title>Patient registeration</title>
+</head>
+<body>
+<div class= 'container'>
+</div>
+</body> {% endcomment %}
+
