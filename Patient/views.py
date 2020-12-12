@@ -84,7 +84,6 @@ class ViewPatientHistory(TemplateView):
 
         return render(request,self.template_name,{'models':model})
 
-
 class ViewPatientProfile(TemplateView):
     template_name='Patient/profile.html'
 

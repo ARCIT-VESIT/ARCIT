@@ -19,7 +19,7 @@
 		  		<a href="#" class="img logo rounded-circle mb-5" style="background-image: url({% static 'images/logo.jpg' %});" hidden></a>
 	        <ul class="list-unstyled components mb-5">
 	          <li class="active">
-	            <a href="#homeSubmenu">Profile</a>
+	            <a href="{% url 'patientprofile' %}">Profile</a>
 	          </li>
 	          <li>
 	              <a href="{% url 'patreg' %}">View history</a>
