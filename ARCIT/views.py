@@ -37,8 +37,8 @@ def log_in(request):
                # return render(request, 'Doctor/profile.html')
                 return redirect('doctorprofile')
             elif user.is_patient:
-                return render(request, 'Patient/index1.html')
-                # return redirect('patientprofile')
+                # return render(request, 'Patient/index1.html')
+                return redirect('patientprofile')
             elif user.is_hospital:
                 # return render(request, 'Hospital/index2.html')
                 return redirect('HospitalIndex')

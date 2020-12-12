@@ -59,7 +59,7 @@ class AddPatientDataView(TemplateView):
 
         return render(request,self.template_name,{'form':form})
 
-    def post(self,request):
+    def post(self,request): 
         form=PatientHistoryForm(request.POST)
         if request.method == 'POST':
 
@@ -84,7 +84,6 @@ class ViewPatientHistory(TemplateView):
 
         return render(request,self.template_name,{'models':model})
 
-
 class ViewPatientProfile(TemplateView):
     template_name='Patient/profile.html'
 
@@ -96,3 +95,13 @@ class ViewPatientProfile(TemplateView):
         # age = today.year - datetime.year(patient.dob) - ((today.month, today.day) < (datetime.month(patient.dob), datetime.day(patient.dob)))
         # age = patient.dob
         return render(request,self.template_name,{'profile':patient})
+
+
+class ViewPatientHistory_p(TemplateView):
+    template_name='Patient/viewHistory_p.html'
+
+    def get(self,request):
+        user = User.objects.get(username=request.session['loggedin_username'])
+        model = PatientHistory.objects.filter(user=user)
+
+        return render(request,self.template_name,{'models':model})
