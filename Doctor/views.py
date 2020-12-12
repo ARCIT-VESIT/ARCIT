@@ -11,7 +11,7 @@ from Patient.models import Patients
 # def index(request):
 #     if request.method == 'POST':
     
-
+User = get_user_model()
 class DoctorView(TemplateView):
     template_name='doc_reg.html'
     
@@ -47,3 +47,14 @@ class DoctorView(TemplateView):
                 form = DoctorUserForm()
                 form2=DoctorForm()
             return render(request,self.template_name, {'form': form,'form2':form2})
+class ViewDocotrProfile(TemplateView):
+    template_name='Doctor/profile.html'
+
+    def get(self,request):        
+        user = User.objects.get(username=request.session['loggedin_username'])
+        print(user)
+        doctor = Doctor.objects.get(user=user)
+        # today = date.today()
+        # age = today.year - datetime.year(patient.dob) - ((today.month, today.day) < (datetime.month(patient.dob), datetime.day(patient.dob)))
+        # age = patient.dob
+        return render(request,self.template_name,{'profile':doctor})

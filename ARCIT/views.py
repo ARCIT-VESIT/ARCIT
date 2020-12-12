@@ -34,8 +34,8 @@ def log_in(request):
             user = authenticate(username=username, password=password)
             
             if user.is_doctor:
-                # return render(request, 'Doctor/index.html')
-                return render(request, 'Doctor/index1.html')
+               # return render(request, 'Doctor/profile.html')
+                return redirect('doctorprofile')
             elif user.is_patient:
                 return render(request, 'Patient/index1.html')
                 # return redirect('patientprofile')
