@@ -12,21 +12,27 @@
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 		<link rel="stylesheet" href="{% static 'css/style.css' %}">
   </head>
-  <body>		
+  <body>
+		
 		<div class="wrapper d-flex align-items-stretch">
 			<nav id="sidebar">
 				<div class="p-4 pt-5">
 		  		<a href="#" class="img logo rounded-circle mb-5" style="background-image: url({% static 'images/logo.jpg' %});" hidden></a>
 	        <ul class="list-unstyled components mb-5">
-	          <li class="active">
-	            <a href="{% url 'hospitalprofile' %}">Profile</a>
-	          </li>
-	          {% comment %} <li>
-	              <a href="{% url 'patreg' %}">View history</a>
-	          </li>	 {% endcomment %}
-            <li>
-	              <a href="{% url 'hospitaldoctors' %}">Affiliated doctors</a>
-	          </li>          
+                <li>
+                    <h4 style="color:white">
+                        Registeration type
+                    </h4>
+                </li>
+	            <li class="active">
+	                <a href="{% url 'HospitalRegisteration' %}">Hosptial</a>
+	            </li>
+	            <li>
+	                <a href="{% url 'ddsignup' %}">Diagnostic center</a>
+	            </li>
+                <li>
+                    <a href="{% url 'docreg' %}">Doctor</a>
+                </li>          
 	          <li>
 	          </li>
 	        </ul>
@@ -47,13 +53,13 @@
                 <i class="fa fa-bars"></i>
             </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent" hidden>
               <ul class="nav navbar-nav ml-auto" >
                 <li class="nav-item active">
-                    <a href="{% url 'logout' %}" class="nav-link">
+                    <a href="{% url 'login' %}" class="nav-link">
                     <span class="text-secondary" >
-                      <i class="fa fa-sign-out" aria-hidden="true"></i>
-                            <span class="pt-1" onclick="resetActiveSelection()">Logout</span>
+                        <i class="fa fa-sign-in" aria-hidden="true"></i>                    
+                        <span class="pt-1" onclick="resetActiveSelection()">Login</span>
                     </span>
                 </a>
                 </li>
@@ -64,6 +70,7 @@
         </nav>
 
         <div class="p-3">
+          <div id="welcome"><h3 style="background-color: #e4f2f5;border-color: #2492a5 !important;padding: 10px;border-left: 6px solid;border-radius: 5px">Please select a registeration type from menu</h3></div>
           {% block content %} {% endblock %}
         </div>
       </div>
@@ -72,15 +79,18 @@
     <script>
       $(function(){
         var activeTab = localStorage.getItem('activeTab');
+        
+        if(localStorage.getItem('activeTab') === null)
+          $("#welcome").show();
+        else
+          $("#welcome").hide();
+
+        $('#sidebar .list-unstyled').children().eq(1).removeClass('active');
         if (activeTab) {
           $('#sidebar .list-unstyled').find('li.active').removeClass( 'active' ); 
           $('#sidebar a[href="' + activeTab + '"]').parent('li').addClass('active');
         }
-
-        $('#id_first_name').parent().addClass('mr-2');
-        $('#id_last_name').parent().addClass('mr-2');
       });
-
       $('#sidebar .list-unstyled a' ).on('click', function (e) { 
         $('#sidebar .list-unstyled').find('li.active').removeClass( 'active' ); 
         $(this).parent('li').addClass('active'); 
@@ -88,11 +98,11 @@
       }); 
       
       function resetActiveSelection(){
+        $('#sidebar .list-unstyled').children().eq(1).removeClass('active');
         localStorage.removeItem("activeTab");
-        $('#sidebar .list-unstyled').children().first().addClass('active');
       }
     </script>
-    
+
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'js/popper.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>

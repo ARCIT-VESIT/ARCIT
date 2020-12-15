@@ -1,16 +1,20 @@
-from django.shortcuts import render, redirect
+import django_tables2 as tables
+from ARCIT.decorators import hospital_required
+from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
-from Doctor.models import Doctor
-from .filters import DoctorFilter
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
-from django.contrib.auth import login, authenticate
-from .models import Hospital
-from Hospital.forms import HospitalForm, HospitalUserForm
-from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import UserCreationForm
+from Doctor.models import Doctor
 
-import django_tables2 as tables
+from Hospital.forms import HospitalForm, HospitalUserForm
+
+from .filters import DoctorFilter
+from .models import Hospital
+
+User = get_user_model()
 
 class DoctorTable(tables.Table):
     first_name = tables.Column(attrs={"td": {"class": "red"}})
@@ -43,7 +47,7 @@ class HospitalView(TemplateView):
             if form.is_valid() and form2.is_valid():              
 
                 User = get_user_model()
-               
+
                 user = User.objects.create_user(
                     form.data['username'], 
                     form2.data['email'], 
@@ -63,3 +67,14 @@ class HospitalView(TemplateView):
                 form = HospitalUserForm()
                 form2 = HospitalForm()
             return render(request,self.template_name, {'form': form,'form2':form2})
+
+
+class HospitalProfileView(TemplateView):
+    template_name='Hosptial/profile.html'
+
+    def get(self,request):        
+        user = User.objects.get(username=request.session['loggedin_username'])
+        hospital = Hospital.objects.get(user=user)
+        print(user)
+        print(hospital)
+        return render(request,self.template_name,{'profile':hospital})

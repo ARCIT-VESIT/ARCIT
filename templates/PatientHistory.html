@@ -1,10 +1,10 @@
 {% extends 'Doctor/index1.html' %}
-
+{% load widget_tweaks %}
 {% block content %}
 
 <div style="height:calc(100vh - 105px)">
     
-        <div class="card p-2 border-0" style="height:100%">
+        <div class="card p-3 border-0" style="height:100%">
             <div>
                 <span class="float-left"><h3>Add new diagnosis</h3></span>
                 <a href="{% url 'viewpatienthistory' %}" class="float-right mt-2">
@@ -20,16 +20,70 @@
             
             <hr class="mt-1 mb-2">
             
-            <div class="pt-3">
-                <form method="post" enctype="multipart/form-data">
-                    
+            <div style="height:calc(100vh - 190px); overflow: auto;">
+                <form method="post" enctype="multipart/form-data">                    
                     {% csrf_token %}
-                    {{form.as_p}}
+                    {% for hidden_field in form2.hidden_fields %}
+                        {{ hidden_field }}
+                    {% endfor %}
 
-                   
+                    {% if form2.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                        {% for error in form2.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </div>
+                    {% endif %}
 
-                    {{form2.as_p}}
-                    <button class="btn btn-primary" type="submit">submit</button>
+                    {% for field in form2.visible_fields %}
+                        <div class="form-group pl-0 pr-2">
+                        {{ field.label_tag }}
+
+                        {% if form2.is_bound %}
+                            {% if field.errors %}
+                            {% render_field field class="form-control" %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback">
+                                {{ error }}
+                                </div>
+                            {% endfor %}
+                            {% else %}
+                            {% render_field field class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field field class="form-control" %}
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+                    {% for field in form.visible_fields %}
+                        <div class="form-group pl-0 pr-2">
+                        {{ field.label_tag }}
+
+                        {% if form.is_bound %}
+                            {% if field.errors %}
+                            {% render_field field class="form-control" %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback">
+                                {{ error }}
+                                </div>
+                            {% endfor %}
+                            {% else %}
+                            {% render_field field class="form-control is-valid" %}
+                            {% endif %}
+                        {% else %}
+                            {% render_field field class="form-control" %}
+                        {% endif %}
+
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        </div>
+                    {% endfor %}
+                <button class="btn btn-primary mt-2" type="submit">submit</button>
                 </form>        
             </div>
         </div>    

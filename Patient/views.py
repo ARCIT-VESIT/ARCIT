@@ -70,7 +70,8 @@ class AddPatientDataView(TemplateView):
                 formdata.user=user
                 formdata.save()
 
-                return render(request, 'Doctor/index.html')
+                # return render(request, 'Doctor/index.html')
+                return redirect('viewpatienthistory')
         else:
             form = PatientHistoryForm()
             return render(request,self.template_name, {'form': form})

@@ -47,6 +47,7 @@ class DoctorView(TemplateView):
                 form = DoctorUserForm()
                 form2=DoctorForm()
             return render(request,self.template_name, {'form': form,'form2':form2})
+            
 class ViewDocotrProfile(TemplateView):
     template_name='Doctor/profile.html'
 

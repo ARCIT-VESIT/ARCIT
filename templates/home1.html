@@ -1,10 +1,10 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'home.html' %}
 
-<form action="" method="post">
-    {% csrf_token %}
-    {{ form123.as_p }}
-    <input type="submit" value="Proceed" />
-</form>
-
+{% block content %} 
+    <h2 class="mb-3">Sign up</h2>
+    <form class="mt-2" method="post">
+        {% csrf_token %}
+        {{ form123.as_p }}
+        <input class="btn btn-primary" type="submit" value="Proceed" />
+    </form>
 {% endblock %}

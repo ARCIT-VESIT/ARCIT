@@ -1,4 +1,4 @@
-{% extends 'Patient/index1.html' %}
+{% extends 'Hospital/index.html' %}
 
 {% block content %}
 <style>
@@ -39,29 +39,26 @@
     }
 </style>
 <body>
+    <div >
+        
+    </div>
     <div class="row gutters-sm">                
         <div class="col-md-12">
             <div class="card" style="height: calc(100vh - 105px);">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-3">
+                        <div class="col-3 ">
+                            
                             <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
-                            <div><h3>{{profile.user}}</h3></div>
+                            
+                            <div ><h3>{{profile.user}}</h3>
+                            </div>
+
                         </div>
                         <div class="col-9">
                             <div class="row">
-                                <div class="col-sm-3"><h6 class="mb-0">Username</h6></div>
-                                <div class="col-sm-9 text-secondary">{{profile.user}}</div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3"><h6 class="mb-0">First Name</h6></div>
-                                <div class="col-sm-9 text-secondary">{{profile.first_name}}</div>
-                            </div>
-                            <hr>
-                            <div class="row">
-                                <div class="col-sm-3"><h6 class="mb-0">Last Name</h6></div>
-                                <div class="col-sm-9 text-secondary">{{profile.last_name}}</div>
+                                <div class="col-sm-3"><h6 class="mb-0">Name</h6></div>
+                                <div class="col-sm-9 text-secondary">{{profile.name}}</div>
                             </div>
                             <hr>
                             <div class="row">
@@ -78,13 +75,14 @@
                             <div class="col-sm-9 text-secondary">{{profile.phone_number}}</div>
                         </div>
                         <hr>
-                        <div class="row">
+                       
+                        <!-- <div class="row">
                             <div class="col-sm-3">
                                 <h6 class="mb-0">Date of birth</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">{{profile.dob}}</div>
                         </div>
-                        <hr>
+                        <hr> -->
                         <div class="row">
                             <div class="col-sm-3"><h6 class="mb-0">Address</h6></div>
                             <div class="col-sm-9 text-secondary">{{profile.address}}</div>
@@ -92,16 +90,29 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <h6 class="mb-0">Adhaar card number</h6>
+                                <h6 class="mb-0">Registeration Number</h6>
                             </div>
-                            <div class="col-sm-9 text-secondary">{{profile.adharcardno}}</div>
+                        <div class="col-sm-9 text-secondary">{{profile.registeration_number}}</div>
                         </div>
-                        <hr><div class="row">
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Website</h6>
+                            </div>
+                        <div class="col-sm-9 text-secondary">{{profile.website}}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3"><h6 class="mb-0">Specialization</h6></div>
+                            <div class="col-sm-9 text-secondary">{{profile.specialization}}</div>
+                        </div>
+                        <hr>
+                        <!-- <div class="row">
                             <div class="col-sm-3">
                                 <h6 class="mb-0">Blood group</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">{{profile.blood_group}}</div>
-                        </div>
+                        </div> -->
                     </div>
                 </div>                    
             </div>
