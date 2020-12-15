@@ -21,7 +21,7 @@ class PatientHistory(models.Model):
     symtomps = models.CharField(max_length=1000)
     disease	= models.CharField(max_length=200)
     affected_area = models.CharField(max_length=200)
-    #report = models.FileField(upload_to=None, max_length=500, null=True)
+    #report = models.FileField(upload_to='PatientHistory/report/', default = '', null=True)
     timespan = models.CharField(max_length=100)
     precription = models.CharField(max_length=1000)
     course_duration = models.CharField(max_length=100)

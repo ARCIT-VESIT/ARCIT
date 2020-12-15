@@ -1,16 +1,12 @@
+{% extends 'Doctor/index1.html' %}
 
-
- <html>
-    <head>
-        <title>Patient diagnosis</title>
-    </head>
-<body>
+{% block content %}
 <div style="height:calc(100vh - 105px)">
         <div class="card p-2 border-0" style="height:100%">
             
             <hr class="mt-1 mb-2">
             <div class="pt-3">
-                <form method="post" enctype="multipart/form-data>
+                <form method="post" enctype="multipart/form-data">
                     
                     {% csrf_token %}
                     {{form.as_p}}
@@ -24,5 +20,4 @@
         </div>    
     </div>
 
-</body>
-</html> 
+{% endblock %}

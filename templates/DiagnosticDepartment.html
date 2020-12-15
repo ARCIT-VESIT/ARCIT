@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'DiagnosticDepartment/index1.html' %}
 
 {% block content %}
   <h2>Upload Report </h2>
@@ -8,14 +8,14 @@
     
     {{ form.as_p }}
 
-    <button type="submit" >Upload</button> <br> <br>
+    <button type="submit" class= "btn btn-primary" >Upload</button> <br> <br>
    
-    Download pdf
+  
     </a>
   </form>
-  <h1>{{msg}}</h1>
+  <h4>{{msg}}</h4>
   {% comment %} {% if url %} {% endcomment %}
   {% comment %} <button> Uploaded File: <a href="{% url 'url'  %}"> DOWNLOAD PDF </a></button> {% endcomment %}
-  <button><a href="{{ url }}">Download</button>
+  {% comment %} <button><a href="{{ url }}">Download</button> {% endcomment %}
   {% comment %} {% endif %} {% endcomment %}
 {% endblock %}

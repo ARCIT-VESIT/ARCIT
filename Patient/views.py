@@ -11,6 +11,21 @@ from .models import PatientHistory, Patients
 
 User = get_user_model()
 
+def upload(request):
+    form = PatientHistoryForm()
+    context = {}
+    context['form'] = form
+
+    if request.method == 'POST':
+        form = PatientHistoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            data=form.save(commit=True)
+            url = data.report.url
+            print(url)
+        return render(request, 'PatientHistory.html', {'msg': "file uploaded successfully", 'url':url})
+
+    return render(request, 'PatientHistory.html', context) 
+
 class PatientRegisterationView(TemplateView):
     template_name='patreg.html'
 
@@ -59,7 +74,7 @@ class AddPatientDataView(TemplateView):
 
         return render(request,self.template_name,{'form':form})
 
-    def post(self,request): 
+    def post(self,request):
         form=PatientHistoryForm(request.POST)
         if request.method == 'POST':
 
@@ -83,6 +98,7 @@ class ViewPatientHistory(TemplateView):
         model = PatientHistory.objects.filter(user=user)
 
         return render(request,self.template_name,{'models':model})
+
 
 class ViewPatientProfile(TemplateView):
     template_name='Patient/profile.html'

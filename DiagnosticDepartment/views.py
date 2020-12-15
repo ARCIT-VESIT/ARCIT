@@ -6,7 +6,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import login, authenticate
 
 from .forms import DiagnosticDepartmentForm, DiagnosticDepartmentUserForm, DiagnosticDepartmentSignupForm
-#from .models import DiagnosticDe
+from .models import DiagnosticDepartment
 
 User = get_user_model()
 
@@ -19,9 +19,12 @@ def upload(request):
     if request.method == 'POST':
         form = DiagnosticDepartmentForm(request.POST, request.FILES)
         if form.is_valid():
-            data=form.save(commit=True)
-            url = data.report.url
-            print(url)
+            user = User.objects.get(username=request.session['loggedin_username'])
+
+            ddForm=form.save(commit=False)
+            ddForm.user=user
+            ddForm.save()
+            url = ddForm.report.url
             return render(request, 'DiagnosticDepartment.html', {'msg': "file uploaded successfully", 'url':url})
 
     return render(request, 'DiagnosticDepartment.html', context) 
@@ -62,3 +65,13 @@ class DiagnosticLoginView(TemplateView):
                 form =  DiagnosticDepartmentUserForm()
                 form2 = DiagnosticDepartmentSignupForm()
             return render(request,self.template_name, {'form': form,'form2':form2})
+
+class ViewDiagnosticDepartment(TemplateView):
+    template_name='DiagnosticDepartment/profile.html'
+    
+    def get(self,request):
+        user = User.objects.get(username=request.session['loggedin_username'])
+        print(user)
+        diagnosticdepartment = DiagnosticDepartment.objects.get(user=user)
+
+        return render (request,self.template_name,{'profile':diagnosticdepartment})
