@@ -16,6 +16,7 @@ class DiagnosticDepartment(models.Model):
     specialization = models.CharField(max_length=100)
 
 class DiagnosticDepartmentReport(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dd_user', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     supervisor = models.CharField(max_length=100)
     referred_by = models.CharField(max_length=100)

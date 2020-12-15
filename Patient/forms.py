@@ -34,7 +34,7 @@ class PatientHistoryForm(forms.ModelForm):
     symtomps = forms.CharField(max_length=1000)
     disease	= forms.CharField(max_length=200)
     affected_area = forms.CharField(max_length=200)
-    #report = forms.FileField( max_length=500, required=True)
+    #report = forms.FileField()
     timespan = forms.CharField(max_length=100)
     precription = forms.CharField(max_length=1000)
     course_duration = forms.CharField(max_length=100)

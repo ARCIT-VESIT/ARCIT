@@ -1,0 +1,137 @@
+{% extends 'DiagnosticDepartment/index1.html' %}
+
+{% block content %}
+<style>
+    body{
+        color: #1a202c;
+        text-align: left;
+    }
+    .card {
+        box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+    }
+    
+    .card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 0 solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+    }
+    
+    .card-body {
+        flex: 1 1 auto;
+        min-height: 1px;
+        padding: 1rem;
+    }
+    
+    .gutters-sm {
+        margin-right: -8px;
+        margin-left: -8px;
+    }
+    
+    .gutters-sm>.col, .gutters-sm>[class*=col-] {
+        padding-right: 8px;
+        padding-left: 8px;
+    }
+</style>
+<body>
+    <div >
+        
+    </div>
+    <div class="row gutters-sm">                
+        <div class="col-md-12">
+            <div class="card" style="height: calc(100vh - 100px);">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-3 ">
+                            
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="Admin" class="rounded-circle" width="150">
+                            
+                            <div ><h3>{{profile.user}}</h3>
+                            </div>
+
+                        </div>
+                        <div class="col-9">
+                            
+                            <div class="row">
+                                <div class="col-sm-3"><h6 class="mb-0">Name</h6></div>
+                                <div class="col-sm-9 text-secondary">{{profile.name}}</div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3"><h6 class="mb-0">DD_type</h6></div>
+                                <div class="col-sm-9 text-secondary">{{profile.DD_type}}</div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <h6 class="mb-0">DD_license</h6>
+                                </div>
+                            <div class="col-sm-9 text-secondary">{{profile.DD_license}}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Phone</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">{{profile.phone_number}}</div>
+                        </div>
+                        <hr>
+                       
+                        < <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Email</h6>
+                            </div>
+                            <div class="col-sm-9 text-secondary">{{profile.email}}</div>
+                        </div>
+                        <hr> -->
+                        <div class="row">
+                            <div class="col-sm-3"><h6 class="mb-0">Address</h6></div>
+                            <div class="col-sm-9 text-secondary">{{profile.address}}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Registeration Number</h6>
+                            </div>
+                        <div class="col-sm-9 text-secondary">{{profile.registeration_number}}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Website</h6>
+                            </div>
+                        <div class="col-sm-9 text-secondary">{{profile.website}}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <h6 class="mb-0">Affiliation</h6>
+                            </div>
+                        <div class="col-sm-9 text-secondary">{{profile.affiliation}}</div>
+                        </div>
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-sm-3"><h6 class="mb-0">Specialization</h6></div>
+                            <div class="col-sm-9 text-secondary">{{profile.specialization}}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-sm-3"><h6 class="mb-0">Specialization</h6></div>
+                            <div class="col-sm-9 text-secondary">{{profile.specialization}}</div>
+                        </div>
+                        <hr>
+                        
+                    </div>
+                </div>                    
+            </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}
