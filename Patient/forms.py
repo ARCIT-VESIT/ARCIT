@@ -39,9 +39,8 @@ class PatientHistoryForm(forms.ModelForm):
     precription = forms.CharField(max_length=1000)
     course_duration = forms.CharField(max_length=100)
     follow_up = forms.CharField(max_length=100,required=True)
-    referred_from = forms.CharField(max_length=100,required=True)
     referred_to= forms.CharField(max_length=100,required=True)
 
     class Meta:
         model =  PatientHistory
-        fields = ('medical_status', 'symtomps', 'disease', 'affected_area','timespan','precription','course_duration','follow_up','referred_from','referred_to', )
+        fields = ('medical_status', 'symtomps', 'disease', 'affected_area','timespan','precription','course_duration','follow_up','referred_to', )

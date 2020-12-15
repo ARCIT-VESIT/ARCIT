@@ -32,7 +32,6 @@ def log_in(request):
             request.session['loggedin_username'] = username
 
             user = authenticate(username=username, password=password)
-            
             if user.is_doctor:
                # return render(request, 'Doctor/profile.html')
                 return redirect('doctorprofile')

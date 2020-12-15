@@ -79,10 +79,12 @@ class AddPatientDataView(TemplateView):
         if request.method == 'POST':
 
             user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+            doctor_user = User.objects.get(username=request.session['loggedin_username'])
 
             if form.is_valid():
                 formdata = form.save(commit=False)
                 formdata.user=user
+                formdata.referred_from = doctor_user
                 formdata.save()
 
                 # return render(request, 'Doctor/index.html')
