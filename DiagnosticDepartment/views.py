@@ -5,30 +5,41 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, authenticate
 
+from Patient.models import Patients
 from .forms import DiagnosticDepartmentForm, DiagnosticDepartmentUserForm, DiagnosticDepartmentSignupForm
 from .models import DiagnosticDepartment
 
+
 User = get_user_model()
 
-def upload(request):
-    
-    form = DiagnosticDepartmentForm()
-    context = {}
-    context['form'] = form
+class DiagnosticDepartmentUploadReport(TemplateView):
+    def get(self, request):
+        form = DiagnosticDepartmentForm()
+        context = {}
+        context['form'] = form
+        return render(request, 'DiagnosticDepartment.html', context)
 
-    if request.method == 'POST':
-        form = DiagnosticDepartmentForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = User.objects.get(username=request.session['loggedin_username'])
+    def post(self, request):
+        
+        form = DiagnosticDepartmentForm()
+        context = {}
+        context['form'] = form
 
-            ddForm=form.save(commit=False)
-            ddForm.user=user
-            ddForm.save()
-            url = ddForm.report.url
-            return render(request, 'DiagnosticDepartment.html', {'msg': "file uploaded successfully", 'url':url})
+        if request.method == 'POST':
+            form = DiagnosticDepartmentForm(request.POST, request.FILES)
+            if form.is_valid():
+                user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+                dd_user = User.objects.get(username=request.session['loggedin_username'])
 
-    return render(request, 'DiagnosticDepartment.html', context) 
-    #add content after
+                ddForm=form.save(commit=False)
+                ddForm.user=user
+                ddForm.handled_by=dd_user
+                ddForm.save()
+                url = ddForm.report.url
+                
+                return render(request, 'DiagnosticDepartment.html', {'msg': "file uploaded successfully", 'url':url})
+
+        return render(request, 'DiagnosticDepartment.html', context)
 
 class DiagnosticLoginView(TemplateView):
     template_name='HospitalRegisteration.html'
@@ -60,7 +71,7 @@ class DiagnosticLoginView(TemplateView):
 
                 user = authenticate(username=form2.data['username'], password=form2.data['password1'])
                 login(request, user)
-                return redirect('home')
+                return redirect('login')
             else:
                 form =  DiagnosticDepartmentUserForm()
                 form2 = DiagnosticDepartmentSignupForm()

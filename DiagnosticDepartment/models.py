@@ -17,12 +17,8 @@ class DiagnosticDepartment(models.Model):
 
 class DiagnosticDepartmentReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dd_user', on_delete=models.CASCADE)
+    handled_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='handled_by', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     supervisor = models.CharField(max_length=100)
     referred_by = models.CharField(max_length=100)
-    handled_by = models.CharField(max_length=100)
-    patient_name = models.CharField(max_length=100)
     report = models.FileField(upload_to='DiagnosticDepartment/report/')
-    
-    def __str__(self):
-         return self.patient_name

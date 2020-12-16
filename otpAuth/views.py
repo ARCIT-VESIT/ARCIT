@@ -3,6 +3,7 @@ from twilio.rest import Client
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
+from django.contrib.auth import get_user_model
 
 from otpAuth.forms import OtpAuthForm
 from Patient.models import Patients
@@ -11,11 +12,24 @@ account_sid = "ACf704c92aadad13c090e0de80beceb735"
 auth_token = "8b08254be48aa7721058af8a9a486f9e"
 my_twilio = "+12705132260"
 
+User = get_user_model()
+
 class OtpAuthView(TemplateView):
-    template_name = "otpAuthIndex.html"
+    doctor_template_name = "otpAuthIndex.html"
+    dd_template_name = "DiagnosticDepartment/otpAuthIndex.html"
+    success_doctor_template_name = "enterOtp.html"
+    success_dd_template_name = "DiagnosticDepartment/enterOtp.html"
     
     def get(self, request):
-        return render(request, self.template_name)
+        user = User.objects.get(username=request.session['loggedin_username'])
+        if user.is_doctor:
+            print('ran doct')
+            return render(request, self.doctor_template_name)
+        elif user.is_diagnosticDepartment:
+            print('ran dd')
+            return render(request, self.dd_template_name)
+        else:
+            return render(request, self.doctor_template_name)
 
     def post(self, request):
         # if request.POST['Phone_number'] is None == False:
@@ -26,17 +40,29 @@ class OtpAuthView(TemplateView):
         msg = "Authentication otp is: " + str(otp)
         client.messages.create(to=phoneNumber, from_=my_twilio, body=msg)
 
-        # user = Patients.objects.get(phone_number=request.POST['Phone_number'])
+        user = User.objects.get(username=request.session['loggedin_username'])
 
-        # userName = user.user
-
-        return render(request, "enterOtp.html", { 'phno': request.POST['Phone_number'], 'storedOtp' : otp })
+        if user.is_doctor:
+            print('ran doct')
+            return render(request, self.success_doctor_template_name, { 'phno': request.POST['Phone_number'], 'storedOtp' : otp })
+        elif user.is_diagnosticDepartment:
+            print('ran dd')
+            return render(request, self.success_dd_template_name, { 'phno': request.POST['Phone_number'], 'storedOtp' : otp})
 
 class VerifyOtpView(TemplateView):
-    template_name = "enterOtp.html"    
+    doctor_template_name = "enterOtp.html"
+    dd_template_name = "DiagnosticDepartment/enterOtp.html"
 
     def get(self, request):
-        return render(request, self.template_name, { 'dirty_status': False })
+        user = User.objects.get(username=request.session['loggedin_username'])
+        if user.is_doctor:
+            print('ran doct')
+            return render(request, self.doctor_template_name, { 'dirty_status': False })
+        elif user.is_diagnosticDepartment:
+            print('ran dd')
+            return render(request, self.dd_template_name, { 'dirty_status': False })
+        else:
+            return render(request, self.doctor_template_name, { 'dirty_status': False })
 
     def post(self, request):
         otp = request.POST['OTP']
@@ -54,8 +80,14 @@ class VerifyOtpView(TemplateView):
             'dirty_status': True
         }
 
+        user = User.objects.get(username=request.session['loggedin_username'])
+
         if status == True:
             request.session['phoneNumber'] = phoneNumber
-            return redirect("PatientHistory")
+            if user.is_doctor:
+                return redirect("PatientHistory")
+            elif user.is_diagnosticDepartment:
+                return redirect("DiagnosticDepartmentUpload")
+               
         else:
-            return render(request, self.template_name, args)
+            return render(request, self.doctor_template_name, args)

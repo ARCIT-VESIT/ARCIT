@@ -8,6 +8,7 @@ from otpAuth.views import OtpAuthView, VerifyOtpView
 
 from .forms import PatientHistoryForm, PatUserForm, RegForm
 from .models import PatientHistory, Patients
+from DiagnosticDepartment.models import DiagnosticDepartmentReport
 
 User = get_user_model()
 
@@ -60,7 +61,7 @@ class PatientRegisterationView(TemplateView):
                 if User.is_doctor:
                     return redirect('otpIndex')
                 else:
-                    return redirect('home')
+                    return redirect('login')
             else:
                 form = PatUserForm()
                 form2=RegForm()
@@ -101,6 +102,15 @@ class ViewPatientHistory(TemplateView):
         model = PatientHistory.objects.filter(user=user)
 
         return render(request,self.template_name,{'models':model})
+  
+class ViewPatientReports(TemplateView):
+    template_name='Patient/reports.html'
+
+    def get(self,request):
+        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+        model = DiagnosticDepartmentReport.objects.filter(user=user)
+
+        return render(request,self.template_name,{'models':model})
 
 
 class ViewPatientProfile(TemplateView):
@@ -122,5 +132,14 @@ class ViewPatientHistory_p(TemplateView):
     def get(self,request):
         user = User.objects.get(username=request.session['loggedin_username'])
         model = PatientHistory.objects.filter(user=user)
+
+        return render(request,self.template_name,{'models':model})
+
+class ViewPatientReports_p(TemplateView):
+    template_name='Patient/viewReports_p.html'
+
+    def get(self,request):
+        user = User.objects.get(username=request.session['loggedin_username'])
+        model = DiagnosticDepartmentReport.objects.filter(user=user)
 
         return render(request,self.template_name,{'models':model})

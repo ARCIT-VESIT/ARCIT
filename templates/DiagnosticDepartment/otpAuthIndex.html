@@ -1,0 +1,11 @@
+{% extends 'DiagnosticDepartment/index1.html' %}
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {% comment %} <input type="hidden" name="OTP" value="{{otp}}" /> {% endcomment %}
+    <h3 class="mb-3">Verify patient's details</h3>
+    Enter phone number: <input type="number" name="Phone_number" value="{{phno}}" required />
+    <button type="submit" class="btn btn-primary">Generate OTP</button>
+</form>
+{% block div %} {% endblock %}
+{% endblock %} 

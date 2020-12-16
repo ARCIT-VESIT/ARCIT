@@ -24,13 +24,25 @@ class DoctorTable(tables.Table):
         exclude = ['id', 'user','doctor_registeration_no','email','phone_number','experience','affiliation','address','adharcardno']
         # attrs = {"thead": "thead-dark"}
 
-class FilteredDoctorListView(SingleTableMixin, FilterView):
-    table_class = DoctorTable
-    model = Doctor
+# class FilteredDoctorListView(SingleTableMixin, FilterView):
+#     table_class = DoctorTable
+#     model = Doctor
+#     template_name = "Hospital/index2.html"
+
+#     filterset_class = DoctorFilter
+
+class FilteredDoctorListView(TemplateView):
     template_name = "Hospital/index2.html"
 
-    filterset_class = DoctorFilter
+    def get(self, request):
+        user = User.objects.get(username=request.session['loggedin_username'])
+        doctor_list = Doctor.objects.filter(affiliation = user)
+        doctor_filter = DoctorFilter(request.GET, queryset=doctor_list)
+        return render(request,self.template_name,{'filter':doctor_filter})
 
+    def post(self, request):
+        print('post ran')
+        return render(request,self.template_name)
 
 class HospitalView(TemplateView):
     template_name='HospitalRegisteration.html'
@@ -62,7 +74,7 @@ class HospitalView(TemplateView):
 
                 user = authenticate(username=form2.data['username'], password=form2.data['password1'])
                 login(request, user)
-                return redirect('home')
+                return redirect('login')
             else:
                 form = HospitalUserForm()
                 form2 = HospitalForm()
@@ -72,7 +84,7 @@ class HospitalView(TemplateView):
 class HospitalProfileView(TemplateView):
     template_name='Hosptial/profile.html'
 
-    def get(self,request):        
+    def get(self,request):
         user = User.objects.get(username=request.session['loggedin_username'])
         hospital = Hospital.objects.get(user=user)
         print(user)

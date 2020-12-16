@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from django.views.generic.base import TemplateView
 
 
-from .views import PatientRegisterationView, AddPatientDataView, ViewPatientHistory, ViewPatientProfile,ViewPatientHistory_p
+from .views import PatientRegisterationView, AddPatientDataView, ViewPatientHistory, ViewPatientProfile,ViewPatientHistory_p, ViewPatientReports, ViewPatientReports_p
 
 
 urlpatterns = [
@@ -16,5 +16,7 @@ urlpatterns = [
    url(r'^p/history/$', ViewPatientHistory.as_view(template_name='Patient/viewHistory.html'), name='viewpatienthistory'),
    url(r'^p/profile/$', ViewPatientProfile.as_view(template_name='Patient/profile.html'), name='patientprofile'),
    url(r'^p/viewHistory_p/$', ViewPatientHistory_p.as_view(template_name='Patient/viewHistory_p.html'), name='viewHistory_p'),
+   url(r'^p/viewReports_p/$', ViewPatientReports_p.as_view(template_name='Patient/viewReport_p.html'), name='viewReport_p'),
+   url(r'^p/reports/$', ViewPatientReports.as_view(template_name='Patient/reports.html'), name='PatientReports'),
    path('PatientHistory/',  ViewPatientHistory_p.as_view(template_name='Patient/viewHistory_p.html'), name='PatientHistoryUpload'),
 ]
