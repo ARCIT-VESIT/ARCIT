@@ -17,7 +17,7 @@ class DiagnosticDepartmentUploadReport(TemplateView):
         form = DiagnosticDepartmentForm()
         context = {}
         context['form'] = form
-        return render(request, 'DiagnosticDepartment.html', context)
+        return render(request, 'DiagnosticDepartment/UploadReport.html', context)
 
     def post(self, request):
         
@@ -37,12 +37,12 @@ class DiagnosticDepartmentUploadReport(TemplateView):
                 ddForm.save()
                 url = ddForm.report.url
                 
-                return render(request, 'DiagnosticDepartment.html', {'msg': "file uploaded successfully", 'url':url})
+                return render(request, 'DiagnosticDepartment/UploadReport.html', {'msg': "file uploaded successfully", 'url':url})
 
-        return render(request, 'DiagnosticDepartment.html', context)
+        return render(request, 'DiagnosticDepartment/UploadReport.html', context)
 
 class DiagnosticLoginView(TemplateView):
-    template_name='HospitalRegisteration.html'
+    template_name='Hospital/registeration.html'
     
     def get(self,request):
         

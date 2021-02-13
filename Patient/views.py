@@ -23,12 +23,12 @@ def upload(request):
             data=form.save(commit=True)
             url = data.report.url
             print(url)
-        return render(request, 'PatientHistory.html', {'msg': "file uploaded successfully", 'url':url})
+        return render(request, 'Doctor/addPatientHistory.html', {'msg': "file uploaded successfully", 'url':url})
 
-    return render(request, 'PatientHistory.html', context) 
+    return render(request, 'Doctor/addPatientHistory.html', context) 
 
 class PatientRegisterationView(TemplateView):
-    template_name='patreg.html'
+    template_name='Patient/registeration.html'
 
     def get(self,request):
         form = RegForm()
@@ -67,52 +67,6 @@ class PatientRegisterationView(TemplateView):
                 form2=RegForm()
             return render(request,self.template_name, {'form': form,'form2':form2})
 
-class AddPatientDataView(TemplateView):
-    template_name='PatientHistory.html'
-
-    def get(self,request):
-        form = PatientHistoryForm()
-
-        return render(request,self.template_name,{'form':form})
-
-    def post(self,request):
-        form=PatientHistoryForm(request.POST)
-        if request.method == 'POST':
-
-            user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-            doctor_user = User.objects.get(username=request.session['loggedin_username'])
-
-            if form.is_valid():
-                formdata = form.save(commit=False)
-                formdata.user=user
-                formdata.referred_from = doctor_user
-                formdata.save()
-
-                # return render(request, 'Doctor/index.html')
-                return redirect('viewpatienthistory')
-        else:
-            form = PatientHistoryForm()
-            return render(request,self.template_name, {'form': form})
-
-class ViewPatientHistory(TemplateView):
-    template_name='Patient/viewHistory.html'
-
-    def get(self,request):
-        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-        model = PatientHistory.objects.filter(user=user)
-
-        return render(request,self.template_name,{'models':model})
-  
-class ViewPatientReports(TemplateView):
-    template_name='Patient/reports.html'
-
-    def get(self,request):
-        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-        model = DiagnosticDepartmentReport.objects.filter(user=user)
-
-        return render(request,self.template_name,{'models':model})
-
-
 class ViewPatientProfile(TemplateView):
     template_name='Patient/profile.html'
 
@@ -126,8 +80,8 @@ class ViewPatientProfile(TemplateView):
         return render(request,self.template_name,{'profile':patient})
 
 
-class ViewPatientHistory_p(TemplateView):
-    template_name='Patient/viewHistory_p.html'
+class ViewPatientHistory(TemplateView):
+    template_name='Patient/viewHistory.html'
 
     def get(self,request):
         user = User.objects.get(username=request.session['loggedin_username'])
@@ -135,7 +89,7 @@ class ViewPatientHistory_p(TemplateView):
 
         return render(request,self.template_name,{'models':model})
 
-class ViewPatientReports_p(TemplateView):
+class ViewPatientReports(TemplateView):
     template_name='Patient/viewReports_p.html'
 
     def get(self,request):

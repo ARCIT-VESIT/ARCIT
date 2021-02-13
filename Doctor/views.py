@@ -4,16 +4,18 @@ from django.views.generic import TemplateView
 from Doctor.forms import DoctorForm, DoctorUserForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
+from DiagnosticDepartment.models import DiagnosticDepartmentReport
 
 from .models import Doctor
-from Patient.models import Patients
+from Patient.models import Patients, PatientHistory
+from Patient.forms import PatientHistoryForm
 
 # def index(request):
 #     if request.method == 'POST':
     
 User = get_user_model()
 class DoctorView(TemplateView):
-    template_name='doc_reg.html'
+    template_name='Doctor/registeration.html'
     
     def get(self,request):
         form = DoctorForm()
@@ -59,3 +61,49 @@ class ViewDocotrProfile(TemplateView):
         # age = today.year - datetime.year(patient.dob) - ((today.month, today.day) < (datetime.month(patient.dob), datetime.day(patient.dob)))
         # age = patient.dob
         return render(request,self.template_name,{'profile':doctor})
+
+class ViewPatientReports(TemplateView):
+    template_name='Doctor/viewPatientReport.html'
+
+    def get(self,request):
+        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+        model = DiagnosticDepartmentReport.objects.filter(user=user)
+
+        return render(request,self.template_name,{'models':model})
+
+
+class AddPatientDataView(TemplateView):
+    template_name='Doctor/addPatientHistory.html'
+
+    def get(self,request):
+        form = PatientHistoryForm()
+
+        return render(request,self.template_name,{'form':form})
+
+    def post(self,request):
+        form=PatientHistoryForm(request.POST)
+        if request.method == 'POST':
+
+            user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+            doctor_user = User.objects.get(username=request.session['loggedin_username'])
+
+            if form.is_valid():
+                formdata = form.save(commit=False)
+                formdata.user=user
+                formdata.referred_from = doctor_user
+                formdata.save()
+
+                # return render(request, 'Doctor/index.html')
+                return redirect('viewpatienthistory')
+        else:
+            form = PatientHistoryForm()
+            return render(request,self.template_name, {'form': form})
+
+class ViewPatientHistory(TemplateView):
+    template_name='Doctor/viewPatientHistory.html'
+
+    def get(self,request):
+        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+        model = PatientHistory.objects.filter(user=user)
+
+        return render(request,self.template_name,{'models':model})

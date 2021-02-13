@@ -14,12 +14,12 @@ urlpatterns = [
     path('', include('Patient.urls')),
     path('', include('DiagnosticDepartment.urls')),
     path('', include('Hospital.urls')),
-    url(r'^$', TemplateView.as_view(template_name='Signup/index.html'), name='home'),
+    url(r'^$', TemplateView.as_view(template_name='Authentication/signup.html'), name='home'),
     url(r'^login/$', core_views.log_in, name='login'),
-    url(r'^logout/$', auth_views.LogoutView.as_view(template_name='logged_out.html'), name='logout'),
-    url(r'^signup/$', core_views.signup, name='signup'),
+    url(r'^logout/$', auth_views.LogoutView.as_view(template_name='Authentication/logout.html'), name='logout'),
+    # url(r'^signup/$', core_views.signup, name='signup'),
     # url(r'^home/$', core_views.UserTypeView.as_view(template_name='home1.html'), name='dropdown'),
-    url(r'^home/$', core_views.UserTypeView.as_view(template_name='Signup/index.html'), name='dropdown'),
+    # url(r'^home/$', core_views.UserTypeView.as_view(template_name='Authentication/signup.html'), name='dropdown'),
 ]
 
 if settings.DEBUG:

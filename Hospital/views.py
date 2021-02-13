@@ -27,12 +27,12 @@ class DoctorTable(tables.Table):
 # class FilteredDoctorListView(SingleTableMixin, FilterView):
 #     table_class = DoctorTable
 #     model = Doctor
-#     template_name = "Hospital/index2.html"
+#     template_name = "Hospital/affiliatedDoctors.html"
 
 #     filterset_class = DoctorFilter
 
 class FilteredDoctorListView(TemplateView):
-    template_name = "Hospital/index2.html"
+    template_name = "Hospital/affiliatedDoctors.html"
 
     def get(self, request):
         user = User.objects.get(username=request.session['loggedin_username'])
@@ -45,13 +45,13 @@ class FilteredDoctorListView(TemplateView):
         return render(request,self.template_name)
 
 class HospitalView(TemplateView):
-    template_name='HospitalRegisteration.html'
-    
+    template_name='Hospital/registeration.html'
+
     def get(self,request):
         form = HospitalForm()
         form2 = HospitalUserForm()
         return render(request,self.template_name,{'form':form, 'form2': form2})
-     
+
     def post(self,request):
         if request.method == 'POST':
             form =  HospitalUserForm(request.POST)

@@ -1,8 +1,9 @@
-{% extends 'Signup/index.html' %}
+{%extends 'Authentication/signup.html' %}
 {% load widget_tweaks %}
+{% block title %} login {% endblock %}
 
-{% block content %} 
-<h2 class="mb-2">Doctor registeration</h2>
+{%block content %}
+<h2>Hospital registeration</h2>
 <div style="height:calc(100vh - 205px); overflow: auto;">
     <div class="mr-3">
         <form method="post">
@@ -79,8 +80,8 @@
                 {% endif %}
                 </div>
             {% endfor %}
-        <button class="btn btn-primary mt-2" type="submit"> submit </button>
+        <button type="submit" class="btn btn-primary mt-2"> submit </button>
         </form>
     </div>
 </div>
-{% endblock %}
+{%endblock%}
