@@ -1,14 +1,13 @@
 # from datetime import date, datetime
 
-from django.contrib.auth import authenticate, get_user_model, login
+from django.contrib.auth import get_user_model
 # from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
-from otpAuth.views import OtpAuthView, VerifyOtpView
 
+from DiagnosticDepartment.models import DiagnosticDepartmentReport
 from .forms import PatientHistoryForm, PatUserForm, RegForm
 from .models import PatientHistory, Patients
-from DiagnosticDepartment.models import DiagnosticDepartmentReport
 
 User = get_user_model()
 
@@ -25,7 +24,7 @@ def upload(request):
             print(url)
         return render(request, 'Doctor/addPatientHistory.html', {'msg': "file uploaded successfully", 'url':url})
 
-    return render(request, 'Doctor/addPatientHistory.html', context) 
+    return render(request, 'Doctor/addPatientHistory.html', context)
 
 class PatientRegisterationView(TemplateView):
     template_name='Patient/registeration.html'
@@ -70,7 +69,7 @@ class PatientRegisterationView(TemplateView):
 class ViewPatientProfile(TemplateView):
     template_name='Patient/profile.html'
 
-    def get(self,request):        
+    def get(self,request):
         user = User.objects.get(username=request.session['loggedin_username'])
         print(user)
         patient = Patients.objects.get(user=user)
