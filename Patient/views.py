@@ -1,18 +1,18 @@
 # from datetime import date, datetime
-
-from django.contrib.auth import authenticate, get_user_model, login
+"""View for patient"""
+from django.contrib.auth import get_user_model
 # from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
-from otpAuth.views import OtpAuthView, VerifyOtpView
 
+from DiagnosticDepartment.models import DiagnosticDepartmentReport
 from .forms import PatientHistoryForm, PatUserForm, RegForm
 from .models import PatientHistory, Patients
-from DiagnosticDepartment.models import DiagnosticDepartmentReport
 
 User = get_user_model()
 
 def upload(request):
+    '''Method to upload patient history data'''
     form = PatientHistoryForm()
     context = {}
     context['form'] = form
@@ -23,20 +23,24 @@ def upload(request):
             data=form.save(commit=True)
             url = data.report.url
             print(url)
-        return render(request, 'PatientHistory.html', {'msg': "file uploaded successfully", 'url':url})
+        return render(request,
+                        'Doctor/addPatientHistory.html',
+                        {'msg': "file uploaded successfully", 'url':url})
 
-    return render(request, 'PatientHistory.html', context) 
+    return render(request, 'Doctor/addPatientHistory.html', context)
 
 class PatientRegisterationView(TemplateView):
-    template_name='patreg.html'
+    '''view for doctor to add a new patient'''
+    template_name='Patient/registeration.html'
 
-    def get(self,request):
+    def get(self, request, *args, **kwargs):
         form = RegForm()
         form2 = PatUserForm()
 
         return render(request,self.template_name,{'form':form, 'form2': form2  } )
 
     def post(self,request):
+        '''method to handle patient registeration form data'''
         if request.method == 'POST':
             form = PatUserForm(request.POST)
             form2 = RegForm(request.POST)
@@ -56,7 +60,7 @@ class PatientRegisterationView(TemplateView):
                 patform.user=user
                 patform.save()
 
-                # user = authenticate(username=form2.data['username'], password=form2.data['password1'])
+                #user=authenticate(username=form2.data['username'],password=form2.data['password1'])
                 # login(request, user)
                 if User.is_doctor:
                     return redirect('otpIndex')
@@ -66,79 +70,38 @@ class PatientRegisterationView(TemplateView):
                 form = PatUserForm()
                 form2=RegForm()
             return render(request,self.template_name, {'form': form,'form2':form2})
-
-class AddPatientDataView(TemplateView):
-    template_name='PatientHistory.html'
-
-    def get(self,request):
-        form = PatientHistoryForm()
-
-        return render(request,self.template_name,{'form':form})
-
-    def post(self,request):
-        form=PatientHistoryForm(request.POST)
-        if request.method == 'POST':
-
-            user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-            doctor_user = User.objects.get(username=request.session['loggedin_username'])
-
-            if form.is_valid():
-                formdata = form.save(commit=False)
-                formdata.user=user
-                formdata.referred_from = doctor_user
-                formdata.save()
-
-                # return render(request, 'Doctor/index.html')
-                return redirect('viewpatienthistory')
-        else:
-            form = PatientHistoryForm()
-            return render(request,self.template_name, {'form': form})
-
-class ViewPatientHistory(TemplateView):
-    template_name='Patient/viewHistory.html'
-
-    def get(self,request):
-        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-        model = PatientHistory.objects.filter(user=user)
-
-        return render(request,self.template_name,{'models':model})
-  
-class ViewPatientReports(TemplateView):
-    template_name='Patient/reports.html'
-
-    def get(self,request):
-        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-        model = DiagnosticDepartmentReport.objects.filter(user=user)
-
-        return render(request,self.template_name,{'models':model})
-
+        return None
 
 class ViewPatientProfile(TemplateView):
+    '''view for patient to view their profile'''
     template_name='Patient/profile.html'
 
-    def get(self,request):        
+    def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
         print(user)
         patient = Patients.objects.get(user=user)
         # today = date.today()
-        # age = today.year - datetime.year(patient.dob) - ((today.month, today.day) < (datetime.month(patient.dob), datetime.day(patient.dob)))
+        # age = today.year - datetime.year(patient.dob) - ((today.month, today.day)
+        #       < (datetime.month(patient.dob), datetime.day(patient.dob)))
         # age = patient.dob
         return render(request,self.template_name,{'profile':patient})
 
 
-class ViewPatientHistory_p(TemplateView):
-    template_name='Patient/viewHistory_p.html'
+class ViewPatientHistory(TemplateView):
+    '''For patient to view their history'''
+    template_name='Patient/viewHistory.html'
 
-    def get(self,request):
+    def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
         model = PatientHistory.objects.filter(user=user)
 
         return render(request,self.template_name,{'models':model})
 
-class ViewPatientReports_p(TemplateView):
+class ViewPatientReports(TemplateView):
+    '''For patient to view their reports'''
     template_name='Patient/viewReports_p.html'
 
-    def get(self,request):
+    def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
         model = DiagnosticDepartmentReport.objects.filter(user=user)
 
