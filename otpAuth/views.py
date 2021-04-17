@@ -9,7 +9,7 @@ from otpAuth.forms import OtpAuthForm
 from Patient.models import Patients
 
 account_sid = "ACf704c92aadad13c090e0de80beceb735"
-auth_token = "8b08254be48aa7721058af8a9a486f9e"
+auth_token = "c24b93c253ae43f4f6817158b21d070c"
 my_twilio = "+12705132260"
 
 User = get_user_model()
