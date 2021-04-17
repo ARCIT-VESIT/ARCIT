@@ -3,10 +3,6 @@
     {
       "name": "feature/test2",
       "base": "develop"
-    },
-    {
-      "name": "feature/codeCleanup",
-      "base": "develop"
     }
   ]
 }
