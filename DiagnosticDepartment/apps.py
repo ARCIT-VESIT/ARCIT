@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class UserHistoryConfig(AppConfig):
-    name = 'user_history'
+class DiagnosticDepartmentConfig(AppConfig):
+    name = 'DiagnosticDepartment'

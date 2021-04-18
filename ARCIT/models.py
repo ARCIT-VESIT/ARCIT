@@ -3,13 +3,15 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 class User(AbstractUser):
+    id = models.BigAutoField(primary_key=True)
     is_patient = models.BooleanField(default=False)
     is_doctor = models.BooleanField(default=False)
     is_hospital = models.BooleanField(default=False)
     is_diagnosticDepartment = models.BooleanField(default=False)
 
 class UserTypeModel(models.Model):
-  usertype = models.CharField(max_length=6, 
+    id = models.BigAutoField(primary_key=True)
+    usertype = models.CharField(max_length=6,
             choices=(
                         (2, 'Doctor'),
                         (3, 'Hospital'),

@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.utils import timezone
 
 class DiagnosticDepartment(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     DD_type = models.CharField(max_length=100)
@@ -19,6 +20,7 @@ class DiagnosticDepartment(models.Model):
     created_on = models.DateTimeField(default=timezone.now, blank=False)
 
 class DiagnosticDepartmentReport(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dd_user', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     supervisor = models.CharField(max_length=100)

@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils import timezone
 
 class Patient(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100, null=True)
@@ -14,10 +15,11 @@ class Patient(models.Model):
     address = models.CharField(max_length=254)
     adharcardno = models.BigIntegerField(unique=True)
     blood_group = models.CharField(max_length=5, null=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='created_by', on_delete=None)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='created_by', on_delete=models.CASCADE)
     created_on = models.DateTimeField(default=timezone.now, blank=False)
 
 class PatientHistory(models.Model):	
+    id = models.BigAutoField(primary_key=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user', on_delete=models.CASCADE)
     medical_status = models.CharField(max_length=50)
     symtomps = models.CharField(max_length=1000)

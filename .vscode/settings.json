@@ -6,6 +6,15 @@
     }
   ],
   "files.exclude": {
-    "**/__pycache__": true
+    "**/__pycache__": true,
+    "**/migrations": true,
+    "**/tests.py": true,
+    "**/apps.py": true,
+    "**/__init__.py": true,
+    "**/__MACOSX": true,
+    "**/fonts": true,
+    "**/scss": true,
+    "**/css": true,
+    "**/js": true,
   }
 }
