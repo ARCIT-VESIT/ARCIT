@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
 from .forms import PatientHistoryForm, PatUserForm, RegForm
-from .models import PatientHistory, Patients
+from .models import PatientHistory, Patient
 
 User = get_user_model()
 
@@ -57,6 +57,7 @@ class PatientRegisterationView(TemplateView):
                 )
 
                 patform=form2.save(commit=False)
+                patform.created_by = User.objects.get(username=request.session['loggedin_username'])
                 patform.user=user
                 patform.save()
 
@@ -79,7 +80,7 @@ class ViewPatientProfile(TemplateView):
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
         print(user)
-        patient = Patients.objects.get(user=user)
+        patient = Patient.objects.get(user=user)
         # today = date.today()
         # age = today.year - datetime.year(patient.dob) - ((today.month, today.day)
         #       < (datetime.month(patient.dob), datetime.day(patient.dob)))
@@ -93,7 +94,7 @@ class ViewPatientHistory(TemplateView):
 
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
-        model = PatientHistory.objects.filter(user=user)
+        model = PatientHistory.objects.filter(user=user).order_by("-created_on")
 
         return render(request,self.template_name,{'models':model})
 
@@ -103,6 +104,6 @@ class ViewPatientReports(TemplateView):
 
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
-        model = DiagnosticDepartmentReport.objects.filter(user=user)
+        model = DiagnosticDepartmentReport.objects.filter(user=user).order_by("-created_on")
 
         return render(request,self.template_name,{'models':model})

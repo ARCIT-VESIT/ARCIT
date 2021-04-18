@@ -32,7 +32,10 @@
             <div class="pl-0 pt-0 pb-0 pr-2">
                 <div class="card mt-2">
                     <div class="card-title mb-0 ml-3 mt-3">
-                        <h4>{{model.disease}}</h4>
+                        <h4>{{model.disease|title}}</h4>
+                    </div>
+                    <div class="card-subtitle mb-3 ml-3 small">
+                        {{model.created_on}}
                     </div>
                     <div class="card-body pt-1 pl-3">
                         <div class="row">

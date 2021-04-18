@@ -5,7 +5,7 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth import get_user_model
 from django.contrib.auth import login, authenticate
 
-from Patient.models import Patients
+from Patient.models import Patient
 from .forms import DiagnosticDepartmentForm, DiagnosticDepartmentUserForm, DiagnosticDepartmentSignupForm
 from .models import DiagnosticDepartment
 
@@ -28,7 +28,7 @@ class DiagnosticDepartmentUploadReport(TemplateView):
         if request.method == 'POST':
             form = DiagnosticDepartmentForm(request.POST, request.FILES)
             if form.is_valid():
-                user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+                user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
                 dd_user = User.objects.get(username=request.session['loggedin_username'])
 
                 ddForm=form.save(commit=False)

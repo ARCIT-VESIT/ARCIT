@@ -21,7 +21,7 @@ class DiagnosticDepartmentForm(forms.ModelForm):
         # fields = ['name', 'DD_type', 'DD_license', 'affiliation','supervisor','referred_by','handled_by','patient_name','report'] 
         # fields = ['name', 'supervisor','referred_by','handled_by','patient_name','report'] 
         fields = '__all__'
-        exclude = ('user','handled_by',)
+        exclude = ('user','handled_by','created_on',)
 
 class DiagnosticDepartmentSignupForm(forms.ModelForm):
     name = forms.CharField(max_length=100, help_text= 'It is required')

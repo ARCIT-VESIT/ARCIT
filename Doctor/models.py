@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 # Create your models here.
 
@@ -16,3 +17,4 @@ class Doctor(models.Model):
     address = models.CharField(max_length=100)
     adharcardno = models.IntegerField()
     specialization = models.CharField(max_length=100)
+    created_on = models.DateTimeField(default=timezone.now, blank=False)

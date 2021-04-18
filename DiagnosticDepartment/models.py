@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
+from django.utils import timezone
 
 class DiagnosticDepartment(models.Model):
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -14,11 +16,13 @@ class DiagnosticDepartment(models.Model):
     registeration_number = models.IntegerField()
     phone_number = models.IntegerField()
     specialization = models.CharField(max_length=100)
+    created_on = models.DateTimeField(default=timezone.now, blank=False)
 
 class DiagnosticDepartmentReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='dd_user', on_delete=models.CASCADE)
-    handled_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='handled_by', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     supervisor = models.CharField(max_length=100)
     referred_by = models.CharField(max_length=100)
     report = models.FileField(upload_to='DiagnosticDepartment/report/')
+    handled_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='handled_by', on_delete=models.CASCADE)
+    created_on = models.DateTimeField(default=timezone.now, blank=False)

@@ -4,5 +4,8 @@
       "name": "feature/test2",
       "base": "develop"
     }
-  ]
+  ],
+  "files.exclude": {
+    "**/__pycache__": true
+  }
 }

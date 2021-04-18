@@ -1,5 +1,5 @@
 from django import forms
-from .models import  Patients
+from .models import  Patient
 from ARCIT.models import User
 from .models import PatientHistory
 from django.contrib.auth.forms import UserCreationForm
@@ -18,7 +18,7 @@ class RegForm(forms.ModelForm):
     blood_group=forms.CharField(max_length=30, required=False)
 
     class Meta:
-        model =  Patients
+        model =  Patient
         fields = ('first_name', 'last_name', 'email', 'phone_number','dob','gender','weight','address','adharcardno','blood_group', )
 
 class PatUserForm(UserCreationForm):
