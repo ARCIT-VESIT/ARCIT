@@ -20,6 +20,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='patient',
             name='created_by',
-            field=models.ForeignKey(on_delete=None, related_name='created_by', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(on_delete=models.CASCADE, related_name='created_by', to=settings.AUTH_USER_MODEL),
         ),
     ]

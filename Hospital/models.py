@@ -7,6 +7,7 @@ from django.utils import timezone
 
 class Hospital(models.Model):
     '''Hospital model'''
+    id = models.BigAutoField(primary_key=True)
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=500)

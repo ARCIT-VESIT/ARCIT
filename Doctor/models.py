@@ -5,6 +5,7 @@ from django.utils import timezone
 # Create your models here.
 
 class Doctor(models.Model):
+    id = models.BigAutoField(primary_key=True)
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
