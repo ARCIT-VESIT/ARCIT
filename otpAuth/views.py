@@ -6,11 +6,11 @@ from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
 
 from otpAuth.forms import OtpAuthForm
-from Patient.models import Patients
+from Patient.models import Patient
 
-account_sid = "ACf704c92aadad13c090e0de80beceb735"
-auth_token = "4780b31c2485030454daf4f67504a569"
-my_twilio = "+12705132260"
+ACCOUNT_SID = "ACf704c92aadad13c090e0de80beceb735"
+AUTH_TOKEN = "4780b31c2485030454daf4f67504a569"
+MY_TWILIO = "+12705132260"
 
 User = get_user_model()
 
@@ -36,9 +36,9 @@ class OtpAuthView(TemplateView):
         
         otp = random.randint(100000, 999999)
         phoneNumber = '+91' + request.POST['Phone_number']
-        client = Client(account_sid, auth_token)
-        msg = "Authentication otp is: " + str(otp)
-        client.messages.create(to=phoneNumber, from_=my_twilio, body=msg)
+        client = Client(ACCOUNT_SID, AUTH_TOKEN)
+        msg = f"{str(otp)} is your authentication otp."
+        client.messages.create(to=phoneNumber, from_=MY_TWILIO, body=msg)
 
         user = User.objects.get(username=request.session['loggedin_username'])
 

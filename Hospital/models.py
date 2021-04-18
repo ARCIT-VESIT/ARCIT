@@ -1,6 +1,7 @@
 """Hospital model"""
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 # Create your models here.
 
@@ -14,3 +15,4 @@ class Hospital(models.Model):
     registeration_number = models.IntegerField()
     phone_number = models.BigIntegerField(unique=True)
     specialization = models.CharField(max_length=100,null=True)
+    created_on = models.DateTimeField(default=timezone.now, blank=False)

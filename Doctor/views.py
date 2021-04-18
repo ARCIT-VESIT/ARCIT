@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
 from Doctor.forms import DoctorForm, DoctorUserForm
-from Patient.models import Patients, PatientHistory
+from Patient.models import Patient, PatientHistory
 from Patient.forms import PatientHistoryForm
 from .models import Doctor
 
@@ -70,8 +70,8 @@ class ViewPatientReports(TemplateView):
     template_name='Doctor/viewPatientReport.html'
 
     def get(self,request, *args, **kwargs):
-        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-        model = DiagnosticDepartmentReport.objects.filter(user=user)
+        user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
+        model = DiagnosticDepartmentReport.objects.filter(user=user).order_by("-created_on")
 
         return render(request,self.template_name,{'models':model})
 
@@ -90,7 +90,7 @@ class AddPatientDataView(TemplateView):
         form=PatientHistoryForm(request.POST)
         if request.method == 'POST':
 
-            user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
+            user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
             doctor_user = User.objects.get(username=request.session['loggedin_username'])
 
             if form.is_valid():
@@ -111,7 +111,7 @@ class ViewPatientHistory(TemplateView):
     template_name='Doctor/viewPatientHistory.html'
 
     def get(self,request, *args, **kwargs):
-        user = Patients.objects.get(phone_number=request.session['phoneNumber']).user
-        model = PatientHistory.objects.filter(user=user)
+        user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
+        model = PatientHistory.objects.filter(user=user).order_by("-created_on")
 
         return render(request,self.template_name,{'models':model})
