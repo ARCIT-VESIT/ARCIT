@@ -4,6 +4,8 @@ from django.utils import timezone
 
 class Patient(models.Model):
     id = models.BigAutoField(primary_key=True)
+    nonce = models.BigIntegerField()
+    previous_hash = models.CharField(max_length=254)
     user=models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100, null=True)
