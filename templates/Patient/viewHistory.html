@@ -1,4 +1,4 @@
-{% extends 'Patient/sidebar.html' %}
+{% extends 'sidebar.html' %}
 
 {% block content %}
 {% comment %} <a href="{% url 'PatientHistory' %}">Add new diagnosis</a> {% endcomment %}
@@ -24,65 +24,109 @@
                 {% for model in models %}
                 <div class="col p-0">
                     <div class="card mt-2">
-                        <div class="card-title mb-0 ml-3 mt-3">
-                            <h4>{{model.disease}}</h4>
+                        <div>
+                            <div class="mt-3 pl-3 float-left">
+                                <span class="h4 mb-0">{{model.disease}}</span>
+                                <span class="ml-1 align-text-top badge badge-{% if model.medical_status == 'critical' %}danger{% elif model.medical_status == 'normal' %}primary{% else %}warning{% endif %}">
+                                {{model.medical_status}}</span>
+                            </div>
+                            <div class="mb-3 mt-4 pr-3 small float-right">
+                                <span>{{model.created_on}}</span>
+                            </div>
                         </div>
-                        <div class="card-subtitle mb-3 ml-3 small">
-                            {{model.created_on}}
-                        </div>
-                        <div class="card-body pt-1 pl-3">
+                        <div class="row m-0">
+                            <span style="width:70%">
+                                <div class="card-body pt-1 pl-3">
 
-                            <div class="row">
-                                <span class="col-2">Medical Status:</span>
-                                <span class="col-10 pl-0">{{model.medical_status}}<span>
-                            </div>
-                            <div class="row">
-                                <span class="col-2">Symtomps:</span>
-                                <span class="col-10 pl-0">{{model.symtomps}}<span>
-                            </div>
-                            <div class="row">
-                                <span class="col-2">Disease:</span>
-                                <span class="col-10 pl-0">{{model.disease}}<span>
-                            </div>
-                            <div class="row">
-                                <span class="col-2">Affected Area:</span>
-                                <span class="col-10 pl-0">{{model.affected_area}}<span>
-                            </div>
-                            
-                            <div class="row">
-                                <span class="col-2">Report:</span>
-                                <span class="col-10 pl-0">{{model.report}}<span>
-                            </div>
+                                    {% comment %} <div class="row">
+                                        <span class="col-2">Medical Status:</span>
+                                        <span class="col-10 pl-0" 
+                                        style="color:{% if model.medical_status == 'critical' %} red
+                                                    {% elif model.medical_status == 'normal' %}  blue
+                                                    {% else %} yellow {% endif %}">{{model.medical_status}}<span>
+                                    </div> {% endcomment %}
+                                    <div class="row">
+                                        <span class="col-2">Affected Area:</span>
+                                        <span class="col-10 pl-0">{{model.affected_area}}<span>
+                                    </div>
+                                    
+                                    {% comment %} <div class="row">
+                                        <span class="col-2">Report:</span>
+                                        <span class="col-10 pl-0">{{model.report}}<span>
+                                    </div> {% endcomment %}
 
-                            <div class="row">
-                                <span class="col-2">Timespan:</span>
-                                <span class="col-10 pl-0">{{model.timespan}}<span>
-                            </div>
+                                    <div class="row">
+                                        <span class="col-2">Timespan:</span>
+                                        <span class="col-10 pl-0">{{model.timespan}}<span>
+                                    </div>
 
-                            <div class="row">
-                                <span class="col-2">Precription:</span>
-                                <span class="col-10 pl-0">{{model.prescription}} day(s)<span>
-                            </div>
+                                    <div class="row">
+                                        <span class="col-2">Precription:</span>
+                                        <span class="col-10 pl-0">{{model.prescription}}<span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="w-50">
+                                            <span class="col-2">Course Duration:</span>
+                                            <span class="col-10 pl-0">{{model.course_duration}} day(s)<span>
+                                        </div>
+                                        
+                                        <div class="w-50">
+                                            <span class="col-2">Follow Up:</span>
+                                            <span class="col-10 pl-0">{{model.follow_up}} day(s)<span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="w-50">
+                                            <span class="col-2">Referred by:</span>
+                                            <span class="col-10 pl-0">{{model.referred_from}}<span>
+                                        </div>
 
-                            <div class="row">
-                                <span class="col-2">Course Duration:</span>
-                                <span class="col-10 pl-0">{{model.course_duration}} day(s)<span>
-                            </div>
-                            
-                            <div class="row">
-                                <span class="col-2">Follow Up:</span>
-                                <span class="col-10 pl-0">{{model.follow_up}} day(s)<span>
-                            </div>
-
-                            <div class="row">
-                                <span class="col-2">Referred by:</span>
-                                <span class="col-10 pl-0">{{model.referred_from}}<span>
-                            </div>
-
-                            <div class="row">
-                                <span class="col-2">Referred to:</span>
-                                <span class="col-10 pl-0">{{model.referred_to}}<span>
-                            </div>
+                                        <div class="w-50">
+                                            <span class="col-2">Referred to:</span>
+                                            <span class="col-10 pl-0">{{model.referred_to}}<span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-2">Symtomps:</span>
+                                        <span class="col-10 pl-0 text-ellipsis" title="{{model.symtomps}}"> {{model.symtomps}} </span>
+                                    </div>
+                                    
+                                </div>
+                            </span>
+                            <span class="card mb-2 mt-2" style="width:29.5%">
+                                <div>
+                                    <div class="mt-3 pl-3 float-left">
+                                        <span class="h4 mb-0">XRAY Report</span>
+                                    </div>
+                                    <div class="mb-3 mt-4 pr-2 small float-right">
+                                        <span>April 18, 2021, 9:29 p.m.</span>
+                                    </div>
+                                </div>
+                                {% comment %} <div class="card-title mb-0 ml-3 mt-3">
+                                    <h4>XRAY Report</h4>
+                                </div>
+                                <div class="card-subtitle mb-3 ml-3 small">
+                                    April 18, 2021, 9:29 p.m.
+                                </div> {% endcomment %}
+                                <div class="card-body pt-1 pl-3">
+                                    <div class="row">
+                                        <span class="col-4">Handled by:</span>
+                                        <span class="col-8 pl-0">HealthWealth<span>
+                                    </div>
+                                    <div class="row">
+                                        <span class="col-4">Supervisor:</span>
+                                        <span class="col-8 pl-0">Samuel<span>
+                                    </div>
+                                    {% comment %} <div class="row">
+                                        <span class="col-3">Referred by:</span>
+                                        <span class="col-9 pl-0">GurdeepBarad<span>
+                                    </div> {% endcomment %}
+                                    <div class="row">
+                                        <span class="col-4">Report:</span>
+                                        <span class="col-8 pl-0 text-ellipsis" title="/media/DiagnosticDepartment/report/7_SohailAnsari.docx">/media/DiagnosticDepartment/report/7_SohailAnsari.docx<span>
+                                    </div>
+                                </div>
+                            </span>
                         </div>
                     </div>
                 </div>

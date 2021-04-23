@@ -1,4 +1,4 @@
-{% extends 'Hospital/sidebar.html' %}
+{% extends 'sidebar.html' %}
 {% load bootstrap3 %}
 {% load widget_tweaks %}
 {% comment %} 
@@ -23,12 +23,8 @@
 <form method="get">
     <div class="row ml-0 mr-0">
         <div class="form-group">
-            {{ filter.form.first_name.label_tag }}
-            {% render_field filter.form.first_name class="form-control" %}
-        </div>
-        <div class="form-group">
-            {{ filter.form.last_name.label_tag }}
-            {% render_field filter.form.last_name class="form-control" %}
+            {{ filter.form.name.label_tag }}
+            {% render_field filter.form.name class="form-control" %}
         </div>
         <div class="form-group">
             {{ filter.form.specialization.label_tag }}
@@ -41,16 +37,14 @@
     <table class="table">
     <thead>
         <tr>
-        <th scope="col">First name</th>
-        <th scope="col">Last name</th>
+        <th scope="col">Name</th>
         <th scope="col">Specialization</th>
         </tr>
     </thead>
     <tbody>
         {% for doctor in filter.qs %}
         <tr>
-            <td scope="row">{{doctor.first_name}}</th>
-            <td>{{doctor.last_name}}</td>
+            <td scope="row">{{doctor.name}}</th>
             <td>{{doctor.specialization}}</td>
         </tr>
         {% endfor %}
