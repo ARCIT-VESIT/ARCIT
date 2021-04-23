@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from django.utils import timezone
-from django.utils import timezone
 
 class DiagnosticDepartment(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -17,7 +16,6 @@ class DiagnosticDepartment(models.Model):
     registeration_number = models.IntegerField()
     phone_number = models.IntegerField()
     specialization = models.CharField(max_length=100)
-    created_on = models.DateTimeField(default=timezone.now, blank=False)
 
 class DiagnosticDepartmentReport(models.Model):
     id = models.BigAutoField(primary_key=True)

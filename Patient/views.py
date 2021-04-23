@@ -6,13 +6,14 @@ from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
-from .forms import PatientHistoryForm, PatUserForm, RegForm
+from ARCIT.forms import UserForm
+from .forms import PatientHistoryForm, RegForm
 from .models import PatientHistory, Patient
 
 User = get_user_model()
 
 def upload(request):
-    '''Method to upload patient history data'''
+    '''Method to upload patient reports'''
     form = PatientHistoryForm()
     context = {}
     context['form'] = form
@@ -24,8 +25,8 @@ def upload(request):
             url = data.report.url
             print(url)
         return render(request,
-                        'Doctor/addPatientHistory.html',
-                        {'msg': "file uploaded successfully", 'url':url})
+                    'Doctor/addPatientHistory.html',
+                    {'msg': "file uploaded successfully", 'url':url})
 
     return render(request, 'Doctor/addPatientHistory.html', context)
 
@@ -35,43 +36,36 @@ class PatientRegisterationView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         form = RegForm()
-        form2 = PatUserForm()
+        form2 = UserForm()
 
-        return render(request,self.template_name,{'form':form, 'form2': form2  } )
+        return render(request,self.template_name,{'form':form, 'form2': form2})
 
     def post(self,request):
         '''method to handle patient registeration form data'''
-        if request.method == 'POST':
-            form = PatUserForm(request.POST)
-            form2 = RegForm(request.POST)
+        form = UserForm(request.POST)
+        form2 = RegForm(request.POST)
 
-            if form.is_valid() and form2.is_valid():
+        if form.is_valid() and form2.is_valid():
 
-                user = User.objects.create_user(
-                    form.data['username'],
-                    form2.data['email'],
-                    form.data['password1'],
-                    first_name=form2.data['first_name'],
-                    last_name=form2.data['last_name'],
-                    is_patient = True
-                )
+            user = User.objects.create_user(
+                form.data['username'],
+                form2.data['email'],
+                form.data['password1'],
+                first_name=form2.data['first_name'],
+                last_name=form2.data['last_name'],
+                is_patient = True
+            )
 
-                patform=form2.save(commit=False)
-                patform.created_by = User.objects.get(username=request.session['loggedin_username'])
-                patform.user=user
-                patform.save()
+            patform=form2.save(commit=False)
+            patform.created_by = User.objects.get(username=request.session['loggedin_username'])
+            patform.user=user
+            patform.save()
 
-                #user=authenticate(username=form2.data['username'],password=form2.data['password1'])
-                # login(request, user)
-                if User.is_doctor:
-                    return redirect('otpIndex')
-                else:
-                    return redirect('login')
-            else:
-                form = PatUserForm()
-                form2=RegForm()
-            return render(request,self.template_name, {'form': form,'form2':form2})
-        return None
+            return redirect('otpAuth' if User.is_doctor else 'login')
+
+        form = RegForm(request.POST)
+        form2= UserForm(request.POST)
+        return render(request,self.template_name, {'form': form,'form2':form2})
 
 class ViewPatientProfile(TemplateView):
     '''view for patient to view their profile'''

@@ -1,0 +1,25 @@
+{% extends "sidebar.html" %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <h3 class="mb-3">Verify patient's details</h3>   
+        
+        {% if error %}
+            <h6 style="background-color: #fee3e8;border-color: #f93154 !important;padding: 10px;border-left: 6px solid;border-radius: 5px">
+                <span>{{error}}</span>
+            </h6>
+        {% endif %}
+
+        <div>Enter phone number: <input type="number" name="Phone_number" value={{phone_number}} required />
+        <button type="submit" class="btn btn-primary">Generate OTP</button>
+        </div>
+
+        {% if request.session.generated_otp %}
+            <div>Enter OTP: <input type="number" name="Otp" required />
+            <button type="submit" class="btn btn-secondary">Verify</button>
+            </div>
+        {% endif %}
+    </form>
+{% block div %} {% endblock %}
+{% endblock %} 

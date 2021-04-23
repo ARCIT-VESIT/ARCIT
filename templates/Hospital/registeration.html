@@ -1,85 +1,15 @@
-{%extends 'Authentication/signup.html' %}
-{% load widget_tweaks %}
-{% block title %} login {% endblock %}
+{%extends 'sidebar.html' %}
 
 {%block content %}
 <h2>Hospital registeration</h2>
-<div style="height:calc(100vh - 205px); overflow: auto;">
+<div style="height:calc(100vh - 200px); overflow: auto;">
     <div class="mr-3">
         <form method="post">
             {% csrf_token %}
-            {% for hidden_field in form2.hidden_fields %}
-            {{ hidden_field }}
-            {% endfor %}
 
-            {% if form2.non_field_errors %}
-            <div class="alert alert-danger" role="alert">
-                {% for error in form2.non_field_errors %}
-                {{ error }}
-                {% endfor %}
-            </div>
-            {% endif %}
+            {% include 'userRegisteration.html' with form=form2 %}
+            {% include 'commonRegisteration.html' with form=form %}
 
-            {% for field in form2.visible_fields %}
-                <div class="form-group">
-                {{ field.label_tag }}
-
-                {% if form2.is_bound %}
-                    {% if field.errors %}
-                        {% render_field field class="form-control is-invalid" %}
-                    {% for error in field.errors %}
-                        <div class="invalid-feedback">
-                        {{ error }}
-                        </div>
-                    {% endfor %}
-                    {% else %}
-                        {% render_field field class="form-control is-valid" %}
-                    {% endif %}
-                {% else %}
-                    {% render_field field class="form-control" %}
-                {% endif %}
-
-                {% if field.help_text %}
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
-                </div>
-            {% endfor %}
-            {% for hidden_field in form.hidden_fields %}
-            {{ hidden_field }}
-            {% endfor %}
-
-            {% if form.non_field_errors %}
-            <div class="alert alert-danger" role="alert">
-                {% for error in form.non_field_errors %}
-                {{ error }}
-                {% endfor %}
-            </div>
-            {% endif %}
-
-            {% for field in form.visible_fields %}
-                <div class="form-group">
-                {{ field.label_tag }}
-
-                {% if form.is_bound %}
-                    {% if field.errors %}
-                        {% render_field field class="form-control is-invalid" %}
-                    {% for error in field.errors %}
-                        <div class="invalid-feedback">
-                        {{ error }}
-                        </div>
-                    {% endfor %}
-                    {% else %}
-                        {% render_field field class="form-control is-valid" %}
-                    {% endif %}
-                {% else %}
-                    {% render_field field class="form-control" %}
-                {% endif %}
-
-                {% if field.help_text %}
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
-                </div>
-            {% endfor %}
         <button type="submit" class="btn btn-primary mt-2"> submit </button>
         </form>
     </div>

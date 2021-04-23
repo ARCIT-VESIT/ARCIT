@@ -3,6 +3,10 @@
     {
       "name": "feature/test2",
       "base": "develop"
+    },
+    {
+      "name": "feature/FormUpgradations",
+      "base": "develop"
     }
   ],
   "files.exclude": {
@@ -13,8 +17,6 @@
     "**/__init__.py": true,
     "**/__MACOSX": true,
     "**/fonts": true,
-    "**/scss": true,
-    "**/css": true,
-    "**/js": true,
+    "media/": true,
   }
 }

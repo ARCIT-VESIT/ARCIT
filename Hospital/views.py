@@ -5,7 +5,8 @@ from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from Doctor.models import Doctor
 
-from Hospital.forms import HospitalForm, HospitalUserForm
+from ARCIT.forms import UserForm
+from .forms import HospitalForm
 
 from .filters import DoctorFilter
 from .models import Hospital
@@ -45,11 +46,11 @@ class FilteredDoctorListView(TemplateView):
         user = User.objects.get(username=request.session['loggedin_username'])
         doctor_list = Doctor.objects.filter(affiliation = user)
         doctor_filter = DoctorFilter(request.GET, queryset=doctor_list)
-        return render(request,self.template_name,{'filter':doctor_filter})
+        return render(request,self.template_name,{'filter':doctor_filter, "role": 'is_hospital'})
 
     def post(self, request):
         '''method to handle filter request'''
-        return render(request,self.template_name)
+        return render(request,self.template_name, { "role": 'is_hospital' })
 
 class HospitalView(TemplateView):
     '''Registeration for hospital'''
@@ -57,37 +58,34 @@ class HospitalView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         form = HospitalForm()
-        form2 = HospitalUserForm()
+        form2 = UserForm()
         return render(request,self.template_name,{'form':form, 'form2': form2})
 
     def post(self,request):
         '''request to handle registeration of hospital form'''
-        if request.method == 'POST':
-            form =  HospitalUserForm(request.POST)
-            form2 = HospitalForm(request.POST)
-            if form.is_valid() and form2.is_valid():
+        form =  UserForm(request.POST)
+        form2 = HospitalForm(request.POST)
 
-                user = User.objects.create_user(
-                    form.data['username'],
-                    form2.data['email'],
-                    form.data['password1'],
-                    first_name=form2.data['name'],
-                    is_hospital = True,
-                )
+        if form.is_valid() and form2.is_valid():
 
-                hospital_registeration_form=form2.save(commit=False)
-                hospital_registeration_form.user=user
-                hospital_registeration_form.save()
+            user = User.objects.create_user(
+                form.data['username'],
+                form2.data['email'],
+                form.data['password1'],
+                first_name=form2.data['name'],
+                is_hospital = True,
+            )
 
-                user= authenticate(username=form2.data['username'],password=form2.data['password1'])
-                login(request, user)
-                return redirect('login')
-            else:
-                form = HospitalUserForm()
-                form2 = HospitalForm()
-            return render(request,self.template_name, {'form': form,'form2':form2})
-        return None
+            hospital_registeration_form=form2.save(commit=False)
+            hospital_registeration_form.user=user
+            hospital_registeration_form.save()
 
+            user= authenticate(username=form2.data['username'],password=form2.data['password1'])
+            login(request, user)
+            return redirect('login')
+        form = HospitalForm(request.POST)
+        form2 = UserForm(request.POST)
+        return render(request,self.template_name, {'form': form,'form2':form2})
 
 class HospitalProfileView(TemplateView):
     '''For hospital profile'''
@@ -98,4 +96,4 @@ class HospitalProfileView(TemplateView):
         hospital = Hospital.objects.get(user=user)
         print(user)
         print(hospital)
-        return render(request,self.template_name,{'profile':hospital})
+        return render(request,self.template_name,{'profile':hospital, "role": 'is_hospital'})

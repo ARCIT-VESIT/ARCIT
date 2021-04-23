@@ -4,7 +4,8 @@ from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
-from Doctor.forms import DoctorForm, DoctorUserForm
+from .forms import DoctorForm
+from ARCIT.forms import UserForm
 from Patient.models import Patient, PatientHistory
 from Patient.forms import PatientHistoryForm
 from .models import Doctor
@@ -20,13 +21,13 @@ class DoctorView(TemplateView):
 
     def get(self,request, *args, **kwargs):
         form = DoctorForm()
-        form2 = DoctorUserForm()
+        form2 = UserForm()
         return render(request,self.template_name,{'form':form, 'form2': form2})
 
     def post(self,request):
         '''Post method for doctor registeration'''
         if request.method == 'POST':
-            form =  DoctorUserForm(request.POST)
+            form =  UserForm(request.POST)
             form2 = DoctorForm(request.POST)
             if form.is_valid() and form2.is_valid():
 
@@ -46,12 +47,12 @@ class DoctorView(TemplateView):
                 # login(request, user)
                 return redirect('login')
             else:
-                form = DoctorUserForm()
-                form2=DoctorForm()
+                form = DoctorForm(request.POST)
+                form2= UserForm(request.POST)
             return render(request,self.template_name, {'form': form,'form2':form2})
         return None
 
-class ViewDocotrProfile(TemplateView):
+class ViewDoctorProfile(TemplateView):
     '''View for doctor profile'''
     template_name='Doctor/profile.html'
 
@@ -88,23 +89,20 @@ class AddPatientDataView(TemplateView):
     def post(self,request):
         '''Post method to add patient history'''
         form=PatientHistoryForm(request.POST)
-        if request.method == 'POST':
 
-            user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
-            doctor_user = User.objects.get(username=request.session['loggedin_username'])
+        user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
+        doctor_user = User.objects.get(username=request.session['loggedin_username'])
 
-            if form.is_valid():
-                formdata = form.save(commit=False)
-                formdata.user=user
-                formdata.referred_from = doctor_user
-                formdata.save()
+        if form.is_valid():
+            formdata = form.save(commit=False)
+            formdata.user=user
+            formdata.referred_from = doctor_user
+            formdata.save()
 
-                # return render(request, 'Doctor/index.html')
-                return redirect('viewpatienthistory')
-        else:
-            form = PatientHistoryForm()
-            return render(request,self.template_name, {'form': form})
-        return None
+            # return render(request, 'Doctor/index.html')
+            return redirect('viewpatienthistory')
+        form = PatientHistoryForm()
+        return render(request,self.template_name, {'form': form})
 
 class ViewPatientHistory(TemplateView):
     '''Class for doctor to view the patient history'''

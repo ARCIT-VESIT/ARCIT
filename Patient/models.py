@@ -16,7 +16,6 @@ class Patient(models.Model):
     adharcardno = models.BigIntegerField(unique=True)
     blood_group = models.CharField(max_length=5, null=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='created_by', on_delete=models.CASCADE)
-    created_on = models.DateTimeField(default=timezone.now, blank=False)
 
 class PatientHistory(models.Model):	
     id = models.BigAutoField(primary_key=True)
@@ -27,11 +26,9 @@ class PatientHistory(models.Model):
     affected_area = models.CharField(max_length=200)
     #report = models.FileField(upload_to='PatientHistory/report/', default = '', null=True)
     timespan = models.CharField(max_length=100)
-    precription = models.CharField(max_length=1000)
+    prescription = models.CharField(max_length=1000)
     course_duration = models.CharField(max_length=100)
     follow_up = models.CharField(max_length=100,null=True)
     referred_from = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='referred_from', on_delete=models.CASCADE)
     referred_to= models.CharField(max_length=100,null=True)
     created_on = models.DateTimeField(default=timezone.now, blank=False)
-
-# Create your models here.
