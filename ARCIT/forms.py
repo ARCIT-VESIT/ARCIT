@@ -1,7 +1,6 @@
-from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.forms import ModelForm
-from ARCIT.models import UserTypeModel, User
+from ARCIT.models import UserTypeModel
 from django.contrib.auth import get_user_model
 
 class UserForm(UserCreationForm):

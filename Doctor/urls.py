@@ -3,9 +3,6 @@ from django.conf.urls import url
 from Doctor import views as DoctorViews
 
 urlpatterns = [
-    url(r'^d/signup/$',
-        DoctorViews.DoctorView.as_view(template_name='Doctor/registeration.html'),
-        name='docreg'),
     url(r'^d/profile/$',
         DoctorViews.ViewDoctorProfile.as_view(template_name='Doctor/profile.html'),
         name='doctorprofile'),

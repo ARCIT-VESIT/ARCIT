@@ -10,7 +10,4 @@ urlpatterns = [
     url(r'^h/profile/$',
         HospitalViews.HospitalProfileView.as_view(template_name='Hospital/profile.html'),
         name='hospitalprofile'),
-    url(r'^HospitalRegisteration/$',
-        HospitalViews.HospitalView.as_view(template_name='Hospital/registeration.html'),
-        name='HospitalRegisteration'),
 ]

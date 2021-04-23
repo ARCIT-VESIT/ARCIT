@@ -31,7 +31,7 @@
                             <a href="{% url 'doctorprofile' %}">Profile</a>
                         </li>
                         <li>
-                            <a href="{% url 'patreg' %}">Register new patient</a>
+                            <a href="{% url 'registeration' role="P" %}">Register new patient</a>
                         </li>	          
                         <li>
                             <a href="{% url 'otpAuth' %}">Existing patient</a>
@@ -64,14 +64,14 @@
                         <li>
                             <h4 style="color:white">Registeration type</h4>
                         </li>
-                        <li class="active">
-                            <a href="{% url 'HospitalRegisteration' %}">Hosptial</a>
+                        <li>
+                            <a href="{% url 'registeration' role="H" %}">Hosptial</a>
                         </li>
                         <li>
-                            <a href="{% url 'ddsignup' %}">Diagnostic center</a>
+                            <a href="{% url 'registeration' role="R" %}">Diagnostic center</a>
                         </li>
                         <li>
-                            <a href="{% url 'docreg' %}">Doctor</a>
+                            <a href="{% url 'registeration' role="D" %}">Doctor</a>
                         </li>
                     {% endif %}
                 </ul>

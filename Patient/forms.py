@@ -1,11 +1,10 @@
 from django import forms
 from .models import  Patient, PatientHistory
 
-class RegForm(forms.ModelForm):
+class UserRegisterationForm(forms.ModelForm):
     class Meta:
         model =  Patient
-        fields = ('first_name',
-                'last_name',
+        fields = ('name',
                 'email',
                 'phone_number',
                 'dob',

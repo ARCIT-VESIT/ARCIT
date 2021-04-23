@@ -10,47 +10,7 @@ from Patient.models import Patient, PatientHistory
 from Patient.forms import PatientHistoryForm
 from .models import Doctor
 
-# def index(request):
-#     if request.method == 'POST':
-
 User = get_user_model()
-
-class DoctorView(TemplateView):
-    '''View for doctor registeration'''
-    template_name='Doctor/registeration.html'
-
-    def get(self,request, *args, **kwargs):
-        form = DoctorForm()
-        form2 = UserForm()
-        return render(request,self.template_name,{'form':form, 'form2': form2})
-
-    def post(self,request):
-        '''Post method for doctor registeration'''
-        if request.method == 'POST':
-            form =  UserForm(request.POST)
-            form2 = DoctorForm(request.POST)
-            if form.is_valid() and form2.is_valid():
-
-                user = User.objects.create_user(
-                    form.data['username'],
-                    form2.data['email'],
-                    form.data['password1'],
-                    first_name=form2.data['first_name'],
-                    last_name=form2.data['last_name'],
-                    is_doctor = True,
-                )
-                patform=form2.save(commit=False)
-                patform.user=user
-                patform.save()
-
-                #user=authenticate(username=form2.data['username'],password=form2.data['password1'])
-                # login(request, user)
-                return redirect('login')
-            else:
-                form = DoctorForm(request.POST)
-                form2= UserForm(request.POST)
-            return render(request,self.template_name, {'form': form,'form2':form2})
-        return None
 
 class ViewDoctorProfile(TemplateView):
     '''View for doctor profile'''

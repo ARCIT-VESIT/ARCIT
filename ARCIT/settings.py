@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'ARCIT',
-    'otpAuth',
     'Doctor',
     'Patient',
     'Hospital',
@@ -132,7 +131,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'signup'
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
