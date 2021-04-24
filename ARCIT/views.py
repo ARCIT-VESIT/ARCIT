@@ -14,7 +14,7 @@ from Patient.forms import UserRegisterationForm
 from .forms import UserForm
 
 ACCOUNT_SID = "ACf704c92aadad13c090e0de80beceb735"
-AUTH_TOKEN = "5aebbe12ac22b77f331218e9c12c7541"
+AUTH_TOKEN = "7f6552ed5f938239789d59967198882e"
 MY_TWILIO = "+12705132260"
 
 User = get_user_model()
@@ -100,7 +100,7 @@ class RegisterationView(TemplateView):
             form_data.user=user
             form_data.save()
 
-            return redirect('otpAuth' if User.is_doctor else 'login')
+            return redirect('otpAuth' if role == 'P' else 'login')
 
         form = self.identify_action_by_role(False, request.POST)
         form2 = UserForm(request.POST)
@@ -140,6 +140,8 @@ class OtpAuthView(TemplateView):
                     error = f"The phone number {phone_number} is invalid"
                 elif ex.code == 21608:
                     error = f"The phone number {phone_number} is not verified through twilio."
+                elif ex.code == 20003:
+                    error = "Token expired."
                 else:
                     error = "Something went wrong."
 
