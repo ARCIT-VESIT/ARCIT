@@ -1,4 +1,3 @@
-~jango==3.1.4
 django_tables2==2.3.3
 django_filter==2.4.0
 twilio_api==0.1.1
