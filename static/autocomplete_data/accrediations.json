@@ -1,0 +1,110 @@
+{
+    "Bachelor of Medicine, Bachelor of Surgery": [
+        "MBBS",
+        "BMBS",
+        "MBChB",
+        "MBBCh"
+    ],
+    "Bachelor of Medicine" : ["BMed"],
+    "Doctor of Medicine" : [ 
+        "MD",
+        "DrMuD",
+        "DrMed"
+    ],
+    "Doctor of Osteopathic Medicine": ["DO"],
+    "Doctor of Podiatric Medicine" : ["DPM"],
+    "Master of Clinical Medicine": ["MCM"],
+    "Master of Medical Science": [
+        "MMSc",
+        "MMedSc"
+    ],
+    "Master of Medicine": [
+        "MM",
+        "MMed"
+    ],
+    "Master of Philosophy": ["MPhil"],
+    "Master of Philosophy in Ophthalmology": ["MPhO"],
+    "Master of Surgery": [
+        "MS",
+        "MSurg",
+        "MChir",
+        "MCh",
+        "ChM",
+        "CM"
+    ],
+    "Master of Science in Medicine or Surgery": ["MSc"],
+    "Doctor of Clinical Medicine": ["DCM"],
+    "Doctor of Clinical Surgery": ["SClinSurg"],
+    "Doctor of Medical Science": [
+        "DMSc",
+        "DMedSc"
+    ],
+    "Doctor of Surgery": [
+        "DS",
+        "DSurg"
+    ],
+    "Ayurveda": [
+        "BSc",
+        "MSc",
+        "BAMC",
+        "MD",
+        "MS",
+        "PhD"
+    ],
+    "Accupuncture": [
+        "BSc",
+        "MSc",
+        "DAc",
+        "AP",
+        "DiplAc",
+        "MAc"
+    ],
+    "Chiropractic": ["DC"],
+    "Herbalism": [
+        "Acs",
+        "BSc",
+        "MSc"
+    ],
+    "Homeopathy": [
+        "BSc",
+        "MSc",
+        "DHMS",
+        "BHMS",
+        "MD",
+        "PhD"
+    ],
+    "Naprapathy": ["DN"],
+    "Naturopathy": [
+        "BSc",
+        "MSc",
+        "BNYS",
+        "MD",
+        "ND",
+        "NMD"
+    ],
+    "Oriental Medicine": [
+        "BSc",
+        "MSOM",
+        "MSTOM",
+        "KMD (Korea)",
+        "BCM (Hong Kong)",
+        "MCM (Hong Kong)", 
+        "BChinMed (Hong Kong)", 
+        "MChinMed (Hong Kong)", 
+        "MD (Taiwan)", 
+        "MB (China)", 
+        "TCM-Traditional Chinese medicine master (China)"
+    ],
+    "Osteopathy": [
+        "BOst",
+        "BOstMed",
+        "BSc",
+        "DipOsteo"
+    ],
+    "Bachelor of Dental Sciences" : ["BDS"],
+    "Bachelor of Ayurvedic Medicine and Surgery" : ["BAMS"],
+    "Bachelor of Unani Medicine" : ["BUMS"],
+    "Bachelor of Veterinary Sciences & Animal Husbandry" : ["BVSc & AH"],
+    "Bachelor of Occupational Therapy" : ["BOT"],
+    "Bachelor of Physiotherapy" : ["BPT"]
+}

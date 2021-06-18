@@ -1,6 +1,18 @@
 {% extends 'sidebar.html' %}
 {% load widget_tweaks %}
 
+{% block style %}
+<style>
+    .dropdown-menu{
+        max-height: 250px;
+        overflow: auto;
+    }
+    .bootstrap-autocomplete .dropdown-menu{
+        top: 560px !important;
+    }
+</style>
+{% endblock style %}
+
 {% block content %}
 <h2>{{heading}}</h2>
 <div style="height:calc(100vh - 200px); overflow: auto;">
@@ -62,4 +74,15 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        $(() => {
+            $('#id_affiliation').autoComplete()
+            $('#id_specialization').autoComplete()
+            $('#id_accrediation').autoComplete()
+            $(".bootstrap-autocomplete .dropdown-menu").css('top', '560px')
+        });
+    </script>
 {% endblock %}

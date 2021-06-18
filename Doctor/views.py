@@ -1,11 +1,11 @@
 """View for Doctor"""
+import json
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
-from .forms import DoctorForm
-from ARCIT.forms import UserForm
 from Patient.models import Patient, PatientHistory
 from Patient.forms import PatientHistoryForm
 from .models import Doctor
@@ -73,3 +73,41 @@ class ViewPatientHistory(TemplateView):
         model = PatientHistory.objects.filter(user=user).order_by("-created_on")
 
         return render(request,self.template_name,{'models':model})
+
+def get_specializations(request):
+    try:
+        with open("static/autocomplete_data/specializations.json", 'r') as f:
+            data = json.load(f)
+            
+            if request.GET.get('q'):
+                query = request.GET['q']
+
+                filtered_list = list(filter(lambda x: query in x.lower(), data))
+                filtered_list.sort()
+                
+                return JsonResponse(filtered_list, safe=False)
+            return JsonResponse(data, safe=False)
+
+    except Exception as e:
+        print(e)
+        return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)
+
+def get_accrediations(request):
+    try:
+        with open("static/autocomplete_data/accrediations.json", 'r') as f:
+            data = json.load(f)
+
+            if request.GET.get('q'):
+                accrediation_list = []
+                query = request.GET['q']
+
+                _ = [[accrediation_list.append(f'{accrediation} ({full_form})') for accrediation in values] for full_form, values in data.items()]
+
+                filtered_list = list(filter(lambda x: query in x.lower().replace('(', ''), accrediation_list))
+                filtered_list.sort()
+
+                return JsonResponse(filtered_list, safe=False)
+            return JsonResponse(data, safe=False)
+
+    except Exception as e:
+        return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)
