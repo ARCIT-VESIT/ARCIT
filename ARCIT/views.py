@@ -19,6 +19,11 @@ MY_TWILIO = "+12705132260"
 
 User = get_user_model()
 
+def set_role(request, role):
+    request.session['role'] = role
+    request.session[f"is_{role.lower()}"] = True
+    return f"{role.lower()}profile"
+
 def log_in(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -30,21 +35,13 @@ def log_in(request):
 
             user = authenticate(username=username, password=password)
             if user.is_doctor:
-                request.session['role'] = 'Doctor'
-                request.session['is_doctor'] = True
-                return redirect('doctorprofile')
+                return redirect(set_role(request, 'Doctor'))
             if user.is_patient:
-                request.session['role'] = 'Patient'
-                request.session['is_patient'] = True
-                return redirect('patientprofile')
+                return redirect(set_role(request, 'Patient'))
             if user.is_hospital:
-                request.session['role'] = 'Hospital'
-                request.session['is_hospital'] = True
-                return redirect('hospitalprofile')
+                return redirect(set_role(request, 'Hospital'))
             if user.is_diagnosticDepartment:
-                request.session['role'] = 'DD'
-                request.session['is_dd'] = True
-                return redirect('ddprofile')
+                return redirect(set_role(request, 'DD'))
         else:
             return render(request, 'Authentication/login.html', {'form': form})
     else:

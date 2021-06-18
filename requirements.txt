@@ -3,3 +3,6 @@ django_filter==2.4.0
 twilio_api==0.1.1
 Django==3.2
 twilio==6.56.0
+django-heroku==0.3.1
+django-bootstrap3==14.2.0
+django-widget-tweaks==1.4.8

@@ -1,12 +1,12 @@
 """View for hospital"""
 import django_tables2 as tables
-from django.contrib.auth import authenticate, get_user_model, login
-from django.shortcuts import redirect, render
+from django.contrib.auth import get_user_model
+from django.shortcuts import render
 from django.views.generic import TemplateView
-from Doctor.models import Doctor
+from django.http import JsonResponse
+from django.db.models import Q
 
-from ARCIT.forms import UserForm
-from .forms import HospitalForm
+from Doctor.models import Doctor
 
 from .filters import DoctorFilter
 from .models import Hospital
@@ -54,3 +54,18 @@ class HospitalProfileView(TemplateView):
         print(user)
         print(hospital)
         return render(request,self.template_name,{'profile':hospital})
+
+def get_hospitals(request):
+    '''Get autocompleted hospitals'''
+    # filtered_results = list()
+    # query = request.GET['q']
+    # hospitals = User.objects.all().filter(is_hospital=True).values_list("username", "first_name")
+    # filtered_hospitals = hospitals.filter(Q(first_name__contains=query)|Q(username__contains=query))
+    # _=[filtered_results.append(f'{hospital[1]} ({hospital[0]})') for hospital in filtered_hospitals]
+    # return JsonResponse(filtered_results, safe=False)
+    filtered_results = list()
+    query = request.GET['q']
+    hospitals = User.objects.all().filter(is_hospital=True).values_list("username", "first_name")
+    filtered_hospitals = hospitals.filter(Q(first_name__contains=query)|Q(username__contains=query))
+    _=[filtered_results.append(hospital[0]) for hospital in filtered_hospitals]
+    return JsonResponse(filtered_results, safe=False)

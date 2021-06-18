@@ -1,4 +1,5 @@
 """Url for doctor"""
+from django.urls import path
 from django.conf.urls import url
 from Doctor import views as DoctorViews
 
@@ -15,4 +16,6 @@ urlpatterns = [
     url(r'^p/history/$',
         DoctorViews.ViewPatientHistory.as_view(template_name='Doctor/viewPatientHistory.html'),
         name='viewpatienthistory'),
+    path('SAC/', DoctorViews.get_specializations, name='specialization_autocomplete'),
+    path('AAC/', DoctorViews.get_accrediations, name='accrediation_autocomplete')
 ]
