@@ -1,1 +1,1 @@
-web: gunicorn arcit.wsgi
+web: gunicorn ARCIT.wsgi
