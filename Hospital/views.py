@@ -52,8 +52,6 @@ class HospitalProfileView(TemplateView):
     def get(self, request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
         hospital = Hospital.objects.get(user=user)
-        print(user)
-        print(hospital)
         return render(request,self.template_name,{'profile':hospital})
 
 def get_hospitals(request):
@@ -86,5 +84,4 @@ def get_hospital_specializations(request):
             return JsonResponse(json_data, safe=False)
 
     except Exception as e:
-        print(e)
         return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)
