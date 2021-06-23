@@ -30,62 +30,60 @@
 		<div class="wrapper d-flex align-items-stretch">
 			<nav id="sidebar">
 				<div class="p-4 pt-5">
-
-                <ul class="list-unstyled components mb-5">
-                    {% if request.session.is_doctor %}
-                        <li class="active">
-                            <a href="{% url 'doctorprofile' %}">Profile</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'registeration' role="P" %}">Register new patient</a>
-                        </li>	          
-                        <li>
-                            <a href="{% url 'otpAuth' %}">Existing patient</a>
-                        </li>
-                    {% elif request.session.is_hospital %}
-                        <li class="active">
-                            <a href="{% url 'hospitalprofile' %}">Profile</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'hospitaldoctors' %}">Affiliated doctors</a>
-                        </li>        
-                        <li>
-                            <a href="{% url 'hospitaldoctors' %}">Affiliated DD</a>
-                        </li>
-                    {% elif request.session.is_dd %}
-                        <li class="active">
-                            <a href="{% url 'ddprofile' %}">Profile</a>
-                        </li>                            
-                        <li>
-                            <a href="{% url 'otpAuth' %}">New diagnosis</a>
-                        </li>
-                    {% elif request.session.is_patient %}
-                      <li class="active">
-                        <a href="{% url 'patientprofile' %}">Profile</a>
-                      </li>
-                      <li>
-                          <a href="{% url 'viewHistory' %}">My history</a>
-                      </li>
-                      {% else %}
-                        <li>
-                            <h4 style="color:white">Registeration type</h4>
-                        </li>
-                        <li>
-                            <a href="{% url 'registeration' role="H" %}">Hosptial</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'registeration' role="R" %}">Diagnostic center</a>
-                        </li>
-                        <li>
-                            <a href="{% url 'registeration' role="D" %}">Doctor</a>
-                        </li>
-                    {% endif %}
-                </ul>
+          <ul class="list-unstyled components mb-5">
+              {% if request.session.is_doctor %}
+                <li>
+                    <a href="{% url 'doctorprofile' %}">Profile</a>
+                </li>
+                <li>
+                    <a href="{% url 'registeration' role="P" %}">Register new patient</a>
+                </li>
+                <li>
+                    <a href="{% url 'otpAuth' %}">Existing patient</a>
+                </li>
+              {% elif request.session.is_hospital %}
+                <li>
+                    <a href="{% url 'hospitalprofile' %}">Profile</a>
+                </li>
+                <li>
+                    <a href="{% url 'hospitaldoctors' %}">Affiliated doctors</a>
+                </li>
+                <li>
+                    <a href="{% url 'hospitaldoctors' %}">Affiliated DD</a>
+                </li>
+              {% elif request.session.is_dd %}
+                <li>
+                    <a href="{% url 'ddprofile' %}">Profile</a>
+                </li>
+                <li>
+                    <a href="{% url 'otpAuth' %}">New diagnosis</a>
+                </li>
+              {% elif request.session.is_patient %}
+                <li>
+                  <a href="{% url 'patientprofile' %}">Profile</a>
+                </li>
+                <li>
+                  <a href="{% url 'viewHistory' %}">My history</a>
+                </li>
+              {% else %}
+                <li>
+                    <h4 style="color:white">Registeration type</h4>
+                </li>
+                <li>
+                    <a href="{% url 'registeration' role="H" %}">Hosptial</a>
+                </li>
+                <li>
+                    <a href="{% url 'registeration' role="R" %}">Diagnostic center</a>
+                </li>
+                <li>
+                    <a href="{% url 'registeration' role="D" %}">Doctor</a>
+                </li>
+            {% endif %}
+          </ul>
 	      </div>
     	</nav>
 
       <div id="content">
-
         <nav class="navbar navbar-expand-lg navbar-light bg-light mb-0">
           <div class="container-fluid">
 
@@ -100,7 +98,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
               <ul class="nav navbar-nav ml-auto" >
                 
-                <li class="nav-item active">
+                <li class="nav-item">
                   {% if request.session.loggedin_username %}
                     <a href="{% url 'logout' %}" class="nav-link">
                   {% else %}
@@ -109,12 +107,12 @@
                     <span class="mr-3">{{request.session.loggedin_username}}</span>
                     <span class="text-secondary">
                       <i class="fa fa-sign-out" aria-hidden="true"></i>
-                        <span class="pt-1" onclick="resetActiveSelection()">
-                            {% if request.session.loggedin_username %}
-                                Logout
-                            {% else %}
-                                Login
-                            {% endif %}
+                        <span class="pt-1">
+                          {% if request.session.loggedin_username %}
+                              Logout
+                          {% else %}
+                              Login
+                          {% endif %}
                         </span>
                     </span>
                 </a>
@@ -125,8 +123,13 @@
 
         <div class="p-3">
           {% if not request.session.loggedin_username %}
-            <div id="welcome"><h3 style="background-color: #e4f2f5;border-color: #2492a5 !important;padding: 10px;border-left: 6px solid;border-radius: 5px">Please select a registeration type from menu</h3></div>
+            <div id="welcome" style="display: none;">
+              <h3 style="background-color: #e4f2f5;border-color: #2492a5 !important;padding: 10px;border-left: 6px solid;border-radius: 5px">
+                Please select a registeration type from menu
+              </h3>
+            </div>
           {% endif %}
+
           {% block content %} {% endblock content %}
         </div>
       </div>
@@ -138,26 +141,20 @@
     <script src="{% static 'js/main.js' %}"></script>
     <script>
       $(() => {
-        var activeTab = localStorage.getItem('activeTab');
-            
-        localStorage.getItem('activeTab') === null ? $("#welcome").show() : $("#welcome").hide();
+        let subUrl = window.location.pathname,
+            subUrlMenuElement = $(`a[href="${subUrl}"]`)
 
-        if (activeTab) {
-          $('#sidebar .list-unstyled').find('li.active').removeClass( 'active' ); 
-          $('#sidebar a[href="' + activeTab + '"]').parent('li').addClass('active');
+        if (subUrlMenuElement.length > 0) {
+          localStorage.setItem('lastKnownSubUrl', subUrl)
+          activateLink(subUrlMenuElement)
         }
+        else if(subUrl.includes("signup"))
+          $("#welcome").show()
+        else if(localStorage.hasOwnProperty('lastKnownSubUrl'))
+          activateLink($(`a[href="${localStorage.getItem('lastKnownSubUrl')}"]`))
       });
-      
-      $('#sidebar .list-unstyled a' ).on('click', function (e) { 
-        $('#sidebar .list-unstyled').find('li.active').removeClass( 'active' ); 
-        $(this).parent('li').addClass('active'); 
-        localStorage.setItem('activeTab', $(e.target).attr('href'));
-      }); 
-      
-      function resetActiveSelection(){
-        localStorage.removeItem("activeTab");
-        $('#sidebar .list-unstyled').children().first().addClass('active');
-      }
+
+      const activateLink = element => element.parent('li').addClass('active')
     </script>
     {% block script %} {% endblock script %}
   </body>

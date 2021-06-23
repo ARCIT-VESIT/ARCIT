@@ -22,7 +22,6 @@ def upload(request):
         if form.is_valid():
             data=form.save(commit=True)
             url = data.report.url
-            print(url)
         return render(request,
                     'Doctor/addPatientHistory.html',
                     {'msg': "file uploaded successfully", 'url':url})
@@ -35,7 +34,6 @@ class ViewPatientProfile(TemplateView):
 
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
-        print(user)
         patient = Patient.objects.get(user=user)
         # today = date.today()
         # age = today.year - datetime.year(patient.dob) - ((today.month, today.day)

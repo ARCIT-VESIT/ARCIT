@@ -18,7 +18,6 @@ class ViewDoctorProfile(TemplateView):
 
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
-        print(user)
         doctor = Doctor.objects.get(user=user)
         # today = date.today()
         # age = today.year - datetime.year(patient.dob) - ((today.month, today.day)
@@ -89,7 +88,6 @@ def get_specializations(request):
             return JsonResponse(json_data, safe=False)
 
     except Exception as e:
-        print(e)
         return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)
 
 def get_accreditations(request):

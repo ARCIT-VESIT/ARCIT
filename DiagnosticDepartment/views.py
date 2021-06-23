@@ -45,7 +45,6 @@ class ViewDiagnosticDepartment(TemplateView):
 
     def get(self, request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
-        print(user)
         diagnosticdepartment = DiagnosticDepartment.objects.get(user=user)
 
         return render (request,self.template_name,{'profile':diagnosticdepartment})
