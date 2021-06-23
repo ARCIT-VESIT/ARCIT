@@ -13,7 +13,7 @@ class DoctorForm(forms.ModelForm):
             'autocomplete':'off',
             'data-url': "/SAC"
         }))
-    accrediation = forms.CharField(required=True, widget=forms.TextInput(
+    accreditation = forms.CharField(required=True, widget=forms.TextInput(
         attrs={
             'autocomplete':'off',
             'data-url': "/AAC"
@@ -33,7 +33,7 @@ class DoctorForm(forms.ModelForm):
                 'phone_number',
                 'experience',
                 'affiliation',
-                'accrediation',
+                'accreditation',
                 'specialization',
                 'address',
                 'adharcardno',)

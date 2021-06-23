@@ -17,5 +17,5 @@ urlpatterns = [
         DoctorViews.ViewPatientHistory.as_view(template_name='Doctor/viewPatientHistory.html'),
         name='viewpatienthistory'),
     path('SAC/', DoctorViews.get_specializations, name='specialization_autocomplete'),
-    path('AAC/', DoctorViews.get_accrediations, name='accrediation_autocomplete')
+    path('AAC/', DoctorViews.get_accreditations, name='accreditation_autocomplete')
 ]

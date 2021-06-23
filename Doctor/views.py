@@ -92,21 +92,21 @@ def get_specializations(request):
         print(e)
         return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)
 
-def get_accrediations(request):
+def get_accreditations(request):
     try:
-        with open("static/autocomplete_data/accrediations.json", 'r') as f:
+        with open("static/autocomplete_data/accreditations.json", 'r') as f:
             json_data = json.load(f)
 
             if request.GET.get('q'):
-                accrediations = []
+                accreditations = []
                 query = request.GET['q']
 
-                _ = [[accrediations.append(f'{accrediation} ({full_form})') for accrediation in short_form] for full_form, short_form in json_data.items()]
+                _ = [[accreditations.append(f'{accreditation} ({full_form})') for accreditation in short_form] for full_form, short_form in json_data.items()]
 
-                filtered_accrediations = list(filter(lambda accrediation: query in accrediation.lower().replace('(', ''), accrediations))
-                filtered_accrediations.sort()
+                filtered_accreditations = list(filter(lambda accreditation: query in accreditation.lower().replace('(', ''), accreditations))
+                filtered_accreditations.sort()
 
-                return JsonResponse(filtered_accrediations, safe=False)
+                return JsonResponse(filtered_accreditations, safe=False)
             return JsonResponse(json_data, safe=False)
 
     except Exception as e:

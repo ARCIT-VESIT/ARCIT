@@ -10,7 +10,7 @@ class Doctor(models.Model):
     phone_number = models.IntegerField(unique=True)
     experience = models.IntegerField()
     affiliation = models.CharField(max_length=100)
-    accrediation = models.CharField(max_length=254)
+    accreditation = models.CharField(max_length=254)
     address = models.CharField(max_length=100)
     adharcardno = models.IntegerField(unique=True)
     specialization = models.CharField(max_length=100)
