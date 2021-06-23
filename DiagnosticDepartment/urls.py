@@ -1,13 +1,10 @@
 from django.conf.urls import url
-from django.contrib import admin
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 
-from . import views
-from DiagnosticDepartment.views import ViewDiagnosticDepartment, DiagnosticDepartmentUploadReport
+from DiagnosticDepartment import views as DDViews
 
 urlpatterns = [
-   url(r'^DiagnosticDepartment$', DiagnosticDepartmentUploadReport.as_view(template_name = "DiagnosticDepartment/UploadReport.html"), name='DiagnosticDepartmentUpload'),
-   url(r'^dd/profile$', ViewDiagnosticDepartment.as_view(template_name = "DiagnosticDepartment/profile.html"), name='ddprofile'),
+   url(r'^DiagnosticDepartment$', DDViews.DiagnosticDepartmentUploadReport.as_view(template_name = "DiagnosticDepartment/UploadReport.html"), name='DiagnosticDepartmentUpload'),
+   url(r'^dd/profile$', DDViews.ViewDiagnosticDepartment.as_view(template_name = "DiagnosticDepartment/profile.html"), name='ddprofile'),
+   path('RTAC/', DDViews.get_report_types, name='report_types_autocomplete')
 ]

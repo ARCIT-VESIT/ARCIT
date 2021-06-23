@@ -3,6 +3,14 @@ from DiagnosticDepartment.models import DiagnosticDepartment, DiagnosticDepartme
 from django.contrib.auth import get_user_model
 
 class DiagnosticDepartmentForm(forms.ModelForm):
+    name = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'autocomplete':'off',
+            'data-url': "/RTAC",
+        }))
+
+    # report = forms.CharField(widget=forms.FileInput(attrs={'class': 'myfieldclass'}))
+
     class Meta:
         model = DiagnosticDepartmentReport
         fields = ('id', 'name', 'supervisor', 'referred_by', 'report', )
@@ -12,6 +20,12 @@ class DiagnosticDepartmentSignupForm(forms.ModelForm):
         attrs={
             'autocomplete':'off',
             'data-url': "/HAC",
+        }))
+    
+    DD_type = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'autocomplete':'off',
+            'data-url': "/RTAC",
         }))
 
     def clean_affiliation(self):
