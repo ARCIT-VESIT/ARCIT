@@ -1,7 +1,9 @@
 # Create your views here.
+import json
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
+from django.http import JsonResponse
 
 from Patient.models import Patient
 from .forms import DiagnosticDepartmentForm
@@ -47,3 +49,26 @@ class ViewDiagnosticDepartment(TemplateView):
         diagnosticdepartment = DiagnosticDepartment.objects.get(user=user)
 
         return render (request,self.template_name,{'profile':diagnosticdepartment})
+
+def get_report_types(request):
+    try:
+        with open("static/autocomplete_data/report_types.json", 'r') as f:
+            json_data = json.load(f)
+
+            if request.GET.get('q') or request.GET.get('q') is '':
+                report_types = []
+                query = request.GET['q']
+
+                if request.session.has_key("is_dd"):
+                    _ = [[report_types.append(report_type.capitalize()) for report_type in values] for _, values in json_data.items()]
+                else:
+                    _ = [report_types.append(keys.capitalize()) for keys, _ in json_data.items()]
+
+                filtered_report_types = list(filter(lambda report_type: query in report_type.lower(), report_types))
+                filtered_report_types.sort()
+
+                return JsonResponse(filtered_report_types, safe=False)
+            return JsonResponse(json_data, safe=False)
+
+    except Exception as e:
+        return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)

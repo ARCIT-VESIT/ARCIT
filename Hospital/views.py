@@ -1,4 +1,5 @@
 """View for hospital"""
+import json
 import django_tables2 as tables
 from django.contrib.auth import get_user_model
 from django.shortcuts import render
@@ -69,3 +70,21 @@ def get_hospitals(request):
     filtered_hospitals = hospitals.filter(Q(first_name__contains=query)|Q(username__contains=query))
     _=[filtered_results.append(hospital[0]) for hospital in filtered_hospitals]
     return JsonResponse(filtered_results, safe=False)
+
+def get_hospital_specializations(request):
+    try:
+        with open("static/autocomplete_data/h_specializations.json", 'r') as f:
+            json_data = json.load(f)
+            
+            if request.GET.get('q'):
+                query = request.GET['q']
+
+                specializations = list(filter(lambda specialization: query in specialization.lower(), json_data))
+                specializations.sort()
+                
+                return JsonResponse(specializations, safe=False)
+            return JsonResponse(json_data, safe=False)
+
+    except Exception as e:
+        print(e)
+        return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)

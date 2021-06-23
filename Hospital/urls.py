@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^h/profile/$',
         HospitalViews.HospitalProfileView.as_view(template_name='Hospital/profile.html'),
         name='hospitalprofile'),
-    path('HAC/', HospitalViews.get_hospitals, name='hospital_autocomplete')
+    path('HAC/', HospitalViews.get_hospitals, name='hospital_autocomplete'),
+    path('HSAC/', HospitalViews.get_hospital_specializations, name='hospital_speciality_autocomplete')
 ]

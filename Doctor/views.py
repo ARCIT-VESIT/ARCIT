@@ -77,16 +77,16 @@ class ViewPatientHistory(TemplateView):
 def get_specializations(request):
     try:
         with open("static/autocomplete_data/specializations.json", 'r') as f:
-            data = json.load(f)
+            json_data = json.load(f)
             
             if request.GET.get('q'):
                 query = request.GET['q']
 
-                filtered_list = list(filter(lambda x: query in x.lower(), data))
-                filtered_list.sort()
+                specializations = list(filter(lambda specialization: query in specialization.lower(), json_data))
+                specializations.sort()
                 
-                return JsonResponse(filtered_list, safe=False)
-            return JsonResponse(data, safe=False)
+                return JsonResponse(specializations, safe=False)
+            return JsonResponse(json_data, safe=False)
 
     except Exception as e:
         print(e)
@@ -95,19 +95,19 @@ def get_specializations(request):
 def get_accrediations(request):
     try:
         with open("static/autocomplete_data/accrediations.json", 'r') as f:
-            data = json.load(f)
+            json_data = json.load(f)
 
             if request.GET.get('q'):
-                accrediation_list = []
+                accrediations = []
                 query = request.GET['q']
 
-                _ = [[accrediation_list.append(f'{accrediation} ({full_form})') for accrediation in values] for full_form, values in data.items()]
+                _ = [[accrediations.append(f'{accrediation} ({full_form})') for accrediation in short_form] for full_form, short_form in json_data.items()]
 
-                filtered_list = list(filter(lambda x: query in x.lower().replace('(', ''), accrediation_list))
-                filtered_list.sort()
+                filtered_accrediations = list(filter(lambda accrediation: query in accrediation.lower().replace('(', ''), accrediations))
+                filtered_accrediations.sort()
 
-                return JsonResponse(filtered_list, safe=False)
-            return JsonResponse(data, safe=False)
+                return JsonResponse(filtered_accrediations, safe=False)
+            return JsonResponse(json_data, safe=False)
 
     except Exception as e:
         return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)

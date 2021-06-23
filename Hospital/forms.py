@@ -4,6 +4,11 @@ from .models import Hospital
 
 class HospitalForm(forms.ModelForm):
     '''Hospital reigsteration form'''
+    specialization = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'autocomplete':'off',
+            'data-url': "/HSAC",
+        }))
 
     class Meta:
         model = Hospital
