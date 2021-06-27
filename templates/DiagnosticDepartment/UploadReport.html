@@ -5,32 +5,6 @@
   <h2>Upload Report </h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {% comment %} {{ form|crispy }} {% endcomment %}
-    
-    {% for field in form2.visible_fields %}
-        <div class="form-group">
-        {{ field.label_tag }}
-
-        {% if form2.is_bound %}
-            {% if field.errors %}
-                {% render_field field class="form-control is-invalid" %}
-            {% for error in field.errors %}
-                <div class="invalid-feedback">
-                {{ error }}
-                </div>
-            {% endfor %}
-            {% else %}
-                {% render_field field class="form-control is-valid" %}
-            {% endif %}
-        {% else %}
-            {% render_field field class="form-control" %}
-        {% endif %}
-
-        {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
-        {% endif %}
-        </div>
-    {% endfor %}
 
     {% for field in form.visible_fields %}
         <div class="form-group">
@@ -49,9 +23,9 @@
             {% endif %}
         {% else %}
             {% if field.auto_id == "id_report" %}
-            {% render_field field class="form-control pb-5 pt-3" %}
+                {% render_field field class="form-control pb-5 pt-3" %}
             {% else %}
-            {% render_field field class="form-control" %}
+                {% render_field field class="form-control" %}
             {% endif %}
         {% endif %}
 

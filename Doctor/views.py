@@ -1,12 +1,13 @@
 """View for Doctor"""
 import json
+from django.db import connection
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
-from Patient.models import Patient, PatientHistory
+from Patient.models import Patient
 from Patient.forms import PatientHistoryForm
 from .models import Doctor
 
@@ -24,17 +25,6 @@ class ViewDoctorProfile(TemplateView):
         #       < (datetime.month(patient.dob), datetime.day(patient.dob)))
         # age = patient.dob
         return render(request,self.template_name,{'profile':doctor})
-
-class ViewPatientReports(TemplateView):
-    '''For doctors to view patient reports'''
-    template_name='Doctor/viewPatientReport.html'
-
-    def get(self,request, *args, **kwargs):
-        user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
-        model = DiagnosticDepartmentReport.objects.filter(user=user).order_by("-created_on")
-
-        return render(request,self.template_name,{'models':model})
-
 
 class AddPatientDataView(TemplateView):
     '''For doctors to add new patient'''
@@ -59,19 +49,9 @@ class AddPatientDataView(TemplateView):
             formdata.save()
 
             # return render(request, 'Doctor/index.html')
-            return redirect('viewpatienthistory')
+            return redirect('viewHistory')
         form = PatientHistoryForm()
         return render(request,self.template_name, {'form': form})
-
-class ViewPatientHistory(TemplateView):
-    '''Class for doctor to view the patient history'''
-    template_name='Doctor/viewPatientHistory.html'
-
-    def get(self,request, *args, **kwargs):
-        user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
-        model = PatientHistory.objects.filter(user=user).order_by("-created_on")
-
-        return render(request,self.template_name,{'models':model})
 
 def get_specializations(request):
     try:
