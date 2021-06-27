@@ -3,6 +3,14 @@
     {
       "name": "feature/test2",
       "base": "develop"
+    },
+    {
+      "name": "feature/BlockchainImplementation",
+      "base": "develop"
+    },
+    {
+      "name": "feature/linkUploadReportToPHistory",
+      "base": "develop"
     }
   ],
   "files.exclude": {
@@ -13,6 +21,5 @@
     "**/__init__.py": true,
     "**/__MACOSX": true,
     "**/fonts": true,
-    "media/": true,
   }
 }

@@ -10,6 +10,7 @@ from Hospital.forms import HospitalForm
 from Doctor.forms import DoctorForm
 from DiagnosticDepartment.forms import DiagnosticDepartmentSignupForm
 from Patient.forms import UserRegisterationForm
+from Patient.models import Patient
 
 from .forms import UserForm
 
@@ -107,7 +108,7 @@ class RegisterationView(TemplateView):
         return render(request,'Authentication/registeration.html', args)
 
 
-class OtpAuthView(TemplateView):
+class OtpAuth(TemplateView):
     template_url = "Authentication/otp.html"
 
     def clear_session_otp(self, request):
@@ -128,7 +129,7 @@ class OtpAuthView(TemplateView):
             msg = f"{str(request.session['generated_otp'])} is your authentication otp."
 
             try:
-                client.messages.create(to=phone_number, from_=MY_TWILIO, body=msg)
+                # client.messages.create(to=phone_number, from_=MY_TWILIO, body=msg)
                 return render(request, self.template_url, { "phone_number": request.POST['Phone_number'], })
 
             except TwilioRestException as ex:
@@ -149,7 +150,8 @@ class OtpAuthView(TemplateView):
 
         if int(request.POST['Otp']) == int(request.session['generated_otp']):
             request.session['phoneNumber'] = request.POST['Phone_number']
-            return redirect("PatientHistory" if user.is_doctor else "DiagnosticDepartmentUpload")
+            request.session['patient_name'] = Patient.objects.get(phone_number=request.session['phoneNumber']).user.first_name
+            return redirect("PatientHistory" if user.is_doctor else "viewHistory")
 
         args = {
             "phone_number": request.POST['Phone_number'],
