@@ -14,7 +14,7 @@ from Patient.forms import UserRegisterationForm
 from .forms import UserForm
 
 ACCOUNT_SID = "ACf704c92aadad13c090e0de80beceb735"
-AUTH_TOKEN = "132386749a00e729bf1dc17219f72188"
+AUTH_TOKEN = "db75e2842264bb91c6d89a2c27daaa54"
 MY_TWILIO = "+12705132260"
 
 User = get_user_model()
