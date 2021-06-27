@@ -6,7 +6,7 @@
         <div class="card pl-3 pt-3 pb-3 pr-0 border-0" style="height:100%">
             <div>
                 <span class="float-left"><h3>My history</h3></span>                
-                <a href="{% url 'viewReport_p' %}" class="float-right mt-2">
+                {% comment %} <a href="{% url 'viewReport_p' %}" class="float-right mt-2">
                     <span class="text-secondary" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
@@ -14,7 +14,7 @@
                         </svg>
                         <span class="pt-1 mr-3">My reports</span>
                     </span>
-                </a>    
+                </a>     {% endcomment %}
             </div>
             <div style="overflow: auto;">
             <div class="pr-3">
@@ -35,7 +35,11 @@
                             </div>
                         </div>
                         <div class="row m-0">
-                            <span style="width:70%">
+                            {% if model.ddr_id is None %}
+                                <span style="width:100%">
+                            {% else %}
+                                <span style="width:70%">
+                            {% endif %}
                                 <div class="card-body pt-1 pl-3">
 
                                     {% comment %} <div class="row">
@@ -93,40 +97,44 @@
                                     
                                 </div>
                             </span>
-                            <span class="card mb-2 mt-2" style="width:29.5%">
-                                <div>
-                                    <div class="mt-3 pl-3 float-left">
-                                        <span class="h4 mb-0">XRAY Report</span>
+                            {% if model.ddr_id is not None %}
+                                <span class="card mb-2 mt-2" style="width:29.5%">
+                                    <div>
+                                        <div class="mt-3 pl-3 float-left">
+                                            <span class="h4 mb-0">{{model.name}}</span>
+                                        </div>
+                                        <div class="mb-3 mt-4 pr-2 small float-right">
+                                            <span>{{model.ddr_created_on}}</span>
+                                        </div>
                                     </div>
-                                    <div class="mb-3 mt-4 pr-2 small float-right">
-                                        <span>April 18, 2021, 9:29 p.m.</span>
+                                    {% comment %} <div class="card-title mb-0 ml-3 mt-3">
+                                        <h4>XRAY Report</h4>
                                     </div>
-                                </div>
-                                {% comment %} <div class="card-title mb-0 ml-3 mt-3">
-                                    <h4>XRAY Report</h4>
-                                </div>
-                                <div class="card-subtitle mb-3 ml-3 small">
-                                    April 18, 2021, 9:29 p.m.
-                                </div> {% endcomment %}
-                                <div class="card-body pt-1 pl-3">
-                                    <div class="row">
-                                        <span class="col-4">Handled by:</span>
-                                        <span class="col-8 pl-0">HealthWealth<span>
-                                    </div>
-                                    <div class="row">
-                                        <span class="col-4">Supervisor:</span>
-                                        <span class="col-8 pl-0">Samuel<span>
-                                    </div>
-                                    {% comment %} <div class="row">
-                                        <span class="col-3">Referred by:</span>
-                                        <span class="col-9 pl-0">GurdeepBarad<span>
+                                    <div class="card-subtitle mb-3 ml-3 small">
+                                        April 18, 2021, 9:29 p.m.
                                     </div> {% endcomment %}
-                                    <div class="row">
-                                        <span class="col-4">Report:</span>
-                                        <span class="col-8 pl-0 text-ellipsis" title="/media/DiagnosticDepartment/report/7_SohailAnsari.docx">/media/DiagnosticDepartment/report/7_SohailAnsari.docx<span>
+                                    <div class="card-body pt-1 pl-3">
+                                        <div class="row">
+                                            <span class="col-4">Handled by:</span>
+                                            <span class="col-8 pl-0">{{model.handled_by}}<span>
+                                        </div>
+                                        <div class="row">
+                                            <span class="col-4">Supervisor:</span>
+                                            <span class="col-8 pl-0">{{model.supervisor}}<span>
+                                        </div>
+                                        {% comment %} <div class="row">
+                                            <span class="col-3">Referred by:</span>
+                                            <span class="col-9 pl-0">GurdeepBarad<span>
+                                        </div> {% endcomment %}
+                                        <div class="row">
+                                            <span class="col-4">Report:</span>
+                                            <span class="col-8 pl-0 text-ellipsis" title="{{model.downloadLink}}">
+                                                <a href="{{model.downloadLink}}" download>{{model.report}}</a>
+                                            <span>
+                                        </div>
                                     </div>
-                                </div>
-                            </span>
+                                </span>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

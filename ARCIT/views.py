@@ -10,6 +10,7 @@ from Hospital.forms import HospitalForm
 from Doctor.forms import DoctorForm
 from DiagnosticDepartment.forms import DiagnosticDepartmentSignupForm
 from Patient.forms import UserRegisterationForm
+from Patient.models import Patient
 
 from .forms import UserForm
 
@@ -149,7 +150,8 @@ class OtpAuthView(TemplateView):
 
         if int(request.POST['Otp']) == int(request.session['generated_otp']):
             request.session['phoneNumber'] = request.POST['Phone_number']
-            return redirect("PatientHistory" if user.is_doctor else "DiagnosticDepartmentUpload")
+            request.session['patient_name'] = Patient.objects.get(phone_number=request.session['phoneNumber']).user.first_name
+            return redirect("PatientHistory" if user.is_doctor else "viewpatienthistory")
 
         args = {
             "phone_number": request.POST['Phone_number'],

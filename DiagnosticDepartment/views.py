@@ -1,6 +1,6 @@
 # Create your views here.
 import json
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
@@ -18,7 +18,7 @@ class DiagnosticDepartmentUploadReport(TemplateView):
         context['form'] = form
         return render(request, 'DiagnosticDepartment/UploadReport.html', context)
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         
         form = DiagnosticDepartmentForm()
         context = {}
@@ -32,11 +32,11 @@ class DiagnosticDepartmentUploadReport(TemplateView):
 
                 form_data=form.save(commit=False)
                 form_data.user=user
+                form_data.patient_history_id = kwargs.pop('id')
                 form_data.handled_by=dd_user
                 form_data.save()
-                url = form_data.report.url
                 
-                return render(request, 'DiagnosticDepartment/UploadReport.html', {'msg': "file uploaded successfully", 'url':url})
+                return redirect('viewpatienthistory')
 
         return render(request, 'DiagnosticDepartment/UploadReport.html', context)
 

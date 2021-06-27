@@ -1,12 +1,13 @@
 """View for Doctor"""
 import json
+from django.db import connection
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
-from Patient.models import Patient, PatientHistory
+from Patient.models import Patient
 from Patient.forms import PatientHistoryForm
 from .models import Doctor
 
@@ -63,13 +64,62 @@ class AddPatientDataView(TemplateView):
         form = PatientHistoryForm()
         return render(request,self.template_name, {'form': form})
 
+class MapColumnHeadings():
+    def __init__(self, cursor):
+        self._cursor = cursor
+    
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        row = self._cursor.__next__()
+
+        return { description[0]: row[col] for col, description in enumerate(self._cursor.description) }
+
 class ViewPatientHistory(TemplateView):
     '''Class for doctor to view the patient history'''
     template_name='Doctor/viewPatientHistory.html'
 
+    def raw_sql_executor(self, user):
+        rows = []
+
+        with connection.cursor() as cursor:
+            cursor.execute("""select 
+                                    ph.id,
+                                    medical_status,
+                                    symtomps, disease,
+                                    affected_area,
+                                    timespan,
+                                    course_duration,
+                                    follow_up,
+                                    referred_from_id,
+                                    referred_to,
+                                    ph.user_id,
+                                    ph.created_on,
+                                    prescription,
+                                    ddr.name,
+                                    ddr.supervisor,
+                                    ddr.referred_by,
+                                    ddr.handled_by_id,
+                                    ddr.report,
+                                    ddr.user_id,
+                                    ddr.created_on as ddr_created_on,
+                                    ddr.patient_history_id,
+                                    ddr.id as ddr_id
+                                from Patient_patienthistory ph 
+                                left join DiagnosticDepartment_diagnosticdepartmentreport ddr 
+                                    on ddr.patient_history_id = ph.id 
+                                where ph.user_id = %s
+                                order by ph.created_on""", [user.id])
+            
+            for row in MapColumnHeadings(cursor):
+                rows.append(row)
+
+        return rows
+
     def get(self,request, *args, **kwargs):
         user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
-        model = PatientHistory.objects.filter(user=user).order_by("-created_on")
+        model = self.raw_sql_executor(user)
 
         return render(request,self.template_name,{'models':model})
 

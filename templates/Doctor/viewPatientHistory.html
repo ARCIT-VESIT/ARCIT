@@ -5,7 +5,7 @@
     <div style="height:calc(100vh - 105px)">    
         <div class="card p-3 border-0" style="height:100%">
             <div>
-                <span class="float-left"><h3>Patient's history</h3></span>
+                <span class="float-left"><h3>{{request.session.patient_name}}'s history</h3></span>
                 <a href="{% url 'PatientHistory' %}" class="float-right mt-2 mr-2">
                     <span class="text-secondary">
                         <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -14,7 +14,7 @@
                         <span class="pt-1">Add new diagnosis</span>
                     </span>
                 </a>    
-                <a href="{% url 'PatientReports' %}" class="float-right mt-2">
+                {% comment %} <a href="{% url 'PatientReports' %}" class="float-right mt-2">
                     <span class="text-secondary" >
                         <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.134 13.134 0 0 0 1.66 2.043C4.12 11.332 5.88 12.5 8 12.5c2.12 0 3.879-1.168 5.168-2.457A13.134 13.134 0 0 0 14.828 8a13.133 13.133 0 0 0-1.66-2.043C11.879 4.668 10.119 3.5 8 3.5c-2.12 0-3.879 1.168-5.168 2.457A13.133 13.133 0 0 0 1.172 8z"/>
@@ -22,7 +22,7 @@
                         </svg>
                         <span class="pt-1">View patient reports</span>
                     </span>
-                </a>    
+                </a>     {% endcomment %}
             </div>
             <div style="overflow: auto;">
             {% if models|length == 0 %}
@@ -62,6 +62,11 @@
                             <span class="col-2">Referred to:</span>
                             <span class="col-10 pl-0">{{model.referred_to}}<span>
                         </div>
+                        {% if request.session.is_dd and model.ddr_id is None %}                            
+                            <button class="btn btn-secondary">
+                                <a href="{% url 'DiagnosticDepartmentUpload' id=model.id %}" style="color: unset;">Add report</a>
+                            </button>
+                        {% endif %}
                     </div>
                 </div>
             </div>
