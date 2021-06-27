@@ -129,7 +129,7 @@ class OtpAuth(TemplateView):
             msg = f"{str(request.session['generated_otp'])} is your authentication otp."
 
             try:
-                client.messages.create(to=phone_number, from_=MY_TWILIO, body=msg)
+                # client.messages.create(to=phone_number, from_=MY_TWILIO, body=msg)
                 return render(request, self.template_url, { "phone_number": request.POST['Phone_number'], })
 
             except TwilioRestException as ex:
