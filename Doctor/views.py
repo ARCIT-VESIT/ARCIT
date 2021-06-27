@@ -60,7 +60,7 @@ class AddPatientDataView(TemplateView):
             formdata.save()
 
             # return render(request, 'Doctor/index.html')
-            return redirect('viewpatienthistory')
+            return redirect('addPatientRecord')
         form = PatientHistoryForm()
         return render(request,self.template_name, {'form': form})
 
@@ -80,11 +80,13 @@ class ViewPatientHistory(TemplateView):
     '''Class for doctor to view the patient history'''
     template_name='Doctor/viewPatientHistory.html'
 
-    def raw_sql_executor(self, user):
+    def raw_sql_executor(self, request, user):
         rows = []
 
         with connection.cursor() as cursor:
             cursor.execute("""select 
+                                    dd_user.first_name || ' (' || dd_user.Username || ')' as handled_by,
+                                    p_user.first_name || ' (' || p_user.Username || ')' as referred_from,
                                     ph.id,
                                     medical_status,
                                     symtomps, disease,
@@ -109,17 +111,22 @@ class ViewPatientHistory(TemplateView):
                                 from Patient_patienthistory ph 
                                 left join DiagnosticDepartment_diagnosticdepartmentreport ddr 
                                     on ddr.patient_history_id = ph.id 
+                                left join ARCIT_user dd_user
+                                    on dd_user.id = ddr.handled_by_id
+                                left join ARCIT_user p_user
+                                    on p_user.id = ph.referred_from_id
                                 where ph.user_id = %s
-                                order by ph.created_on""", [user.id])
+                                order by ph.created_on desc""", [user.id])
             
             for row in MapColumnHeadings(cursor):
+                row['downloadLink'] = f'{request.build_absolute_uri("/media/")}{row["report"]}'
                 rows.append(row)
 
         return rows
 
     def get(self,request, *args, **kwargs):
         user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
-        model = self.raw_sql_executor(user)
+        model = self.raw_sql_executor(request, user)
 
         return render(request,self.template_name,{'models':model})
 

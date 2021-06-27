@@ -19,7 +19,7 @@ urlpatterns = [
     url(r'^signup/$', TemplateView.as_view(template_name='sidebar.html'), name='signup'),
     url(r'^logout/$', auth_views.LogoutView.as_view(template_name='Authentication/logout.html'), name='logout'),
     url(r'^error/$', TemplateView.as_view(template_name='errorPage.html'), name='error'),
-    url(r'^otpAuth/$', core_views.OtpAuthView.as_view(template_name='Authentication/otp.html'), name='otpAuth'),
+    url(r'^otpAuth/$', core_views.OtpAuth.as_view(template_name='Authentication/otp.html'), name='otpAuth'),
 ]
 
 if settings.DEBUG:

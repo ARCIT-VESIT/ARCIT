@@ -15,7 +15,7 @@ from Patient.models import Patient
 from .forms import UserForm
 
 ACCOUNT_SID = "ACf704c92aadad13c090e0de80beceb735"
-AUTH_TOKEN = "132386749a00e729bf1dc17219f72188"
+AUTH_TOKEN = "db75e2842264bb91c6d89a2c27daaa54"
 MY_TWILIO = "+12705132260"
 
 User = get_user_model()
@@ -108,7 +108,7 @@ class RegisterationView(TemplateView):
         return render(request,'Authentication/registeration.html', args)
 
 
-class OtpAuthView(TemplateView):
+class OtpAuth(TemplateView):
     template_url = "Authentication/otp.html"
 
     def clear_session_otp(self, request):
@@ -151,7 +151,7 @@ class OtpAuthView(TemplateView):
         if int(request.POST['Otp']) == int(request.session['generated_otp']):
             request.session['phoneNumber'] = request.POST['Phone_number']
             request.session['patient_name'] = Patient.objects.get(phone_number=request.session['phoneNumber']).user.first_name
-            return redirect("PatientHistory" if user.is_doctor else "viewpatienthistory")
+            return redirect("PatientHistory" if user.is_doctor else "addPatientRecord")
 
         args = {
             "phone_number": request.POST['Phone_number'],

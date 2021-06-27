@@ -36,7 +36,7 @@ class DiagnosticDepartmentUploadReport(TemplateView):
                 form_data.handled_by=dd_user
                 form_data.save()
                 
-                return redirect('viewpatienthistory')
+                return redirect('addPatientRecord')
 
         return render(request, 'DiagnosticDepartment/UploadReport.html', context)
 

@@ -63,7 +63,8 @@ class ViewPatientHistory(TemplateView):
 
         with connection.cursor() as cursor:
             cursor.execute("""select 
-                                    u.first_name || ' (' || u.Username || ')' as handled_by,
+                                    dd_user.first_name || ' (' || dd_user.Username || ')' as handled_by,
+                                    p_user.first_name || ' (' || p_user.Username || ')' as referred_from,
                                     ph.id,
                                     medical_status,
                                     symtomps,
@@ -85,14 +86,17 @@ class ViewPatientHistory(TemplateView):
                                     ddr.patient_history_id,
                                     ddr.id as ddr_id
                                 from Patient_patienthistory ph 
-                                inner join ARCIT_user u on u.id = ddr.handled_by_id
                                 left join DiagnosticDepartment_diagnosticdepartmentreport ddr 
                                     on ddr.patient_history_id = ph.id 
+                                left join ARCIT_user dd_user
+                                    on dd_user.id = ddr.handled_by_id
+                                left join ARCIT_user p_user
+                                    on p_user.id = ph.referred_from_id
                                 where ph.user_id = %s""", [user.id])
             
             for row in CursorByName(cursor):
 
-                row['downloadLink'] = f'{request.build_absolute_uri("/media/")}/{row["report"]}'
+                row['downloadLink'] = f'{request.build_absolute_uri("/media/")}{row["report"]}'
                 rows.append(row)
 
         return rows
