@@ -54,7 +54,7 @@ def get_report_types(request):
         with open("static/autocomplete_data/report_types.json", 'r') as f:
             json_data = json.load(f)
 
-            if request.GET.get('q') or request.GET.get('q') is '':
+            if request.GET.get('q') or request.GET.get('q') == '':
                 report_types = []
                 query = request.GET['q']
 
