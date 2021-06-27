@@ -41,7 +41,7 @@
                                 <div>
                                     <div class="mt-3 pl-3">
                                         <span class="h4 mb-0">{{model.disease}}</span>
-                                        <span class="ml-1 align-text-top badge badge-{% if model.medical_status == 'critical' %}danger{% elif model.medical_status == 'normal' %}primary{% else %}warning{% endif %}">
+                                        <span class="ml-1 align-text-top badge badge-{% if model.medical_status|title == 'Critical' %}danger{% elif model.medical_status|title == 'Mild' %}info{% elif model.medical_status|title == 'Normal' %}primary{% else %}light{% endif %}">
                                         {{model.medical_status}}</span>
                                         <div class="small">{{model.created_on}}</div>
                                     </div>

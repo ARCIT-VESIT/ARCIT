@@ -151,7 +151,7 @@ class OtpAuth(TemplateView):
         if int(request.POST['Otp']) == int(request.session['generated_otp']):
             request.session['phoneNumber'] = request.POST['Phone_number']
             request.session['patient_name'] = Patient.objects.get(phone_number=request.session['phoneNumber']).user.first_name
-            return redirect("PatientHistory" if user.is_doctor else "addPatientRecord")
+            return redirect("PatientHistory" if user.is_doctor else "viewHistory")
 
         args = {
             "phone_number": request.POST['Phone_number'],

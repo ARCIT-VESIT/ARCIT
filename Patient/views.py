@@ -104,7 +104,7 @@ class ViewPatientHistory(TemplateView):
         return rows
 
     def get(self,request, *args, **kwargs):
-        user = User.objects.get(username=request.session['loggedin_username']) if request.session['is_patient'] else Patient.objects.get(phone_number=request.session['phoneNumber']).user
+        user = User.objects.get(username=request.session['loggedin_username']) if request.session.has_key('is_patient') else Patient.objects.get(phone_number=request.session['phoneNumber']).user
         model = self.raw_sql_executor(request, user)
 
         return render(request,self.template_name,{'models':model})
