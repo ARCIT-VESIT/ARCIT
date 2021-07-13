@@ -62,7 +62,7 @@ def is_chain_valid():
 def mine_patient_history(form_data):
     patient_count = PatientHistory.objects.count()
 
-    if patient_count is 0:
+    if patient_count == 0:
         form_data.nonce = 1
         form_data.previous_hash = '0'
         # return { form2.nonce, form2.previous_hash }
