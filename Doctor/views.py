@@ -1,13 +1,16 @@
 """View for Doctor"""
+import hashlib
 import json
+
 from django.db import connection
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
+from django.core import serializers
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
-from Patient.models import Patient
+from Patient.models import Patient,PatientHistory
 from Patient.forms import PatientHistoryForm
 from .models import Doctor
 
@@ -26,12 +29,59 @@ class ViewDoctorProfile(TemplateView):
         # age = patient.dob
         return render(request,self.template_name,{'profile':doctor})
 
+def proof_of_work(previous_nonce):
+    new_nonce = 1
+    check_nonce = False
+    while check_nonce is False:
+        hash_operation = hashlib.sha256(str(new_nonce**2 - previous_nonce**2).encode()).hexdigest()
+        if hash_operation[:4] == '0000':
+            check_nonce = True
+        else:
+            new_nonce += 1
+    return new_nonce
+
+hash_block = lambda block : hashlib.sha256(json.dumps(serializers.serialize('json', [ block, ]) , sort_keys = True).encode()).hexdigest()
+
+def is_chain_valid():
+    patients = PatientHistory.objects.all()
+    previous_block = patients[0]
+    block_index = 1
+    while block_index < len(patients):
+        block = patients[block_index]
+        if block.previous_hash != hash_block(previous_block):
+            return False
+        previous_nonce = previous_block.nonce
+        nonce = block.nonce
+        hash_operation = hashlib.sha256(str(nonce**2 - previous_nonce**2).encode()).hexdigest()
+        if hash_operation[:4] != '0000':
+            return False
+        previous_block = block
+        block_index += 1
+    return True
+
+def mine_patient_history(form_data):
+    patient_count = PatientHistory.objects.count()
+
+    if patient_count is 0:
+        form_data.nonce = 1
+        form_data.previous_hash = '0'
+        # return { form2.nonce, form2.previous_hash }
+    else:
+        patients = PatientHistory.objects.all()
+        previous_block = patients.last()
+        previous_nonce = previous_block.nonce
+        nonce = proof_of_work(previous_nonce)
+        previous_hash = hash_block(previous_block)
+        form_data.nonce = nonce
+        form_data.previous_hash = previous_hash
+
 class AddPatientDataView(TemplateView):
     '''For doctors to add new patient'''
     template_name='Doctor/addPatientHistory.html'
 
     def get(self,request, *args, **kwargs):
         form = PatientHistoryForm()
+        # res = is_chain_valid()
 
         return render(request,self.template_name,{'form':form})
 
@@ -44,6 +94,7 @@ class AddPatientDataView(TemplateView):
 
         if form.is_valid():
             formdata = form.save(commit=False)
+            mine_patient_history(formdata)
             formdata.user=user
             formdata.referred_from = doctor_user
             formdata.save()

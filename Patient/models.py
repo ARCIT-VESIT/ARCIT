@@ -18,6 +18,8 @@ class Patient(models.Model):
 
 class PatientHistory(models.Model):	
     id = models.BigAutoField(primary_key=True)
+    nonce = models.BigIntegerField()
+    previous_hash = models.CharField(max_length=254)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user', on_delete=models.CASCADE)
     medical_status = models.CharField(max_length=50)
     symtomps = models.CharField(max_length=1000)
