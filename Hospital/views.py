@@ -1,12 +1,12 @@
 """View for hospital"""
 import json
+
 import django_tables2 as tables
 from django.contrib.auth import get_user_model
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.http import JsonResponse
-from django.db.models import Q
-
 from Doctor.models import Doctor
 
 from .filters import DoctorFilter

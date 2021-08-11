@@ -1,11 +1,12 @@
 # Create your views here.
 import json
-from django.shortcuts import redirect, render
-from django.views.generic import TemplateView
+
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
-
+from django.shortcuts import redirect, render
+from django.views.generic import TemplateView
 from Patient.models import Patient
+
 from .forms import DiagnosticDepartmentForm
 from .models import DiagnosticDepartment
 

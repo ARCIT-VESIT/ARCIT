@@ -1,0 +1,48 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+<body>
+    <div style="height:calc(100vh - 105px)">
+        <div class="card pl-3 pt-3 pb-3 pr-0 border-0" style="height:100%">
+            <div>
+                <span class="float-left">
+                <h3>News near you</h3>
+                </span>
+            </div>
+                
+            <div style="overflow: auto;">
+                <div class="pl-3 pr-3">
+                    <div class="row">
+                        {% for news in trending_news %}
+                            <div class="col-6 p-0 pr-3">
+                                <span class="card mt-2">
+                                    <div class="row m-0">
+                                        <div>
+                                            <div class="mt-3 pl-3">
+                                                <span class="h4 mb-0">{{news.title}}</span>
+                                                <div class="small">
+                                                    <span class="font-weight-bold">{{news.author}} </span>
+                                                    <span> | {{news.publishedAt}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-body pt-3 pl-3">
+                                            <div class="row">
+                                                <img class="card-img-top" src="{{ news.urlToImage }}" alt="hey">
+                                            </div>
+                                            <div class="row">
+                                                {% comment %} <div class="col-12">{{news.description}}</div> {% endcomment %}
+                                                <span class="col-12">{{news.content}} <a href="{{news.url}}">Read more</a></span>                                            
+                                            </div>                                                                            
+                                        </div>                                
+                                    </div>
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock %}

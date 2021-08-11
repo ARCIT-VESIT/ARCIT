@@ -12,6 +12,7 @@ class Patient(models.Model):
     gender = models.CharField(max_length=20)
     weight = models.IntegerField()
     address = models.CharField(max_length=254)
+    state = models.CharField(max_length=254, null=True)
     adharcardno = models.BigIntegerField(unique=True)
     blood_group = models.CharField(max_length=5, null=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='created_by', on_delete=models.CASCADE)

@@ -1,12 +1,15 @@
 # from datetime import date, datetime
 """View for patient"""
-from django.db import connection
+import json
+
+import requests
 from django.contrib.auth import get_user_model
+from django.db import connection
+from django.http.response import JsonResponse
 # from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from DiagnosticDepartment.models import DiagnosticDepartmentReport
 from .forms import PatientHistoryForm
 from .models import Patient
 
@@ -116,3 +119,29 @@ class ViewPatientHistory(TemplateView):
         model = self.raw_sql_executor(request, user)
 
         return render(request,self.template_name,{'models':model})
+
+def get_states(request):
+    try:
+        with open("static/autocomplete_data/states.json", 'r') as f:
+            json_data = json.load(f)
+            
+            if request.GET.get('q'):
+                query = request.GET['q']
+
+                states = list(filter(lambda state: query in state.lower(), json_data))
+                states.sort()
+                
+                return JsonResponse(states, safe=False)
+            return JsonResponse(json_data, safe=False)
+
+    except Exception as e:
+        return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)
+
+def get_news(request):
+    state = Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).state
+
+    r = requests.get(f'https://newsapi.org/v2/top-headlines?country=in&category=health&q={state}&apiKey=134ea850951345ff90773d8a6cb4ce4b', params=request.GET)
+    news_data = json.loads(r.content)
+
+    if r.status_code == 200:
+        return render(request, 'Patient/news.html', {'trending_news': news_data['articles'] })

@@ -3,16 +3,14 @@ import hashlib
 import json
 from random import randint
 
-from django.db import connection
-from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
 from django.contrib.auth import get_user_model
-from django.http import JsonResponse
 from django.core import serializers
-
-from DiagnosticDepartment.models import DiagnosticDepartmentReport
-from Patient.models import Patient,PatientHistory
+from django.http import JsonResponse
+from django.shortcuts import redirect, render
+from django.views.generic import TemplateView
 from Patient.forms import PatientHistoryForm
+from Patient.models import Patient, PatientHistory
+
 from .models import Doctor
 
 User = get_user_model()

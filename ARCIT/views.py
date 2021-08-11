@@ -1,21 +1,21 @@
 import random
-from django.contrib.auth import login, authenticate, get_user_model
-from django.contrib.auth.forms import AuthenticationForm
-from django.shortcuts import render, redirect
-from django.views.generic import TemplateView
-from twilio.rest import Client
-from twilio.base.exceptions import TwilioRestException
 
-from Hospital.forms import HospitalForm
-from Doctor.forms import DoctorForm
 from DiagnosticDepartment.forms import DiagnosticDepartmentSignupForm
+from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import redirect, render
+from django.views.generic import TemplateView
+from Doctor.forms import DoctorForm
+from Hospital.forms import HospitalForm
 from Patient.forms import UserRegisterationForm
 from Patient.models import Patient
+from twilio.base.exceptions import TwilioRestException
+from twilio.rest import Client
 
 from .forms import UserForm
 
 ACCOUNT_SID = "ACf704c92aadad13c090e0de80beceb735"
-AUTH_TOKEN = "2595628313e044e5e617fa889b9185f5"
+AUTH_TOKEN = "944b2571fca719575c8aeb3435789481"
 MY_TWILIO = "+12705132260"
 
 User = get_user_model()

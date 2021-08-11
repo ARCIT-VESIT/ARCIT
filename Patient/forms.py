@@ -2,6 +2,12 @@ from django import forms
 from .models import  Patient, PatientHistory
 
 class UserRegisterationForm(forms.ModelForm):
+    state = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={
+            'autocomplete':'off',
+            'data-url': "/PSAC",
+        }))
+
     class Meta:
         model =  Patient
         fields = ('name',
@@ -11,6 +17,7 @@ class UserRegisterationForm(forms.ModelForm):
                 'gender',
                 'weight',
                 'address',
+                'state',
                 'adharcardno',
                 'blood_group',)
 
