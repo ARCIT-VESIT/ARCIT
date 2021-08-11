@@ -15,6 +15,12 @@ class UserRegisterationForm(forms.ModelForm):
                 'blood_group',)
 
 class PatientHistoryForm(forms.ModelForm):
+    medical_status = forms.CharField(widget=forms.Select(choices=[
+        (1, 'Normal'),
+        (2, 'Mild'),
+        (3, 'Critical'),
+    ]))
+
     class Meta:
         model =  PatientHistory
         fields = ('medical_status',

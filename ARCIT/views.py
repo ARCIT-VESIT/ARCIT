@@ -15,7 +15,7 @@ from Patient.models import Patient
 from .forms import UserForm
 
 ACCOUNT_SID = "ACf704c92aadad13c090e0de80beceb735"
-AUTH_TOKEN = "6cc2bcc43b03cf18a316a51e98311bb8"
+AUTH_TOKEN = "2595628313e044e5e617fa889b9185f5"
 MY_TWILIO = "+12705132260"
 
 User = get_user_model()
@@ -127,6 +127,7 @@ class OtpAuth(TemplateView):
             phone_number = '+91' + request.POST['Phone_number']
             client = Client(ACCOUNT_SID, AUTH_TOKEN)
             msg = f"{str(request.session['generated_otp'])} is your authentication otp."
+            print(msg)
 
             try:
                 client.messages.create(to=phone_number, from_=MY_TWILIO, body=msg)

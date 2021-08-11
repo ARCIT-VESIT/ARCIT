@@ -8,12 +8,3 @@ class User(AbstractUser):
     is_doctor = models.BooleanField(default=False)
     is_hospital = models.BooleanField(default=False)
     is_diagnosticDepartment = models.BooleanField(default=False)
-
-class UserTypeModel(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    usertype = models.CharField(max_length=6,
-            choices=(
-                        (2, 'Doctor'),
-                        (3, 'Hospital'),
-                        (4, 'Diagnostic Department'),
-                    ), default='2')

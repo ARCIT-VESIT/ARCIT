@@ -1,6 +1,7 @@
 """View for Doctor"""
 import hashlib
 import json
+from random import randint
 
 from django.db import connection
 from django.shortcuts import render, redirect
@@ -42,10 +43,12 @@ def proof_of_work(previous_nonce):
 
 hash_block = lambda block : hashlib.sha256(json.dumps(serializers.serialize('json', [ block, ]) , sort_keys = True).encode()).hexdigest()
 
-def is_chain_valid():
-    patients = PatientHistory.objects.all()
+def is_chain_valid(request):
+    user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
+    patients = PatientHistory.objects.filter(user=user.id)
     previous_block = patients[0]
     block_index = 1
+
     while block_index < len(patients):
         block = patients[block_index]
         if block.previous_hash != hash_block(previous_block):
@@ -59,15 +62,17 @@ def is_chain_valid():
         block_index += 1
     return True
 
-def mine_patient_history(form_data):
-    patient_count = PatientHistory.objects.count()
+def mine_patient_history(form_data, request):
+    user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
+    patients = PatientHistory.objects.filter(user=user.id)
+    patient_count = patients.count()
 
     if patient_count == 0:
-        form_data.nonce = 1
-        form_data.previous_hash = '0'
+        random_number = randint(56543, 95715)
+        form_data.nonce = random_number
+        form_data.previous_hash = hashlib.sha256(str(random_number).encode()).hexdigest()
         # return { form2.nonce, form2.previous_hash }
     else:
-        patients = PatientHistory.objects.all()
         previous_block = patients.last()
         previous_nonce = previous_block.nonce
         nonce = proof_of_work(previous_nonce)
@@ -81,7 +86,7 @@ class AddPatientDataView(TemplateView):
 
     def get(self,request, *args, **kwargs):
         form = PatientHistoryForm()
-        # res = is_chain_valid()
+        # res = is_chain_valid(request)
 
         return render(request,self.template_name,{'form':form})
 
@@ -94,7 +99,7 @@ class AddPatientDataView(TemplateView):
 
         if form.is_valid():
             formdata = form.save(commit=False)
-            mine_patient_history(formdata)
+            mine_patient_history(formdata, request)
             formdata.user=user
             formdata.referred_from = doctor_user
             formdata.save()

@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 
 from DiagnosticDepartment.models import DiagnosticDepartmentReport
 from .forms import PatientHistoryForm
-from .models import PatientHistory, Patient
+from .models import Patient
 
 User = get_user_model()
 
@@ -67,7 +67,12 @@ class ViewPatientHistory(TemplateView):
                         dd_user.first_name || ' (' || dd_user.Username || ')' as handled_by,
                         p_user.first_name || ' (' || p_user.Username || ')' as referred_from,
                         ph.id,
-                        medical_status,
+                        CASE
+                            WHEN medical_status = 1 THEN 'Normal'
+                            WHEN medical_status = 2 THEN 'Mild'
+                            WHEN medical_status = 3 THEN 'Critical'
+                            ELSE 'None'
+                        END AS medical_status,
                         symtomps,
                         disease,
                         affected_area,
