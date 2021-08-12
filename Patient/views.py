@@ -71,9 +71,9 @@ class ViewPatientHistory(TemplateView):
                         p_user.first_name || ' (' || p_user.Username || ')' as referred_from,
                         ph.id,
                         CASE
-                            WHEN medical_status = 1 THEN 'Normal'
-                            WHEN medical_status = 2 THEN 'Mild'
-                            WHEN medical_status = 3 THEN 'Critical'
+                            WHEN medical_status = '1' THEN 'Normal'
+                            WHEN medical_status = '2' THEN 'Mild'
+                            WHEN medical_status = '3' THEN 'Critical'
                             ELSE 'None'
                         END AS medical_status,
                         symtomps,
@@ -94,12 +94,12 @@ class ViewPatientHistory(TemplateView):
                         ddr.created_on as ddr_created_on,
                         ddr.patient_history_id,
                         ddr.id as ddr_id
-                    from Patient_patienthistory ph
-                    left join DiagnosticDepartment_diagnosticdepartmentreport ddr
+                    from "Patient_patienthistory" ph
+                    left join "DiagnosticDepartment_diagnosticdepartmentreport" ddr
                         on ddr.patient_history_id = ph.id
-                    left join ARCIT_user dd_user
+                    left join "ARCIT_user" dd_user
                         on dd_user.id = ddr.handled_by_id
-                    left join ARCIT_user p_user
+                    left join "ARCIT_user" p_user
                         on p_user.id = ph.referred_from_id
                     where ph.user_id = %s
                     order by ph.created_on desc""", [user.id]

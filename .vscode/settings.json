@@ -21,5 +21,11 @@
     "**/__init__.py": true,
     "**/__MACOSX": true,
     "**/fonts": true,
+    "**/wsgi.py": true,
+    "**/asgi.py": true,
+    ".github": true,
+    ".vscode/.ropeproject": true,
+    "staticfiles": true,
+    "media": true
   }
 }
