@@ -10,6 +10,7 @@
                 </span>
             </div>
                 
+            {% if trending_news|length > 1 %}
             <div style="overflow: auto;">
                 <div class="pl-3 pr-3">
                     <div class="row">
@@ -28,11 +29,11 @@
                                         </div>
                                         <div class="card-body pt-3 pl-3">
                                             <div class="row">
-                                                <img class="card-img-top" src="{{ news.urlToImage }}" alt="hey">
+                                                <img class="card-img-top col-12" src="{{ news.urlToImage }}" alt="Image">
                                             </div>
                                             <div class="row">
                                                 {% comment %} <div class="col-12">{{news.description}}</div> {% endcomment %}
-                                                <span class="col-12">{{news.content}} <a href="{{news.url}}">Read more</a></span>                                            
+                                                <span class="col-12">{{news.content}} <a href="{{news.url}}" target="blank">Read more</a></span>                                            
                                             </div>                                                                            
                                         </div>                                
                                     </div>
@@ -42,6 +43,9 @@
                     </div>
                 </div>
             </div>
+            {% else %}
+                No latest news near you.
+            {% endif %}
         </div>
     </div>
 </body>

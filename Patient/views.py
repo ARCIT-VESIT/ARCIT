@@ -139,9 +139,9 @@ def get_states(request):
 
 def get_news(request):
     state = Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).state
+    newsUrl = f'https://newsapi.org/v2/top-headlines?country=in&category=health&q={state}&apiKey=134ea850951345ff90773d8a6cb4ce4b'
+    response = requests.get(newsUrl, params=request.GET)
 
-    r = requests.get(f'https://newsapi.org/v2/top-headlines?country=in&category=health&q={state}&apiKey=134ea850951345ff90773d8a6cb4ce4b', params=request.GET)
-    news_data = json.loads(r.content)
-
-    if r.status_code == 200:
+    if response.status_code == 200:
+        news_data = json.loads(response.content)
         return render(request, 'Patient/news.html', {'trending_news': news_data['articles'] })
