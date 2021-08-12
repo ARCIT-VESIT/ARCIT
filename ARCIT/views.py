@@ -1,3 +1,4 @@
+import os
 import random
 
 from DiagnosticDepartment.forms import DiagnosticDepartmentSignupForm
@@ -14,8 +15,8 @@ from twilio.rest import Client
 
 from .forms import UserForm
 
-ACCOUNT_SID = "ACf704c92aadad13c090e0de80beceb735"
-AUTH_TOKEN = "944b2571fca719575c8aeb3435789481"
+ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
+AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
 MY_TWILIO = "+12705132260"
 
 User = get_user_model()
