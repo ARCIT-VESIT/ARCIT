@@ -4,4 +4,5 @@ requests==2.25.0
 django_heroku==0.3.1
 django_filter==2.4.0
 Django==3.2.6
+django-bootstrap3==14.2.0
 twilio==6.63.0
