@@ -1,0 +1,47 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+
+  <div id="container" class="card w-50">
+    <div class="card-body">
+        <canvas id="top-visited-specialities" data-url="{% url 'patient_dashboard_data' %}"></canvas>
+    </div>
+  </div>
+
+  <script>
+    $(() => {
+      const topVisitedSpecialitiesChart = $("#top-visited-specialities");
+      $.ajax({
+        url: topVisitedSpecialitiesChart.data("url"),
+        success: data => {
+          var ctx = topVisitedSpecialitiesChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'Specialities',
+                backgroundColor: [
+                    '#f66d44', '#feae65', '#aadea7', '#64c2a6', '#2d87bb'
+                ],
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Most visited specialities'
+              }
+            }
+          });
+        }
+      });
+    });
+  </script>
+
+{% endblock %}

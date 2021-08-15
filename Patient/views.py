@@ -3,6 +3,7 @@
 import json
 
 import requests
+from ARCIT.views import raw_sql_executor
 from django.contrib.auth import get_user_model
 from django.db import connection
 from django.http.response import JsonResponse
@@ -145,3 +146,30 @@ def get_news(request):
     if response.status_code == 200:
         news_data = json.loads(response.content)
         return render(request, 'Patient/news.html', {'trending_news': news_data['articles'] })
+
+def dashboard_data(request):
+    labels = []
+    data = []
+    
+    query = '''
+        SELECT d.specialization, count(*) AS visit_frequency from "Patient_patienthistory" ph
+            LEFT JOIN "Doctor_doctor" d ON d.user_id = ph.referred_from_id
+            WHERE ph.user_id = %s
+        GROUP BY d.specialization
+        ORDER BY visit_frequency DESC
+        LIMIT 5;
+    '''
+
+    dataset = raw_sql_executor(query, [User.objects.get(username=request.session['loggedin_username']).id])
+    
+    for record in dataset:
+        labels.append(record['specialization'])
+        data.append(record['visit_frequency'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
+
+def dashboard(request):
+    return render(request, 'Patient/dashboard.html', {})
