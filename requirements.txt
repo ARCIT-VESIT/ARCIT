@@ -7,3 +7,5 @@ Django==3.2.6
 django-bootstrap3==14.2.0
 twilio==6.63.0
 django-widget-tweaks==1.4.8
+django-twilio==0.13.0.post1
+gunicorn==20.0.4
