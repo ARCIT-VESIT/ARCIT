@@ -2,15 +2,28 @@
 
 {% block content %}
 
-  <div id="container" class="card w-50">
-    <div class="card-body">
-        <canvas id="top-visited-specialities" data-url="{% url 'patient_dashboard_data' %}"></canvas>
+  <div class="row ml-0">
+    <div class="col-6 pl-0">
+      <div class="card">
+        <div class="card-body">
+            <canvas id="top-visited-specialities-chart" data-url="{% url 'patient_most_visited_specialities' %}"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 pl-0">
+      <div class="card">
+        <div class="card-body">
+            <canvas id="frequent-diseases-chart" data-url="{% url 'patient_frequent_diseases' %}"></canvas>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
     $(() => {
-      const topVisitedSpecialitiesChart = $("#top-visited-specialities");
+      const topVisitedSpecialitiesChart = $("#top-visited-specialities-chart");
+      const frequentDiseasesChart = $("#frequent-diseases-chart");
+
       $.ajax({
         url: topVisitedSpecialitiesChart.data("url"),
         success: data => {
@@ -36,6 +49,42 @@
               title: {
                 display: true,
                 text: 'Most visited specialities'
+              }
+            }
+          });
+        }
+      });
+      
+      $.ajax({
+        url: frequentDiseasesChart.data("url"),
+        success: data => {
+          var ctx = frequentDiseasesChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'frequency',
+                backgroundColor: '#2d87bb',
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              scales: {
+                xAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+                }]
+              },
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Most occuring diseases'
               }
             }
           });

@@ -147,7 +147,7 @@ def get_news(request):
         news_data = json.loads(response.content)
         return render(request, 'Patient/news.html', {'trending_news': news_data['articles'] })
 
-def dashboard_data(request):
+def most_visited_specialities(request):
     labels = []
     data = []
     
@@ -165,6 +165,30 @@ def dashboard_data(request):
     for record in dataset:
         labels.append(record['specialization'])
         data.append(record['visit_frequency'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
+
+def frequent_diseases(request):
+    labels = []
+    data = []
+    
+    query = '''
+        SELECT ph.disease, count(*) AS disease_frequency FROM "Patient_patienthistory" ph
+            LEFT JOIN "Patient_patient" p ON p.user_id = ph.user_id
+            WHERE ph.user_id = %s
+        GROUP BY ph.disease
+        ORDER BY disease_frequency
+        LIMIT 10;
+    '''
+
+    dataset = raw_sql_executor(query, [User.objects.get(username=request.session['loggedin_username']).id])
+    
+    for record in dataset:
+        labels.append(record['disease'])
+        data.append(record['disease_frequency'])
 
     return JsonResponse(data={
         'labels': labels,
