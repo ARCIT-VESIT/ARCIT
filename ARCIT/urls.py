@@ -1,11 +1,13 @@
 from django.conf.urls import url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.views.generic.base import TemplateView
-from django.conf.urls.static import static
-from django.urls import path, include
+from django.contrib.staticfiles.storage import staticfiles_storage
+from django.urls import include, path
+from django.views.generic.base import RedirectView, TemplateView
 
 from ARCIT import views as core_views
+
 from . import settings
 
 urlpatterns = [
@@ -14,6 +16,7 @@ urlpatterns = [
     path('', include('Patient.urls')),
     path('', include('DiagnosticDepartment.urls')),
     path('', include('Hospital.urls')),
+    path("favicon.ico", RedirectView.as_view(url=staticfiles_storage.url("favicon.ico"))),
     path('register/<str:role>', core_views.RegisterationView.as_view(template_name='sidebar.html'), name='registeration'),
     url(r'^$', core_views.log_in, name='login'),
     url(r'^signup/$', TemplateView.as_view(template_name='sidebar.html'), name='signup'),

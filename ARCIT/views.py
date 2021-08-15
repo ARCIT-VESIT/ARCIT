@@ -4,6 +4,7 @@ import random
 from DiagnosticDepartment.forms import DiagnosticDepartmentSignupForm
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.forms import AuthenticationForm
+from django.db import connection
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from Doctor.forms import DoctorForm
@@ -17,7 +18,7 @@ from .forms import UserForm
 
 ACCOUNT_SID = os.environ['TWILIO_ACCOUNT_SID']
 AUTH_TOKEN = os.environ['TWILIO_AUTH_TOKEN']
-MY_TWILIO = "+12705132260"
+MY_TWILIO = "+17035961501"
 
 User = get_user_model()
 
@@ -160,3 +161,29 @@ class OtpAuth(TemplateView):
             "error": "Incorrect otp"
         }
         return render(request, self.template_url, args)
+
+class MapColumnHeadings():
+    def __init__(self, cursor):
+        self._cursor = cursor
+    
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        row = self._cursor.__next__()
+
+        return { description[0]: row[col] for col, description in enumerate(self._cursor.description) }
+
+def raw_sql_executor(query, params):
+        rows = []
+
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(query, params)
+
+                for row in MapColumnHeadings(cursor):
+                    rows.append(row)
+        except:
+            pass
+
+        return rows

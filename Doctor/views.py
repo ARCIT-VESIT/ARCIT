@@ -3,6 +3,7 @@ import hashlib
 import json
 from random import randint
 
+from ARCIT.views import raw_sql_executor
 from django.contrib.auth import get_user_model
 from django.core import serializers
 from django.http import JsonResponse
@@ -143,3 +144,41 @@ def get_accreditations(request):
 
     except Exception as e:
         return JsonResponse([f'Something went wrong. Could not fetch data [{e}]'], safe=False)
+
+def dashboard_data(request):
+    labels = []
+    data = []
+
+    query = '''
+        SELECT 
+            disease, 
+            count(*) AS disease_frequency 
+            from "Patient_patienthistory" ph
+            left join "Doctor_doctor" d on d.user_id = ph.referred_from_id
+        WHERE d.user_id = %s
+            GROUP BY ph.disease
+            ORDER BY disease_frequency
+        LIMIT 10;
+    '''
+    
+    dataset = raw_sql_executor(query, [User.objects.get(username=request.session['loggedin_username']).id])
+    
+    for record in dataset:
+        labels.append(record['disease'])
+        data.append(record['disease_frequency'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data,
+    })
+
+def patient_treated(request):
+    data = PatientHistory.objects.filter(referred_from=User.objects.get(username=request.session['loggedin_username']).id).count
+    return JsonResponse(data, safe=False)
+
+def dashboard(request):
+    userid = User.objects.get(username=request.session['loggedin_username']).id
+    cases_handled = PatientHistory.objects.filter(referred_from=userid).count
+    years_practicing = Doctor.objects.get(user=userid).experience
+
+    return render(request, 'Doctor/dashboard.html', {'cases_handled': cases_handled, 'experience': years_practicing})

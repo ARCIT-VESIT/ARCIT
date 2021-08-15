@@ -11,6 +11,10 @@
     {
       "name": "feature/linkUploadReportToPHistory",
       "base": "develop"
+    },
+    {
+      "name": "feature/DoctorDashboard",
+      "base": "develop"
     }
   ],
   "files.exclude": {

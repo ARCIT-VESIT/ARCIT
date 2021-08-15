@@ -4,7 +4,6 @@ from django.urls import path
 
 from Patient import views as PatientViews
 
-
 urlpatterns = [
    url(r'^p/profile/$',
       PatientViews.ViewPatientProfile.as_view(template_name='Patient/profile.html'),
@@ -12,6 +11,9 @@ urlpatterns = [
    url(r'^p/history/v/$',
       PatientViews.ViewPatientHistory.as_view(template_name='Patient/addEditHistory.html'),
       name='viewHistory'),
+   path('p/dashboard/', PatientViews.dashboard, name='patient_dashboard'),
+   path('p/most_visited_specialities', PatientViews.most_visited_specialities, name='patient_most_visited_specialities'),
+   path('p/frequent_diseases', PatientViews.frequent_diseases, name='patient_frequent_diseases'),
    path('news/', PatientViews.get_news, name='trending_news'),
    path('PSAC/', PatientViews.get_states, name='state_autocomplete'),
 ]

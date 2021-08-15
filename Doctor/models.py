@@ -7,7 +7,7 @@ class Doctor(models.Model):
     name = models.CharField(max_length=100)
     doctor_registeration_no = models.CharField(max_length = 30, unique=True)
     email = models.EmailField(max_length=254, unique=True)
-    phone_number = models.IntegerField(unique=True)
+    phone_number = models.BigIntegerField(unique=True)
     experience = models.IntegerField()
     affiliation = models.CharField(max_length=100)
     accreditation = models.CharField(max_length=254)

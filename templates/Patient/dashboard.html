@@ -1,0 +1,96 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+
+  <div class="row ml-0">
+    <div class="col-6 pl-0">
+      <div class="card">
+        <div class="card-body">
+            <canvas id="top-visited-specialities-chart" data-url="{% url 'patient_most_visited_specialities' %}"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-6 pl-0">
+      <div class="card">
+        <div class="card-body">
+            <canvas id="frequent-diseases-chart" data-url="{% url 'patient_frequent_diseases' %}"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    $(() => {
+      const topVisitedSpecialitiesChart = $("#top-visited-specialities-chart");
+      const frequentDiseasesChart = $("#frequent-diseases-chart");
+
+      $.ajax({
+        url: topVisitedSpecialitiesChart.data("url"),
+        success: data => {
+          var ctx = topVisitedSpecialitiesChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'pie',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'Specialities',
+                backgroundColor: [
+                    '#f66d44', '#feae65', '#aadea7', '#64c2a6', '#2d87bb'
+                ],
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Most visited specialities'
+              }
+            }
+          });
+        }
+      });
+      
+      $.ajax({
+        url: frequentDiseasesChart.data("url"),
+        success: data => {
+          var ctx = frequentDiseasesChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'frequency',
+                backgroundColor: '#2d87bb',
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              scales: {
+                xAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+                }]
+              },
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Most occuring diseases'
+              }
+            }
+          });
+        }
+      });
+    });
+  </script>
+
+{% endblock %}

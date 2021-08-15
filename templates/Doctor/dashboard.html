@@ -1,0 +1,67 @@
+{% extends 'sidebar.html' %}
+
+{% block content %}
+
+    <div class="row m-0">
+        <div class="card col-2 p-0 mb-3 mr-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">Cases handled</h5>
+                <h1 class="text-center">{{cases_handled}}</h1>
+            </div>
+        </div>
+        <div class="card col-2 p-0 mb-3">
+            <div class="card-body">
+                <h5 class="card-title text-center">Years Practicing</h5>
+                <h1 class="text-center">{{experience}}</h1>
+            </div>
+        </div>
+    </div>
+    <div id="container" class="card w-50">
+        <div class="card-body">
+            <canvas id="top-visited-specialities" data-url="{% url 'doctor_dashboard_data' %}"></canvas>
+        </div>
+    </div>
+
+  <script>
+    $(() => {
+      const topVisitedSpecialitiesChart = $("#top-visited-specialities");
+      $.ajax({
+        url: topVisitedSpecialitiesChart.data("url"),
+        success: data => {
+          console.log(data, data.data)
+          var ctx = topVisitedSpecialitiesChart[0].getContext("2d");
+
+          new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+              labels: data.labels,
+              datasets: [{
+                label: 'cases',
+                backgroundColor: '#2d87bb',
+                data: data.data
+              }]          
+            },
+            options: {
+              responsive: true,
+              scales: {
+                xAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+                }]
+              },
+              legend: {
+                position: 'top',
+              },
+              title: {
+                display: true,
+                text: 'Cases by disease'
+              }
+            }
+          });
+        }
+      });
+    });
+  </script>
+
+{% endblock %}
