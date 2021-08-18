@@ -1,5 +1,14 @@
 from django.db import models
 from django.conf import settings
+from django.db.models.fields import json
+from django.db.models.fields.json import JSONField
+
+class ActiveHour(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    doctor_id=models.IntegerField()
+    arrival_time = models.TimeField(auto_now=False, auto_now_add=False)
+    departure_time = models.TimeField(auto_now=False, auto_now_add=False)
+    for_hospital = models.BooleanField(null=True, default=False)
 
 class Doctor(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -14,3 +23,10 @@ class Doctor(models.Model):
     address = models.CharField(max_length=100)
     adharcardno = models.IntegerField(unique=True)
     specialization = models.CharField(max_length=100)
+    active_hours = JSONField(default=list)
+
+    def set_active_hours(self, x):
+        self.active_hours = json.dumps(x)
+
+    def get_active_hours(self):
+        return json.loads(self.active_hours)

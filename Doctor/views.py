@@ -12,7 +12,7 @@ from django.views.generic import TemplateView
 from Patient.forms import PatientHistoryForm
 from Patient.models import Patient, PatientHistory
 
-from .models import Doctor
+from .models import ActiveHour, Doctor
 
 User = get_user_model()
 
@@ -23,11 +23,30 @@ class ViewDoctorProfile(TemplateView):
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username'])
         doctor = Doctor.objects.get(user=user)
+
+        query = '''
+            select * from "Doctor_activehour" where id in(
+                WITH split(one, many, str) AS (
+                    SELECT  active_hours, '', active_hours||','
+                        FROM "doctor_doctor"
+                        where id = %s
+                    UNION ALL SELECT one,
+                        substr(str, 0, instr(str, ',')),
+                        substr(str, instr(str, ',')+1)
+                    FROM "split" WHERE str !=''
+                ) SELECT REPLACE(REPLACE(trim(many),'[',''), ']', '')
+                        FROM "split"
+                        WHERE many!='' 
+                    ORDER BY many)
+        '''
+        
+        dataset = raw_sql_executor(query, [doctor.id])
+
         # today = date.today()
         # age = today.year - datetime.year(patient.dob) - ((today.month, today.day)
         #       < (datetime.month(patient.dob), datetime.day(patient.dob)))
         # age = patient.dob
-        return render(request,self.template_name,{'profile':doctor})
+        return render(request,self.template_name,{'profile':doctor, 'active_hours': dataset})
 
 def proof_of_work(previous_nonce):
     new_nonce = 1
@@ -182,3 +201,47 @@ def dashboard(request):
     years_practicing = Doctor.objects.get(user=userid).experience
 
     return render(request, 'Doctor/dashboard.html', {'cases_handled': cases_handled, 'experience': years_practicing})
+
+def set_active_hour(request):
+    form_data = request.POST
+    active_hour_id = form_data['active_hour']
+    is_for_hospital = False
+    try:
+        if form_data['for_hospital'] == 'on':
+            is_for_hospital = True
+    except:
+        pass
+
+    if active_hour_id == '':
+        user = User.objects.get(id=form_data['doctor_id'])
+        doctor = Doctor.objects.get(user=user)
+
+        active_hour_model = ActiveHour()
+        active_hour_model.user = user
+        active_hour_model.arrival_time = form_data['start_time']
+        active_hour_model.departure_time = form_data['departure_time']
+        active_hour_model.doctor_id = form_data['doctor_id']
+        active_hour_model.for_hospital = is_for_hospital
+        active_hour_model.save()
+
+        doctor.active_hours.append(active_hour_model.id)
+
+        doctor.save()
+    else:
+        ActiveHour.objects.filter(id=int(active_hour_id)).update(
+            arrival_time=form_data['start_time'],
+            departure_time=form_data['departure_time'],
+            for_hospital=is_for_hospital
+        )
+    return redirect('doctorprofile')
+
+def delete_active_hour(request):
+    id = int(request.POST['active_hour'])
+    user = request.session['loggedin_username']
+    
+    ActiveHour.objects.get(id=id).delete()
+    active_hours = Doctor.objects.get(user_id=User.objects.get(username=user).id).active_hours
+    active_hours.remove(id)
+    Doctor.objects.filter(user_id=User.objects.get(username=user).id).update(active_hours=active_hours)
+
+    return redirect('doctorprofile')

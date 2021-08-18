@@ -10,9 +10,11 @@ urlpatterns = [
     url(r'^p/addDiagnosis/$',
         DoctorView.AddPatientDataView.as_view(template_name='Doctor/addPatientHistory.html'),
         name='PatientHistory'),
-    path('d/patient_treated', DoctorView.dashboard_data, name='patient_treated'),
     path('d/dashboard/', DoctorView.dashboard, name='doctor_dashboard'),
     path('d/dashboard_data', DoctorView.dashboard_data, name='doctor_dashboard_data'),
+    path('d/patient_treated', DoctorView.dashboard_data, name='patient_treated'),
+    path('d/profile/set_active_hour', DoctorView.set_active_hour, name='set_active_hour'),
+    path('d/profile/delete_active_hour', DoctorView.delete_active_hour, name='delete_active_hour'),
     path('SAC/', DoctorView.get_specializations, name='specialization_autocomplete'),
     path('AAC/', DoctorView.get_accreditations, name='accreditation_autocomplete')
 ]
