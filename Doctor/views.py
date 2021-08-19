@@ -28,7 +28,7 @@ class ViewDoctorProfile(TemplateView):
             select * from "Doctor_activehour" where id in(
                 WITH split(one, many, str) AS (
                     SELECT  active_hours, '', active_hours||','
-                        FROM "doctor_doctor"
+                        FROM "Doctor_doctor"
                         where id = %s
                     UNION ALL SELECT one,
                         substr(str, 0, instr(str, ',')),
@@ -41,6 +41,19 @@ class ViewDoctorProfile(TemplateView):
         '''
         
         dataset = raw_sql_executor(query, [doctor.id])
+
+        if 'error' in dataset[0]:
+            query = '''
+                select * from "Doctor_activehour"
+                where Id IN (
+                    select 
+                        jsonb_array_elements(active_hours)::bigint as Id 
+                    from "Doctor_doctor" 
+                    where id = %s
+                );
+            '''
+
+            dataset = raw_sql_executor(query, [doctor.id])
 
         # today = date.today()
         # age = today.year - datetime.year(patient.dob) - ((today.month, today.day)

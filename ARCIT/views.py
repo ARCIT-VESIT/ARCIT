@@ -183,7 +183,8 @@ def raw_sql_executor(query, params):
 
                 for row in MapColumnHeadings(cursor):
                     rows.append(row)
-        except:
+        except Exception as e:
+            rows.append({"error": e})
             pass
 
         return rows
