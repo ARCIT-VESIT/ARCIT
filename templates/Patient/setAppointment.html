@@ -34,42 +34,45 @@
     {% endif %}
     {% for doctor in doctors %}
         <div class="card mb-3">
-            <div class="card-header border-0" style="background-color:white;">
+            <div class="card-body">
                 <h4 class="card-title">{{doctor.name}}</h4>
-                <h6 class="card-subtitle text-muted">{{doctor.specialization}}</h6>
-            </div>
-            <div class="card-body pt-0">
-            <hr class="mt-0">
-            {% if doctor.active_hours|length > 0 %}
-                <div class="row">
-                    <div class="col-sm-3">
-                        <h6 class="mb-0">Availability</h6>
+                <div class="card-subtitle">{{doctor.specialization}}</div>
+                <small class="card-subtitle">{{doctor.accreditation}}</small>
+                <div class="mt-3">
+                    <strong>Experience: </strong>
+                    {{doctor.experience}}
+                </div>
+                <div>
+                    <strong>Address: </strong>
+                    {{doctor.address}}
+                </div>
+
+                {% if doctor.active_hours|length > 0 %}
+                    <div class="col-sm-3 mb-2 pl-0">
+                        <strong class="mb-0">Availability:</strong>
                     </div>
-                    <div class="col-sm-9 text-secondary">
+                    <div class="col-sm-9 text-secondary pl-0">
                         {% for active_hour in doctor.active_hours %}
-                            <div class="row">
-                                <span class="col-8 col-sm-6">
-                                    {{active_hour.arrival_time}} - {{active_hour.departure_time}}
-                                </span>
-                                <span class="col-4 col-sm-6">
-                                    <i class="fa fa-calendar-o"
-                                       aria-hidden="true" 
-                                       data-toggle="modal" 
-                                       href="#setAppointment" 
-                                       data-doctor-id="{{active_hour.doctor_id}}"
-                                       data-active-hour-id="{{active_hour.id}}"
-                                       data-arrival-time="{{active_hour.arrival_time}}" 
-                                       data-departure-time="{{active_hour.departure_time}}" 
-                                       data-active-hour-id={{active_hour.id}}
-                                       style="cursor: pointer;">
-                                    </i>
-                                </span>
-                                <br />
-                            </div>
+                            <span class="col-8 col-sm-6 pl-0">
+                                {{active_hour.arrival_time}} - {{active_hour.departure_time}}
+                            </span>
+                            <span class="col-4 col-sm-6">
+                                <i class="fa fa-calendar-o"
+                                    aria-hidden="true" 
+                                    data-toggle="modal" 
+                                    href="#setAppointment" 
+                                    data-doctor-id="{{active_hour.doctor_id}}"
+                                    data-active-hour-id="{{active_hour.id}}"
+                                    data-arrival-time="{{active_hour.arrival_time}}" 
+                                    data-departure-time="{{active_hour.departure_time}}" 
+                                    data-active-hour-id={{active_hour.id}}
+                                    style="cursor: pointer;">
+                                </i>
+                            </span>
+                            <br />
                         {% endfor %}
                     </div>
-                </div>
-            {% endif %}
+                {% endif %}
             </div>
         </div>
     {% endfor %}

@@ -200,7 +200,7 @@ def frequent_diseases(request):
     })
 
 def dashboard(request):
-    return render(request, 'Patient/dashboard.html', {})
+    return render(request, 'Patient/dashboard.html', {"appointment_count": len(upcoming_appointments_query(request))})
 
 def doctor_appointment(request):
     template = 'Patient/setAppointment.html'
@@ -217,6 +217,7 @@ def doctor_appointment(request):
                     affiliation,
                     specialization,
                     accreditation,
+                    address,
                     pincode,
                     ah.active_hours
                 FROM "Doctor_doctor" d
@@ -321,6 +322,9 @@ def set_appointment(request):
     return JsonResponse({"success": f"Appointment taken, your token number is: <strong>{token_number}<strong>"}, status=200)
 
 def upcomingAppointments(request):
+    return render(request, "Patient/appointments.html", {"appointments": upcoming_appointments_query(request)})
+
+def upcoming_appointments_query(request):
     query = '''
         SELECT 
             pa.id,
@@ -332,7 +336,8 @@ def upcomingAppointments(request):
             da.for_hospital,
             d.affiliation,
             d.accreditation,
-            d.specialization
+            d.specialization,
+            d.address
         from "Patient_appointment" pa
             left join "Doctor_activehour" da on da.id = pa.active_hour_id
             left join "Doctor_doctor" d on d.user_id = pa.doctor_id
@@ -344,5 +349,4 @@ def upcomingAppointments(request):
             da.arrival_time
     '''
     dataset = raw_sql_executor(query, [str(datetime.today().date()), Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).id])
-
-    return render(request, "Patient/appointments.html", {"appointments": dataset})
+    return dataset
