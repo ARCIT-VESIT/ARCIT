@@ -2,7 +2,7 @@ from django import forms
 from .models import Doctor
 from django.contrib.auth import get_user_model
 
-class DoctorForm(forms.ModelForm):
+class DoctorRegisterationForm(forms.ModelForm):
     affiliation = forms.CharField(required=True, widget=forms.TextInput(
         attrs={
             'autocomplete':'off',
@@ -36,4 +36,5 @@ class DoctorForm(forms.ModelForm):
                 'accreditation',
                 'specialization',
                 'address',
+                'pincode',
                 'adharcardno',)

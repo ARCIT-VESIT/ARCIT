@@ -42,7 +42,7 @@ class ViewDoctorProfile(TemplateView):
         
         dataset = raw_sql_executor(query, [doctor.id])
 
-        if 'error' in dataset[0]:
+        if len(dataset) > 0 and 'error' in dataset:
             query = '''
                 select * from "Doctor_activehour"
                 where Id IN (

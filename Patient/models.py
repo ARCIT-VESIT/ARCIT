@@ -12,6 +12,7 @@ class Patient(models.Model):
     gender = models.CharField(max_length=20)
     weight = models.IntegerField()
     address = models.CharField(max_length=254)
+    pincode = models.IntegerField()
     state = models.CharField(max_length=254, null=True)
     adharcardno = models.BigIntegerField(unique=True)
     blood_group = models.CharField(max_length=5, null=True)
@@ -34,3 +35,12 @@ class PatientHistory(models.Model):
     referred_from = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='referred_from', on_delete=models.CASCADE)
     referred_to= models.CharField(max_length=100,null=True)
     created_on = models.DateTimeField(default=timezone.now, blank=False)
+
+class Appointment(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    patient_id = models.BigIntegerField()
+    doctor_id = models.BigIntegerField()
+    active_hour_id = models.BigIntegerField()
+    date = models.DateField()
+    token_number = models.BigIntegerField()
+    

@@ -151,8 +151,8 @@
                                                     href="#setHours" 
                                                     data-arrival-time="{{active_hour.arrival_time}}" 
                                                     data-departure-time="{{active_hour.departure_time}}" 
-                                                    data-active-hour-id={{active_hour.id}} 
-                                                    data-for-hospital={{active_hour.for_hospital}} 
+                                                    data-active-hour-id="{{active_hour.id}}"
+                                                    data-for-hospital="{{active_hour.for_hospital}}"
                                                     style="cursor: pointer;"></i>
                                                 <i class="fa fa-trash ml-2" 
                                                     aria-hidden="true" 
@@ -257,7 +257,6 @@
             const button = $(e.relatedTarget)
             const arrival_time = onModalShow ? button.data('arrival-time') : $("#start_time_id").val()
             const departure_time = onModalShow ? button.data('departure-time') : $("#departure_time_id").val()
-            debugger
 
             if (arrival_time !== undefined && departure_time !== undefined) {
                 const hospital_switch_input = modal.find(".modal-content input#hospital_switch_id")

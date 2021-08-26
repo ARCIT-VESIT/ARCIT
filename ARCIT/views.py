@@ -7,8 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.db import connection
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
-from Doctor.forms import DoctorForm
-from Hospital.forms import HospitalForm
+from Doctor.forms import DoctorRegisterationForm
+from Hospital.forms import HospitalRegisterationForm
 from Patient.forms import UserRegisterationForm
 from Patient.models import Patient
 from twilio.base.exceptions import TwilioRestException
@@ -60,9 +60,9 @@ class RegisterationView(TemplateView):
         role = self.role
 
         if role == 'D':
-            return "Doctor registeration" if isHeading else DoctorForm(post_request)
+            return "Doctor registeration" if isHeading else DoctorRegisterationForm(post_request)
         if role == 'H':
-            return "Hospital registeration" if isHeading else HospitalForm(post_request)
+            return "Hospital registeration" if isHeading else HospitalRegisterationForm(post_request)
         if role == 'R':
             return "Diagnostic center registeration" if isHeading else DiagnosticDepartmentSignupForm(post_request)    
         return "New patient" if isHeading else UserRegisterationForm(post_request)
@@ -174,7 +174,7 @@ class MapColumnHeadings():
 
         return { description[0]: row[col] for col, description in enumerate(self._cursor.description) }
 
-def raw_sql_executor(query, params):
+def raw_sql_executor(query, params=[]):
         rows = []
 
         try:

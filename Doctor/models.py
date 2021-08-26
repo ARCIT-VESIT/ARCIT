@@ -21,6 +21,7 @@ class Doctor(models.Model):
     affiliation = models.CharField(max_length=100)
     accreditation = models.CharField(max_length=254)
     address = models.CharField(max_length=100)
+    pincode = models.IntegerField()
     adharcardno = models.IntegerField(unique=True)
     specialization = models.CharField(max_length=100)
     active_hours = JSONField(default=list)

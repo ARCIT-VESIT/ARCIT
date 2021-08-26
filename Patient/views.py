@@ -1,18 +1,22 @@
 # from datetime import date, datetime
 """View for patient"""
 import json
+from datetime import datetime
 
 import requests
 from ARCIT.views import raw_sql_executor
 from django.contrib.auth import get_user_model
 from django.db import connection
+from django.db.models.query_utils import Q
+from django.http import QueryDict
 from django.http.response import JsonResponse
-# from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from Doctor.models import Doctor
 
 from .forms import PatientHistoryForm
-from .models import Patient
+from .models import Appointment, Patient
 
 User = get_user_model()
 
@@ -197,3 +201,121 @@ def frequent_diseases(request):
 
 def dashboard(request):
     return render(request, 'Patient/dashboard.html', {})
+
+def doctor_appointment(request):
+    template = 'Patient/appointment.html'
+    if 'filterText' in request.GET:
+        try:
+            pincode = Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username'])).pincode
+            filter_text = request.GET['filterText']
+
+            query = f'''
+                SELECT 
+                    user_id,
+                    name,
+                    experience,
+                    affiliation,
+                    specialization,
+                    accreditation,
+                    pincode,
+                    ah.active_hours
+                FROM "Doctor_doctor" d
+                left join (
+                    select 
+                        doctor_id,
+                        group_concat(json_object(
+                            'id', id, 
+                            'arrival_time', arrival_time, 
+                            'departure_time', departure_time, 
+                            'doctor_id', doctor_id, 
+                            'for_hospital', for_hospital)) 
+                        as active_hours
+                    from "Doctor_activehour" where id in (
+                        WITH split(one, many, str) AS (
+                            SELECT active_hours, '', active_hours||','
+                                FROM "Doctor_doctor"
+                            UNION ALL SELECT one,
+                                substr(str, 0, instr(str, ',')),
+                                substr(str, instr(str, ',')+1)
+                            FROM "split" WHERE str !=''
+                        ) SELECT REPLACE(REPLACE(trim(many),'[',''), ']', '')
+                                FROM "split"
+                                WHERE many!='' 
+                            ORDER BY many
+                    )
+                    GROUP BY doctor_id
+                ) ah on ah.doctor_id = d.user_id
+                WHERE 
+                    pincode = {pincode} or
+                    name like '%{filter_text}%' or
+                    specialization like '%{filter_text}%' or
+                    accreditation like '%{filter_text}%';
+            '''
+
+            doctors= raw_sql_executor(query)
+
+            for doctor in doctors:
+                if doctor["active_hours"] is not None:
+                    active_hours_tuple = eval(doctor["active_hours"])
+                    active_hours = []
+
+                    if type(active_hours_tuple) is tuple:
+                        for active_hour_tuple in active_hours_tuple:
+                            get_active_hour_as_model(active_hour_tuple, active_hours)
+                    else:
+                        get_active_hour_as_model(active_hours_tuple, active_hours)
+                        
+                    doctor["active_hours"] = dict
+                    doctor["active_hours"] = active_hours
+
+            return render(request,template,{"doctors":doctors, 'filterText': filter_text})
+        except Exception as ex:
+            return render(request,template,{'doctors':doctors})
+    return render(request, template)
+
+def get_active_hour_as_model(tuple, active_hours):
+    active_hour = {
+        'id' : tuple['id'],
+        'arrival_time' : tuple['arrival_time'],
+        'departure_time' : tuple['departure_time'],
+        'doctor_id' : tuple['doctor_id'],
+        'for_hospital' : tuple['for_hospital']
+    }
+    active_hours.append(active_hour)
+
+def get_appointment_token(doctor_id, active_hour_id, patient_id, appointment_date):
+    saved_appointments = Appointment.objects.filter(Q(doctor_id=Doctor.objects.get(user=doctor_id).user.id) & Q(active_hour_id=active_hour_id))
+
+    if saved_appointments.exists() and saved_appointments is not None:
+        for appointment in saved_appointments:
+            if appointment.doctor_id == int(doctor_id) and appointment.active_hour_id == int(active_hour_id) and appointment.date == appointment_date:
+                return 1 if appointment.patient_id == patient_id else appointment.token_number + 1
+    return 1
+
+@csrf_exempt
+def set_appointment(request):
+    form_data = QueryDict(request.POST['data'].encode('ASCII'))
+
+    doctor_id = form_data['doctor_id']
+    active_hour_id = form_data['active_hour_id']
+    patient_id = Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username'])).id
+    appointment_date = datetime.strptime(f"{form_data['appointment_date'].replace('-', '/', 2)[2:]}", '%y/%m/%d').date()
+
+    saved_appointments = Appointment.objects.filter(Q(patient_id=patient_id) & Q(doctor_id=int(doctor_id)))
+
+    if saved_appointments.exists() and saved_appointments is not None:
+        for appointment in saved_appointments:
+            if appointment.doctor_id == int(doctor_id) and appointment.active_hour_id == int(active_hour_id) and appointment.date == appointment_date:
+                return JsonResponse({"error": "Appointment already exists for the selected date and time"}, safe=False)
+
+    token_number = get_appointment_token(doctor_id, active_hour_id, patient_id, appointment_date)
+
+    Appointment(
+        patient_id = patient_id,
+        doctor_id = doctor_id,
+        active_hour_id = active_hour_id,
+        date = appointment_date,
+        token_number = token_number
+    ).save()
+
+    return JsonResponse({"success": f"Appointment taken, your token number is: <strong>{token_number}<strong>"}, status=200)

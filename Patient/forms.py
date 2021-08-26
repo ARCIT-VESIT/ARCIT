@@ -18,6 +18,7 @@ class UserRegisterationForm(forms.ModelForm):
                 'weight',
                 'address',
                 'state',
+                'pincode',
                 'adharcardno',
                 'blood_group',)
 

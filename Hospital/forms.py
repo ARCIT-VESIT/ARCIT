@@ -2,7 +2,7 @@
 from django import forms
 from .models import Hospital
 
-class HospitalForm(forms.ModelForm):
+class HospitalRegisterationForm(forms.ModelForm):
     '''Hospital reigsteration form'''
     specialization = forms.CharField(required=True, widget=forms.TextInput(
         attrs={

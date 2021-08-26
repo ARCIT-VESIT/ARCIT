@@ -11,6 +11,8 @@ urlpatterns = [
    url(r'^p/history/v/$',
       PatientViews.ViewPatientHistory.as_view(template_name='Patient/addEditHistory.html'),
       name='viewHistory'),
+   path('d/appointment/', PatientViews.doctor_appointment, name='requestAppointment'),
+   path('d/set_appointment', PatientViews.set_appointment, name='setAppointment'),
    path('p/dashboard/', PatientViews.dashboard, name='patient_dashboard'),
    path('p/most_visited_specialities', PatientViews.most_visited_specialities, name='patient_most_visited_specialities'),
    path('p/frequent_diseases', PatientViews.frequent_diseases, name='patient_frequent_diseases'),
