@@ -203,7 +203,7 @@ def dashboard(request):
     return render(request, 'Patient/dashboard.html', {})
 
 def doctor_appointment(request):
-    template = 'Patient/appointment.html'
+    template = 'Patient/setAppointment.html'
     if 'filterText' in request.GET:
         try:
             pincode = Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username'])).pincode
@@ -319,3 +319,30 @@ def set_appointment(request):
     ).save()
 
     return JsonResponse({"success": f"Appointment taken, your token number is: <strong>{token_number}<strong>"}, status=200)
+
+def upcomingAppointments(request):
+    query = '''
+        SELECT 
+            pa.id,
+            d.name as doctor_name,
+            pa.token_number,
+            da.arrival_time,
+            da.departure_time,
+            pa.date,
+            da.for_hospital,
+            d.affiliation,
+            d.accreditation,
+            d.specialization
+        from "Patient_appointment" pa
+            left join "Doctor_activehour" da on da.id = pa.active_hour_id
+            left join "Doctor_doctor" d on d.user_id = pa.doctor_id
+        WHERE 
+            pa.date >= %s and 
+            patient_id = %s
+        ORDER BY
+            pa.date,
+            da.arrival_time
+    '''
+    dataset = raw_sql_executor(query, [str(datetime.today().date()), Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).id])
+
+    return render(request, "Patient/appointments.html", {"appointments": dataset})
