@@ -1,16 +1,17 @@
 """View for Doctor"""
 import hashlib
 import json
+from datetime import datetime
 from random import randint
 
-from ARCIT.views import raw_sql_executor
+from ARCIT.views import handle_otp_post, raw_sql_executor
 from django.contrib.auth import get_user_model
 from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.generic import TemplateView
 from Patient.forms import PatientHistoryForm
-from Patient.models import Patient, PatientHistory
+from Patient.models import Appointment, Patient, PatientHistory
 
 from .models import ActiveHour, Doctor
 
@@ -111,8 +112,16 @@ def mine_patient_history(form_data, request):
         form_data.nonce = nonce
         form_data.previous_hash = previous_hash
 
+def update_appointment_state(request):
+    if request.session.has_key('appointment_id'):
+
+        appointment_id = request.session["appointment_id"]
+        Appointment.objects.filter(id=appointment_id).update(is_treated=True)
+
+        del request.session["appointment_id"]
+    
 class AddPatientDataView(TemplateView):
-    '''For doctors to add new patient'''
+    '''For doctors to add patient history'''
     template_name='Doctor/addPatientHistory.html'
 
     def get(self,request, *args, **kwargs):
@@ -134,6 +143,8 @@ class AddPatientDataView(TemplateView):
             formdata.user=user
             formdata.referred_from = doctor_user
             formdata.save()
+
+            update_appointment_state(request)
 
             # return render(request, 'Doctor/index.html')
             return redirect('viewHistory')
@@ -188,8 +199,8 @@ def dashboard_data(request):
             from "Patient_patienthistory" ph
             left join "Doctor_doctor" d on d.user_id = ph.referred_from_id
         WHERE d.user_id = %s
-            GROUP BY ph.disease
-            ORDER BY disease_frequency
+        GROUP BY ph.disease
+        ORDER BY disease_frequency DESC
         LIMIT 10;
     '''
     
@@ -210,10 +221,26 @@ def patient_treated(request):
 
 def dashboard(request):
     userid = User.objects.get(username=request.session['loggedin_username']).id
+    query = '''
+        select count(*) as appointments from "Patient_appointment" pa
+            left join "Doctor_activehour" da on da.id = pa.active_hour_id
+        where
+            DATETIME(DATE(pa.date) || ' ' || TIME(da.departure_time)) >= datetime('now','localtime') and	
+            pa.doctor_id = %s and
+            pa.is_treated = 0
+    '''
+
     cases_handled = PatientHistory.objects.filter(referred_from=userid).count
     years_practicing = Doctor.objects.get(user=userid).experience
+    upcoming_appointments = raw_sql_executor(query, [userid])[0]['appointments']
 
-    return render(request, 'Doctor/dashboard.html', {'cases_handled': cases_handled, 'experience': years_practicing})
+    dashboard_data = {
+        'cases_handled': cases_handled,
+        'experience': years_practicing,
+        'upcoming_appointments': upcoming_appointments
+    }
+
+    return render(request, 'Doctor/dashboard.html', dashboard_data)
 
 def set_active_hour(request):
     form_data = request.POST
@@ -258,3 +285,78 @@ def delete_active_hour(request):
     Doctor.objects.filter(user_id=User.objects.get(username=user).id).update(active_hours=active_hours)
 
     return redirect('doctorprofile')
+
+def appointments(request):
+    query = '''
+        SELECT
+            date, 
+            group_concat(appointments) AS appointments from (
+                SELECT 
+                    pa.date,
+                    json_object(
+                    da.arrival_time || ' - ' || da.departure_time, group_concat(json_object(
+                        'id', pa.id, 
+                        'patient_name', p.name, 
+                        'token_number', pa.token_number
+                    ))) as appointments
+                from "Patient_appointment" pa
+                    left join "Doctor_activehour" da on da.id = pa.active_hour_id
+                    left join "Patient_patient" p on p.id = pa.patient_id
+                    left join "Doctor_doctor" d on d.user_id = pa.doctor_id
+                WHERE 
+                    DATETIME(DATE(pa.date) || ' ' || TIME(da.departure_time)) >= datetime('now','localtime') and	
+                    d.id = %s and
+                    is_treated = 0
+                GROUP BY d.id, pa.date, da.departure_time
+                ORDER BY
+                    pa.date,
+                    da.arrival_time,
+                    pa.token_number
+            )
+        GROUP BY date
+    '''
+
+    dataset = raw_sql_executor(query, [Doctor.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).id])
+
+    appointments = []
+    for data in dataset:
+        appointment_info = {}
+        appointment_data = []
+
+        appointment_info['date'] = data['date']
+        patients = eval(data['appointments'])
+        
+        if type(patients) is tuple:
+            for patient in patients:
+                for key, value in patient.items():
+                    appointment_data.append(get_appointment_as_model(key, value))
+
+        else:
+            for key, value in patients.items():
+                appointment_data.append(get_appointment_as_model(key, value))
+
+        appointment_info["data"]= appointment_data
+        appointments.append(appointment_info)
+
+    return render(request, 'Doctor/appointments.html', {'appointments': appointments, 'todayDate': datetime.now().date})
+
+def get_appointment_as_model(key, value):
+    appointment = {}
+    appointment['time'] = key
+    evaluated_value = eval(value)
+    appointment['appointments'] = []
+    if type(evaluated_value) is tuple:
+        for val in evaluated_value:
+            appointment['appointments'].append(val)
+    else:
+        appointment['appointments'].append(evaluated_value)
+    return appointment
+
+class A2Oredirect(TemplateView):
+    def get(self, request, *args, **kwargs):
+        request.session['appointment_id'] = kwargs['id']
+        patient_phno = Patient.objects.get(id=Appointment.objects.get(id=kwargs['id']).patient_id).phone_number
+        return render(request, "Authentication/otp.html", {"phone_number": patient_phno})
+
+    def post(self, request, *args, **kwargs):
+        return handle_otp_post(request)

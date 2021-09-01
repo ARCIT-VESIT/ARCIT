@@ -3,16 +3,28 @@
 {% block content %}
 
   <div class="row m-0">
-    <div class="card col-2 p-0 mb-3 mr-3">
-      <div class="card-body">
-        <h5 class="card-title text-center">Cases handled</h5>
-        <h1 class="text-center">{{cases_handled}}</h1>
+    <div class="col-4 pl-0">
+      <div class="card p-0 mb-3">
+        <div class="card-body">
+          <h5 class="card-title text-center">Upcoming appointments</h5>
+          <h1 class="text-center">{{upcoming_appointments}}</h1>
+        </div>
       </div>
     </div>
-    <div class="card col-2 p-0 mb-3">
-      <div class="card-body">
-        <h5 class="card-title text-center">Years Practicing</h5>
-        <h1 class="text-center">{{experience}}</h1>
+    <div class="col-4 pl-0">
+      <div class="card p-0 mb-3">
+        <div class="card-body">
+          <h5 class="card-title text-center">Cases handled</h5>
+          <h1 class="text-center">{{cases_handled}}</h1>
+        </div>
+      </div>
+    </div>
+    <div class="col-4 pl-0 pr-0">
+      <div class="card p-0">
+        <div class="card-body">
+          <h5 class="card-title text-center">Years Practicing</h5>
+          <h1 class="text-center">{{experience}}</h1>
+        </div>
       </div>
     </div>
   </div>
@@ -31,7 +43,6 @@
       $.ajax({
         url: topVisitedSpecialitiesChart.data("url"),
         success: data => {
-          console.log(data, data.data)
           var ctx = topVisitedSpecialitiesChart[0].getContext("2d");
 
           new Chart(ctx, {

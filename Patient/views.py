@@ -247,10 +247,17 @@ def doctor_appointment(request):
                     GROUP BY doctor_id
                 ) ah on ah.doctor_id = d.user_id
                 WHERE 
-                    pincode = {pincode} or
                     name like '%{filter_text}%' or
                     specialization like '%{filter_text}%' or
-                    accreditation like '%{filter_text}%';
+                    accreditation like '%{filter_text}%' or
+                    pincode = {pincode}
+                ORDER BY(
+                    CASE
+                    WHEN name like '%{filter_text}%' THEN 1
+                    WHEN specialization like '%{filter_text}%' THEN 2
+                    WHEN accreditation like '%{filter_text}%' THEN 3
+                    ELSE 4
+                END);
             '''
 
             doctors= raw_sql_executor(query)
@@ -275,17 +282,16 @@ def doctor_appointment(request):
     return render(request, template)
 
 def get_active_hour_as_model(tuple, active_hours):
-    active_hour = {
+    active_hours.append({
         'id' : tuple['id'],
         'arrival_time' : tuple['arrival_time'],
         'departure_time' : tuple['departure_time'],
         'doctor_id' : tuple['doctor_id'],
         'for_hospital' : tuple['for_hospital']
-    }
-    active_hours.append(active_hour)
+    })
 
 def get_appointment_token(doctor_id, active_hour_id, patient_id, appointment_date):
-    saved_appointments = Appointment.objects.filter(Q(doctor_id=Doctor.objects.get(user=doctor_id).user.id) & Q(active_hour_id=active_hour_id))
+    saved_appointments = Appointment.objects.filter(Q(doctor_id=Doctor.objects.get(user=doctor_id).user.id) & Q(active_hour_id=active_hour_id)).order_by('-token_number')
 
     if saved_appointments.exists() and saved_appointments is not None:
         for appointment in saved_appointments:
@@ -342,11 +348,11 @@ def upcoming_appointments_query(request):
             left join "Doctor_activehour" da on da.id = pa.active_hour_id
             left join "Doctor_doctor" d on d.user_id = pa.doctor_id
         WHERE 
-            pa.date >= %s and 
+            DATETIME(DATE(pa.date) || ' ' || TIME(da.departure_time)) >= datetime('now','localtime') and 
             patient_id = %s
         ORDER BY
             pa.date,
             da.arrival_time
     '''
-    dataset = raw_sql_executor(query, [str(datetime.today().date()), Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).id])
+    dataset = raw_sql_executor(query, [Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).id])
     return dataset

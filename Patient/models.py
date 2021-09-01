@@ -43,4 +43,5 @@ class Appointment(models.Model):
     active_hour_id = models.BigIntegerField()
     date = models.DateField()
     token_number = models.BigIntegerField()
+    is_treated = models.BooleanField(default=False)
     

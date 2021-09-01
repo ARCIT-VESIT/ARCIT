@@ -2,6 +2,18 @@
 {% load bootstrap3 %}
 {% load widget_tweaks %}
 
+{% block style %}
+    <style>
+        .appointment-info{
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef !important;
+            border-left: 6px solid #5bc0de !important;
+            background-color: white;
+        }
+    </style>
+{% endblock style %}
+
 {% block content %}
     <div class="toast" id="toasterId" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000" style="position: absolute; top: 0; right: 0;">
         <div class="toast-header">
@@ -24,7 +36,7 @@
         </div>
     </form> 
     {% if doctors|length > 0 %}
-        <div class="mb-3" style="padding: 10px;border-radius: 5px;border: 1px solid #e9ecef !important;border-left: 6px solid #5bc0de !important;">
+        <div class="mb-3 appointment-info">
             <span>Take an appointment by clicking</span>
             <span class="fa-stack">            
                 <i class="fa fa-circle fa-stack-2x" style="color: #5bc0de;"></i>
