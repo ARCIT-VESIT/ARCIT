@@ -2,8 +2,18 @@
 {% load widget_tweaks %}
 {% block content %}
 <div style="height:calc(100vh - 105px)">
-    
-        <div class="card p-3 border-0" style="height:100%">
+    <div class="card p-3 border-0 d-flex justify-content-center" style="height:100%">
+        {% if error %}
+            <div class="card mx-auto">
+                <div class="card-body text-center">
+                    <h5 class="card-title">
+                    <i class="fa fa-exclamation-triangle mr-2" aria-hidden="true" style="color: red;"></i>
+                        Attention required
+                    </h5>
+                    <p class="card-text">{{error}}</p>
+                </div>
+            </div>
+        {% else %}
             <div>
                 <span class="float-left"><h3>Add new diagnosis</h3></span>
                 <a href="{% url 'viewHistory' %}" class="float-right mt-2">
@@ -83,9 +93,10 @@
                         </div>
                     {% endfor %}
                 <button class="btn btn-primary mt-2" type="submit">submit</button>
-                </form>        
+                </form>
             </div>
-        </div>    
+        {% endif %}
+        </div>
     </div>
 
 {% endblock %}

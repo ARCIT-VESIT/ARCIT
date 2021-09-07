@@ -75,8 +75,7 @@ def proof_of_work(previous_nonce):
 
 hash_block = lambda block : hashlib.sha256(json.dumps(serializers.serialize('json', [ block, ]) , sort_keys = True).encode()).hexdigest()
 
-def is_chain_valid(request):
-    user = Patient.objects.get(phone_number=request.session['phoneNumber']).user
+def is_chain_valid(user):
     patients = PatientHistory.objects.filter(user=user.id)
     previous_block = patients[0]
     block_index = 1
@@ -125,10 +124,11 @@ class AddPatientDataView(TemplateView):
     template_name='Doctor/addPatientHistory.html'
 
     def get(self,request, *args, **kwargs):
-        form = PatientHistoryForm()
-        # res = is_chain_valid(request)
-
-        return render(request,self.template_name,{'form':form})
+        patient = Patient.objects.get(phone_number=request.session['phoneNumber']).user
+        if(is_chain_valid(patient)):
+            form = PatientHistoryForm()
+            return render(request,self.template_name,{'form':form})
+        return render(request,self.template_name,{'error': "Your medical data has been compromised!"})
 
     def post(self,request):
         '''Post method to add patient history'''

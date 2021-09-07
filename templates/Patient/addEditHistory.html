@@ -3,7 +3,18 @@
 {% block content %}
 {% comment %} <a href="{% url 'PatientHistory' %}">Add new diagnosis</a> {% endcomment %}
     <div style="height:calc(100vh - 105px)">    
-        <div class="card pl-3 pt-3 pb-3 pr-0 border-0" style="height:100%">
+        <div class="card pl-3 pt-3 pb-3 pr-0 border-0 d-flex justify-content-center" style="height:100%">
+            {% if error %}
+                <div class="card mx-auto">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">
+                        <i class="fa fa-exclamation-triangle mr-2" aria-hidden="true" style="color: red;"></i>
+                            Attention required
+                        </h5>
+                        <p class="card-text">{{error}}</p>
+                    </div>
+                </div>
+            {% else %}
             <div>
                 <span class="float-left"><h3>
                     {% if request.session.is_patient %}
@@ -61,11 +72,11 @@
                                     </div>
                                     <div class="row">
                                         <span class="col-3">Course Duration:</span>
-                                        <span class="col-9 pl-0">{{model.course_duration}} day(s)<span>
+                                        <span class="col-9 pl-0">{{model.course_duration}}<span>
                                     </div>
                                     <div class="row">
                                         <span class="col-3">Follow Up:</span>
-                                        <span class="col-9 pl-0">{{model.follow_up}} day(s)<span>
+                                        <span class="col-9 pl-0">{{model.follow_up}}<span>
                                     </div>
                                     <div class="row">
                                         <span class="col-3">Referred by:</span>
@@ -123,6 +134,7 @@
                 {% endif %}
                 </div>
             </div>
+        {% endif %}
         </div>
     </div>
 {% endblock %}

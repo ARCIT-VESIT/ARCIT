@@ -46,29 +46,36 @@
 {% endblock %}
 
 {% block content %}
+    {% if appointments|length > 0 %}
     <div class="card border-0" style="height:calc(100vh - 105px);overflow: auto;">
-    {% for appointment_info in appointments %}
-        <div class="mb-2 border-0">
-            <div class="card-body">
-                <h5 class="mb-0 separator"> {{appointment_info.date}} </h5>
-                {% for appointment_data in appointment_info.data %}
-                    <h6 class="pb-1 pt-3">{{appointment_data.time}}</h6>
-                    <div class="row m-0 mb-1">
-                    {% for patient in appointment_data.appointments %}
-                        <a class="badge badge-pill badge-light mr-3" 
-                           id="appointment_pill_{{patient.id}}" 
-                           {% if todayDate == appointment_info.date %}
-                                href="{% url 'A20redirect' id=patient.id %}" 
-                           {% endif %}>
-                            <span class="row m-0 mr-2">
-                                <span class="rounded-circle token">{{patient.token_number}}</span>
-                                <span class="d-flex align-items-center ml-2">{{patient.patient_name}} </span>
-                            </span>
-                        </a>
+        {% for appointment_info in appointments %}
+            <div class="mb-2 border-0">
+                <div class="card-body">
+                    <h5 class="mb-0 separator"> {{appointment_info.date}} </h5>
+                    {% for appointment_data in appointment_info.data %}
+                        <h6 class="pb-1 pt-3">{{appointment_data.time}}</h6>
+                        <div class="row m-0 mb-1">
+                        {% for patient in appointment_data.appointments %}
+                            <a class="badge badge-pill badge-light mr-3" 
+                            id="appointment_pill_{{patient.id}}" 
+                            {% if todayDate == appointment_info.date %}
+                                    href="{% url 'A20redirect' id=patient.id %}" 
+                            {% endif %}>
+                                <span class="row m-0 mr-2">
+                                    <span class="rounded-circle token">{{patient.token_number}}</span>
+                                    <span class="d-flex align-items-center ml-2">{{patient.patient_name}} </span>
+                                </span>
+                            </a>
+                        {% endfor %}
+                        </div>
                     {% endfor %}
-                    </div>
-                {% endfor %}
+                </div>
             </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class="alert alert-success" role="alert">
+            You are all caught up, no appointments are pending
         </div>
-    {% endfor %}
+    {% endif %}
 {% endblock %}

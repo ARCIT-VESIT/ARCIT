@@ -1,55 +1,158 @@
 {% extends 'sidebar.html' %}
 {% load bootstrap3 %}
 {% load widget_tweaks %}
-{% comment %} 
+
+{% block style %}
+    <style>
+        .table th, .table td{
+            border-top: none;
+        }
+
+        .table td{
+            padding-top: 15px;
+            padding-bottom: 0px;
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    {% load render_table from django_tables2 %}
 
-    {% if filter %}
-        <form action="" method="get" class="form form-inline p-2">
-            {% bootstrap_form filter.form layout='inline' form_class='p-2' %}
-            <span class="m-1 ml-2">
-            {% bootstrap_button 'filter' button_class='btn btn-primary' %}
-            </span>
-        </form>
-    {% endif %}
-    {% render_table table 'django_tables2/bootstrap.html' %}
-    </form>
-
-{% endblock %} {% endcomment %}
-
-{% block content %}
-<form method="get">
-    <div class="row ml-0 mr-0">
-        <div class="form-group">
-            {{ filter.form.name.label_tag }}
-            {% render_field filter.form.name class="form-control" %}
-        </div>
-        <div class="form-group">
-            {{ filter.form.specialization.label_tag }}
-            {% render_field filter.form.specialization class="form-control" %}
-        </div>
-        <div class="d-flex align-items-end mb-3 ml-2">
-            {% bootstrap_button 'filter' button_class='btn btn-primary' %}
-        </div>
+<div class="toast" id="toasterId" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000" style="position: absolute; top: 0; right: 0;">
+    <div class="toast-header">
+        <strong class="mr-auto" id="toasterHeaderId"></strong>
+        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
     </div>
-    <table class="table">
+    <div class="toast-body" id="toasterBodyId"></div>
+</div>
+
+<div class="form-group">
+    <input type="text" class="form-control" name="filterText" placeholder="Filter" id="doctorFilterInput" onkeyup="tableFilter(event)"  />
+</div>
+
+<table class="table" id="doctorTable">
     <thead>
         <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Specialization</th>
+            <th scope="col">Name</th>
+            <th scope="col">Specialization</th>
+            <th scope="col" class="d-flex justify-content-end">Active time</th>
         </tr>
     </thead>
     <tbody>
-        {% for doctor in filter.qs %}
+    {% for doctor in doctors %}
         <tr>
-            <td scope="row">{{doctor.name}}</th>
-            <td>{{doctor.specialization}}</td>
+            <td scope="row" class="col-3 h-thos" style="text-decoration: underline;">
+                <a 
+                    class="text-secondary"
+                    
+                    data-toggle="modal"
+                    href="#assignPatientModal"
+                    data-doctor-id="{{doctor.doctor_id}}"
+                    data-active-hour-id="{{doctor.active_hour_id}}">
+                        {{doctor.name}}
+                </a>
+            </td>
+            <td class="col-6">{{doctor.specialization}}</td>
+            <td class="d-flex justify-content-end">{{doctor.arrival_time}} - {{doctor.departure_time}}</td>
         </tr>
-        {% endfor %}
+    {% endfor %}
     </tbody>
-    </table>
-</form>
+</table>
+
+<div class="modal fade" id="assignPatientModal" tabindex="-1" role="dialog" aria-labelledby="assignPatientModalId" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assign patient to doctor</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="patientAppointmentForm">
+                <input type="hidden" name="doctor_id" id="doctorId" />
+                <input type="hidden" name="active_hour_id" id="activeHourId" />
+                <label for="patientPhoneNumberInput">Patient's phone number : </label>
+                <input type="number" name="patient_phone_number" id="patientPhoneNumberInput" required>
+                <div id="errorMessage" class="text-danger mt-2"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="assignPatient()">Assign</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 {% endblock %} 
+
+{% block script %}
+    <script>
+        $('#assignPatientModal').on('hide.bs.modal', function () {
+            let originalState = $("#patientAppointmentForm").html();
+            $("#patientAppointmentForm").html(originalState);
+            $("#errorMessage").html("")
+        })
+
+        const tableFilter = e => {
+            let filter = e.target.value.toUpperCase();
+            let rows = document.querySelector("#doctorTable tbody").rows;
+            
+            for (let i = 0; i < rows.length; i++) {
+                let firstCol = rows[i].cells[0].textContent.toUpperCase();
+                let secondCol = rows[i].cells[1].textContent.toUpperCase();
+                rows[i].style.display = firstCol.indexOf(filter) > -1 || secondCol.indexOf(filter) > -1 ? "" : "none";
+            }
+        }
+
+        $('#assignPatientModal').on('show.bs.modal', function (e) {
+            const button = $(e.relatedTarget)
+            const modal = $(this)
+
+            modal.find('.modal-body input#doctorId').val(button.data('doctor-id'))
+            modal.find('.modal-body input#activeHourId').val(button.data('active-hour-id'))
+        })
+
+        const assignPatient = () =>
+            $.ajax({
+                url: "{% url 'setAppointmentByH' %}",
+                data: { "data" :  $('#patientAppointmentForm :input').serialize() },
+                dataType: "json",
+                type: "POST",
+                async: true,
+                success: function (data) {
+                    if (data["error"])
+                        $("#errorMessage").show().html(data["error"]).delay(3000).hide(0)
+                    else if (data["success"]) {
+                        $("#assignPatientModal").modal('hide')
+                        $("#toasterHeaderId").html("Success")
+                        $("#toasterBodyId").html(data["success"])
+                        $('#toasterId').toast('show')
+                    }
+                },
+                error: function (xhr, exception, thrownError) {
+                    let msg = "";
+
+                    if (xhr.status === 0)
+                        msg = "Not connect.\n Verify Network.";
+                    else if (xhr.status == 404)
+                        msg = "Requested page not found. [404]";
+                    else if (xhr.status == 500)
+                        msg = "Internal Server Error [500].";
+                    else if (exception === "parsererror")
+                        msg = "Requested JSON parse failed.";
+                    else if (exception === "timeout")
+                        msg = "Time out error.";
+                    else if (exception === "abort")
+                        msg = "Ajax request aborted.";
+                    else
+                        msg = "Error:" + xhr.status + " " + xhr.responseText;
+                        
+                    $("#assignPatientModal").modal('hide')
+                    $("#toasterHeaderId").html("Error")
+                    $("#toasterBodyId").html(msg)
+                    $('#toasterId').toast('show')
+                }
+            })
+    </script>
+{% endblock %}
