@@ -16,10 +16,6 @@
     {
       "name": "feature/DoctorDashboard",
       "base": "develop"
-    },
-    {
-      "name": "feature/DoctorAppointment",
-      "base": "develop"
     }
   ],
   "files.exclude": {
