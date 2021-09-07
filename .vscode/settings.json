@@ -1,4 +1,5 @@
 {
+  "emmet.includeLanguages": {"django-html": "html"},
   "gitflow4code.features": [
     {
       "name": "feature/test2",
@@ -14,6 +15,10 @@
     },
     {
       "name": "feature/DoctorDashboard",
+      "base": "develop"
+    },
+    {
+      "name": "feature/DoctorAppointment",
       "base": "develop"
     }
   ],

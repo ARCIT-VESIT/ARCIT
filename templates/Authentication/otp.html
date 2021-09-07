@@ -10,8 +10,15 @@
                 <span>{{error}}</span>
             </h6>
         {% endif %}
-
-        <div>Enter phone number: <input type="number" name="Phone_number" value={{phone_number}} required />
+        <div>
+            Enter phone number: 
+            <input type="number" name="Phone_number" 
+                {% if request.session.appointment_patient_phno %}                
+                    value={{request.session.appointment_patient_phno}} 
+                {% else %}
+                    value={{phone_number}}
+                {% endif %}
+            required />
         <button type="submit" class="btn btn-primary">Generate OTP</button>
         </div>
 

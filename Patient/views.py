@@ -1,18 +1,23 @@
 # from datetime import date, datetime
 """View for patient"""
+from Doctor.views import is_chain_valid
 import json
+from datetime import datetime
 
 import requests
 from ARCIT.views import raw_sql_executor
 from django.contrib.auth import get_user_model
 from django.db import connection
+from django.db.models.query_utils import Q
+from django.http import QueryDict
 from django.http.response import JsonResponse
-# from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from Doctor.models import Doctor
 
 from .forms import PatientHistoryForm
-from .models import Patient
+from .models import Appointment, Patient
 
 User = get_user_model()
 
@@ -117,9 +122,14 @@ class ViewPatientHistory(TemplateView):
 
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username']) if request.session.has_key('is_patient') else Patient.objects.get(phone_number=request.session['phoneNumber']).user
-        model = self.raw_sql_executor(request, user)
+        patient = Patient.objects.get(user=user.id).user
 
-        return render(request,self.template_name,{'models':model})
+        if(is_chain_valid(patient)):
+            user = user if request.session.has_key('is_patient') else Patient.objects.get(phone_number=request.session['phoneNumber']).user
+            model = self.raw_sql_executor(request, user)
+
+            return render(request,self.template_name,{'models':model})
+        return render(request,self.template_name,{'error': "Your medical data has been compromised!"})
 
 def get_states(request):
     try:
@@ -180,7 +190,7 @@ def frequent_diseases(request):
             LEFT JOIN "Patient_patient" p ON p.user_id = ph.user_id
             WHERE ph.user_id = %s
         GROUP BY ph.disease
-        ORDER BY disease_frequency
+        ORDER BY disease_frequency DESC
         LIMIT 10;
     '''
 
@@ -196,4 +206,159 @@ def frequent_diseases(request):
     })
 
 def dashboard(request):
-    return render(request, 'Patient/dashboard.html', {})
+    return render(request, 'Patient/dashboard.html', {"appointment_count": len(upcoming_appointments_query(request))})
+
+def doctor_appointment(request):
+    template = 'Patient/setAppointment.html'
+    if 'filterText' in request.GET:
+        try:
+            pincode = Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username'])).pincode
+            filter_text = request.GET['filterText']
+
+            query = f'''
+                SELECT 
+                    user_id,
+                    name,
+                    experience,
+                    affiliation,
+                    specialization,
+                    accreditation,
+                    address,
+                    pincode,
+                    ah.active_hours
+                FROM "Doctor_doctor" d
+                left join (
+                    select 
+                        doctor_id,
+                        group_concat(json_object(
+                            'id', id, 
+                            'arrival_time', arrival_time, 
+                            'departure_time', departure_time, 
+                            'doctor_id', doctor_id, 
+                            'for_hospital', for_hospital)) 
+                        as active_hours
+                    from "Doctor_activehour" where id in (
+                        WITH split(one, many, str) AS (
+                            SELECT active_hours, '', active_hours||','
+                                FROM "Doctor_doctor"
+                            UNION ALL SELECT one,
+                                substr(str, 0, instr(str, ',')),
+                                substr(str, instr(str, ',')+1)
+                            FROM "split" WHERE str !=''
+                        ) SELECT REPLACE(REPLACE(trim(many),'[',''), ']', '')
+                                FROM "split"
+                                WHERE many!='' 
+                            ORDER BY many
+                    )
+                    GROUP BY doctor_id
+                ) ah on ah.doctor_id = d.user_id
+                WHERE 
+                    name like '%{filter_text}%' or
+                    specialization like '%{filter_text}%' or
+                    accreditation like '%{filter_text}%' or
+                    pincode = {pincode}
+                ORDER BY(
+                    CASE
+                        WHEN name like '%{filter_text}%' THEN 1
+                        WHEN specialization like '%{filter_text}%' THEN 2
+                        WHEN accreditation like '%{filter_text}%' THEN 3
+                    ELSE 4
+                END);
+            '''
+
+            doctors= raw_sql_executor(query)
+
+            for doctor in doctors:
+                if doctor["active_hours"] is not None:
+                    active_hours_tuple = eval(doctor["active_hours"])
+                    active_hours = []
+
+                    if type(active_hours_tuple) is tuple:
+                        for active_hour_tuple in active_hours_tuple:
+                            get_active_hour_as_model(active_hour_tuple, active_hours)
+                    else:
+                        get_active_hour_as_model(active_hours_tuple, active_hours)
+                        
+                    doctor["active_hours"] = dict
+                    doctor["active_hours"] = active_hours
+
+            return render(request,template,{"doctors":doctors, 'filterText': filter_text})
+        except Exception as ex:
+            return render(request,template,{'doctors':doctors})
+    return render(request, template)
+
+def get_active_hour_as_model(tuple, active_hours):
+    active_hours.append({
+        'id' : tuple['id'],
+        'arrival_time' : tuple['arrival_time'],
+        'departure_time' : tuple['departure_time'],
+        'doctor_id' : tuple['doctor_id'],
+        'for_hospital' : tuple['for_hospital']
+    })
+
+def get_appointment_token(doctor_id, active_hour_id, patient_id, appointment_date):
+    saved_appointments = Appointment.objects.filter(Q(doctor_id=Doctor.objects.get(user=doctor_id).user.id) & Q(active_hour_id=active_hour_id)).order_by('-token_number')
+
+    if saved_appointments.exists() and saved_appointments is not None:
+        for appointment in saved_appointments:
+            if appointment.doctor_id == int(doctor_id) and appointment.active_hour_id == int(active_hour_id) and appointment.date == appointment_date:
+                return 1 if appointment.patient_id == patient_id else appointment.token_number + 1
+    return 1
+
+@csrf_exempt
+def set_appointment(request):
+    form_data = QueryDict(request.POST['data'].encode('ASCII'))
+
+    doctor_id = form_data['doctor_id']
+    active_hour_id = form_data['active_hour_id']
+    patient_id = Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username'])).id
+    appointment_date = datetime.strptime(f"{form_data['appointment_date'].replace('-', '/', 2)[2:]}", '%y/%m/%d').date()
+
+    saved_appointments = Appointment.objects.filter(Q(patient_id=patient_id) & Q(doctor_id=int(doctor_id)))
+
+    if saved_appointments.exists() and saved_appointments is not None:
+        for appointment in saved_appointments:
+            if appointment.doctor_id == int(doctor_id) and appointment.active_hour_id == int(active_hour_id) and appointment.date == appointment_date:
+                return JsonResponse({"error": "Appointment already exists for the selected date and time"}, safe=False)
+
+    token_number = get_appointment_token(doctor_id, active_hour_id, patient_id, appointment_date)
+
+    Appointment(
+        patient_id = patient_id,
+        doctor_id = doctor_id,
+        active_hour_id = active_hour_id,
+        date = appointment_date,
+        token_number = token_number
+    ).save()
+
+    return JsonResponse({"success": f"Appointment taken, your token number is: <strong>{token_number}<strong>"}, status=200)
+
+def upcomingAppointments(request):
+    return render(request, "Patient/appointments.html", {"appointments": upcoming_appointments_query(request)})
+
+def upcoming_appointments_query(request):
+    query = '''
+        SELECT 
+            pa.id,
+            d.name as doctor_name,
+            pa.token_number,
+            da.arrival_time,
+            da.departure_time,
+            pa.date,
+            da.for_hospital,
+            d.affiliation,
+            d.accreditation,
+            d.specialization,
+            d.address
+        from "Patient_appointment" pa
+            left join "Doctor_activehour" da on da.id = pa.active_hour_id
+            left join "Doctor_doctor" d on d.user_id = pa.doctor_id
+        WHERE 
+            DATETIME(DATE(pa.date) || ' ' || TIME(da.departure_time)) >= datetime('now','localtime') and 
+            patient_id = %s
+        ORDER BY
+            pa.date,
+            da.arrival_time
+    '''
+    dataset = raw_sql_executor(query, [Patient.objects.get(user=User.objects.get(username=request.session['loggedin_username']).id).id])
+    return dataset

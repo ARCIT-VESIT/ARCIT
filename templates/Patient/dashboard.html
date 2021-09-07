@@ -2,23 +2,36 @@
 
 {% block content %}
 
-  <div class="row ml-0">
-    <div class="col-6 pl-0">
+  <div style="height:calc(100vh - 105px);width: calc(100vw - 332px);overflow:auto">
+      <div class="col-4 pl-0 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title text-center">Upcoming appointments</h5>
+            <h1 class="text-center">{{appointment_count}}</h1>
+          </div>
+        </div>
+      </div>
+    <div class="row m-0 mb-3">
+      <div class="col-6 pl-0">
+        <div class="card">
+          <div class="card-body">
+            <canvas id="top-visited-specialities-chart" data-url="{% url 'patient_most_visited_specialities' %}"></canvas>
+          </div>
+        </div>
+      </div>
+    <div class="col-6 pl-0 pr-0">
       <div class="card">
         <div class="card-body">
-            <canvas id="top-visited-specialities-chart" data-url="{% url 'patient_most_visited_specialities' %}"></canvas>
+          <canvas id="frequent-diseases-chart" data-url="{% url 'patient_frequent_diseases' %}"></canvas>
         </div>
       </div>
     </div>
-    <div class="col-6 pl-0">
-      <div class="card">
-        <div class="card-body">
-            <canvas id="frequent-diseases-chart" data-url="{% url 'patient_frequent_diseases' %}"></canvas>
-        </div>
-      </div>
     </div>
   </div>
 
+{% endblock %}
+
+{% block script %} 
   <script>
     $(() => {
       const topVisitedSpecialitiesChart = $("#top-visited-specialities-chart");
@@ -92,5 +105,4 @@
       });
     });
   </script>
-
 {% endblock %}

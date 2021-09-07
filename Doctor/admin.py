@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Doctor
+from .models import ActiveHour, Doctor
 
 admin.site.register(Doctor)
-# Register your models here.
+admin.site.register(ActiveHour)
