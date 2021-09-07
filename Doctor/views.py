@@ -77,20 +77,22 @@ hash_block = lambda block : hashlib.sha256(json.dumps(serializers.serialize('jso
 
 def is_chain_valid(user):
     patients = PatientHistory.objects.filter(user=user.id)
-    previous_block = patients[0]
-    block_index = 1
+    previous_block = patients.first()
 
-    while block_index < len(patients):
-        block = patients[block_index]
-        if block.previous_hash != hash_block(previous_block):
-            return False
-        previous_nonce = previous_block.nonce
-        nonce = block.nonce
-        hash_operation = hashlib.sha256(str(nonce**2 - previous_nonce**2).encode()).hexdigest()
-        if hash_operation[:4] != '0000':
-            return False
-        previous_block = block
-        block_index += 1
+    if previous_block is not None:
+        block_index = 1
+
+        while block_index < len(patients):
+            block = patients[block_index]
+            if block.previous_hash != hash_block(previous_block):
+                return False
+            previous_nonce = previous_block.nonce
+            nonce = block.nonce
+            hash_operation = hashlib.sha256(str(nonce**2 - previous_nonce**2).encode()).hexdigest()
+            if hash_operation[:4] != '0000':
+                return False
+            previous_block = block
+            block_index += 1
     return True
 
 def mine_patient_history(form_data, request):

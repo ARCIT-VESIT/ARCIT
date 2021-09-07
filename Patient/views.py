@@ -1,5 +1,6 @@
 # from datetime import date, datetime
 """View for patient"""
+from Doctor.views import is_chain_valid
 import json
 from datetime import datetime
 
@@ -121,9 +122,14 @@ class ViewPatientHistory(TemplateView):
 
     def get(self,request, *args, **kwargs):
         user = User.objects.get(username=request.session['loggedin_username']) if request.session.has_key('is_patient') else Patient.objects.get(phone_number=request.session['phoneNumber']).user
-        model = self.raw_sql_executor(request, user)
+        patient = Patient.objects.get(user=user.id).user
 
-        return render(request,self.template_name,{'models':model})
+        if(is_chain_valid(patient)):
+            user = user if request.session.has_key('is_patient') else Patient.objects.get(phone_number=request.session['phoneNumber']).user
+            model = self.raw_sql_executor(request, user)
+
+            return render(request,self.template_name,{'models':model})
+        return render(request,self.template_name,{'error': "Your medical data has been compromised!"})
 
 def get_states(request):
     try:
@@ -184,7 +190,7 @@ def frequent_diseases(request):
             LEFT JOIN "Patient_patient" p ON p.user_id = ph.user_id
             WHERE ph.user_id = %s
         GROUP BY ph.disease
-        ORDER BY disease_frequency
+        ORDER BY disease_frequency DESC
         LIMIT 10;
     '''
 
@@ -253,9 +259,9 @@ def doctor_appointment(request):
                     pincode = {pincode}
                 ORDER BY(
                     CASE
-                    WHEN name like '%{filter_text}%' THEN 1
-                    WHEN specialization like '%{filter_text}%' THEN 2
-                    WHEN accreditation like '%{filter_text}%' THEN 3
+                        WHEN name like '%{filter_text}%' THEN 1
+                        WHEN specialization like '%{filter_text}%' THEN 2
+                        WHEN accreditation like '%{filter_text}%' THEN 3
                     ELSE 4
                 END);
             '''

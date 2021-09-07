@@ -53,11 +53,11 @@
                     <a href="{% url 'hospitalprofile' %}">Profile</a>
                 </li>
                 <li>
-                    <a href="{% url 'hospitaldoctors' %}">Affiliated doctors</a>
+                    <a href="{% url 'hospitaldoctors' %}">Available Doctors</a>
                 </li>
-                <li>
-                    <a href="{% url 'hospitaldoctors' %}">Affiliated DD</a>
-                </li>
+                {% comment %} <li>
+                    <a href="{% url 'hospitaldoctors' %}">Associated DD</a>
+                </li> {% endcomment %}
               {% elif request.session.is_dd %}
                 <li>
                     <a href="{% url 'ddprofile' %}">Profile</a>

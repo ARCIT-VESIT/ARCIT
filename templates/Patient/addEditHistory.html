@@ -3,7 +3,11 @@
 {% block content %}
 {% comment %} <a href="{% url 'PatientHistory' %}">Add new diagnosis</a> {% endcomment %}
     <div style="height:calc(100vh - 105px)">    
-        <div class="card pl-3 pt-3 pb-3 pr-0 border-0 d-flex justify-content-center" style="height:100%">
+        <div class="card pl-3 pt-3 pb-3 pr-0 border-0 
+        {% if error %}
+        d-flex justify-content-center
+        {% endif %}
+        " style="height:100%">
             {% if error %}
                 <div class="card mx-auto">
                     <div class="card-body text-center">

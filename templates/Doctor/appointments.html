@@ -56,7 +56,7 @@
                         <h6 class="pb-1 pt-3">{{appointment_data.time}}</h6>
                         <div class="row m-0 mb-1">
                         {% for patient in appointment_data.appointments %}
-                            <a class="badge badge-pill badge-light mr-3" 
+                            <a class="badge badge-pill badge-light mr-3 mb-3" 
                             id="appointment_pill_{{patient.id}}" 
                             {% if todayDate == appointment_info.date %}
                                     href="{% url 'A20redirect' id=patient.id %}" 
